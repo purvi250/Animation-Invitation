@@ -1,6 +1,6 @@
 /* ============================================================================
    NAV — chapter dots, and the two ways back to the start:
-   the replay button in the corner and "Revisit the invitation" at the end.
+   the replay button in the corner and "Replay invitation" at the end.
    Chapter links are ordinary anchors, so they work with keyboard, screen
    readers, and even without this file.
    ============================================================================ */
@@ -20,16 +20,24 @@
     mark(Invite.scroll.chapter || 'opening');
   }
 
-  /** Back to the first page, envelope sealed again, ready to be opened. */
+  /** Everything back to how it was at the very beginning. */
+  function resetStory() {
+    ['hero', 'envelope', 'entrances', 'scrollcard', 'finale'].forEach((name) => {
+      try { if (Invite[name] && Invite[name].reset) Invite[name].reset(); } catch (err) { console.error(err); }
+    });
+  }
+
+  /** Back to the first page — banner down (or envelope sealed), helpers waiting — ready to begin again. */
   function replay() {
-    const button = document.getElementById('envelope-button');
-    Invite.envelope.reset();
+    const first = document.getElementById(Invite.openingMode === 'envelope' ? 'envelope-button' : 'hero-begin');
+    resetStory();
     window.scrollTo({ top: 0, behavior: Invite.motion.reduced ? 'auto' : 'smooth' });
     const started = performance.now();
     const settle = () => {
       if (window.scrollY > 2 && performance.now() - started < 4000) { requestAnimationFrame(settle); return; }
-      Invite.envelope.reset();
-      if (button) button.focus({ preventScroll: true });
+      resetStory();
+      // (a beat later: the button is fading back in, and a still-hidden element cannot take focus)
+      setTimeout(() => { if (first && first.offsetParent !== null) first.focus({ preventScroll: true }); }, 160);
     };
     requestAnimationFrame(settle);
   }

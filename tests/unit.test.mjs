@@ -95,6 +95,21 @@ test('the page works without scripting: its built-in wording matches the config'
   assert.ok(!/\b\d{1,2}[:.]\d{2}\s?(am|pm)\b/i.test(html.replace(/<script[\s\S]*?<\/script>/g, '')), 'no clock time appears in the page');
 });
 
+test('local server: when a port is busy it moves on and reports the port it is really using', async () => {
+  const first = createServer({ dir: ROOT });
+  const taken = await listen(first, 5480, '127.0.0.1');
+  const second = createServer({ dir: ROOT });
+  try {
+    const got = await listen(second, taken, '127.0.0.1');
+    assert.notEqual(got, taken, 'must not claim a port that is already in use');
+    assert.equal(got, second.address().port, 'the reported port is the real one');
+    const page = await fetch(`http://127.0.0.1:${got}/`);
+    assert.match(await page.text(), /Kenvi/, 'and it serves this invitation');
+  } finally {
+    first.close(); second.close();
+  }
+});
+
 test('local server: correct types, byte ranges for audio, and no escaping the site folder', async () => {
   const server = createServer({ dir: ROOT });
   const port = await listen(server, 5460, '127.0.0.1');

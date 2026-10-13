@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="styles/chrome.css">
   <link rel="stylesheet" href="styles/scenes.css">
   <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/helpers.css">
+  <link rel="stylesheet" href="styles/story.css">
 
   <script>
     // Runs before first paint so the page never flashes its no-script layout.
@@ -34,7 +36,38 @@
 <body>
   <a class="skip-link" href="#invitation">Skip to the invitation details</a>
 
-  <!-- ===== The sky: one fixed backdrop that turns from afternoon to night as you scroll ===== -->
+  <!-- Reusable ornaments -->
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff0b0"/><stop offset=".4" stop-color="#e3b548"/><stop offset="1" stop-color="#8f6218"/></linearGradient>
+      <linearGradient id="clay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d98a52"/><stop offset="1" stop-color="#8f4a2a"/></linearGradient>
+      <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9824a"/><stop offset="1" stop-color="#7a4a22"/></linearGradient>
+      <path id="rangoli-petal" d="M100 100C78 62 80 32 100 12c20 20 22 50 0 88" pathLength="1"/>
+    </defs>
+    <symbol id="lotus" viewBox="0 0 120 72">
+      <g fill="var(--lotus-fill, #f7b7c8)" stroke="var(--lotus-line, #b78a3c)" stroke-width="2" stroke-linejoin="round">
+        <path d="M60 62C30 60 12 46 6 30c16 0 30 8 40 20z"/><path d="M60 62c30-2 48-16 54-32-16 0-30 8-40 20z"/>
+        <path d="M60 62C40 54 28 34 30 14c14 6 24 20 28 36z"/><path d="M60 62c20-8 32-28 30-48-14 6-24 20-28 36z"/>
+        <path d="M60 62C48 46 48 22 60 4c12 18 12 42 0 58z"/>
+      </g>
+      <path d="M20 66q40 8 80 0" fill="none" stroke="var(--lotus-line, #b78a3c)" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="bell" viewBox="0 0 40 84">
+      <path d="M20 0v30" stroke="#8a5a2b" stroke-width="2"/>
+      <path d="M20 26c-9 2-13 13-13 26l-5 9h36l-5-9c0-13-4-24-13-26z" fill="url(#brass)"/>
+      <path d="M2 61h36" stroke="#8f6218" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="67" r="4.400" fill="#8f6218"/>
+      <path d="M14 34c-3 5-4 12-4 18" fill="none" stroke="#fff" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="diya" viewBox="0 0 60 30">
+      <path d="M4 6q26 30 52 0q-4 22-26 22T4 6z" fill="url(#clay)"/><path d="M4 6q26 9 52 0" fill="none" stroke="#f0b27c" stroke-width="2.400" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="paisley" viewBox="0 0 60 60">
+      <path d="M8 52C2 30 14 8 34 8c12 0 20 8 20 18s-8 16-16 16c-6 0-10-4-10-9s4-8 8-8" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round"/>
+      <circle cx="36" cy="33" r="2.400" fill="currentColor"/><path d="M8 52q10-2 16-10M8 52q-2-10 2-18" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <!-- ===== The sky: one fixed backdrop that turns from morning to night as you scroll ===== -->
   <div class="backdrop" id="backdrop" aria-hidden="true">
     <div class="sky sky--day"></div>
     <div class="sky sky--golden"></div>
@@ -59,7 +92,7 @@
         <span class="icon-btn__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         <span class="icon-btn__slash" aria-hidden="true"></span>
       </button>
-      <button type="button" class="icon-btn" id="replay" aria-label="Replay the opening">
+      <button type="button" class="icon-btn" id="replay" aria-label="Replay the invitation from the start">
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3.6 3.8v4.4h4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
@@ -69,29 +102,100 @@
 
   <nav class="chapters" aria-label="Chapters of the invitation">
     <ol>
-      <li><a href="#opening" data-chapter="opening"><span class="chapters__dot"></span><span class="chapters__label">Opening</span></a></li>
-      <li><a href="#groom" data-chapter="groom"><span class="chapters__dot"></span><span class="chapters__label">The groom</span></a></li>
+      <li><a href="#opening" data-chapter="opening"><span class="chapters__dot"></span><span class="chapters__label">Save the date</span></a></li>
       <li><a href="#bride" data-chapter="bride"><span class="chapters__dot"></span><span class="chapters__label">The bride</span></a></li>
+      <li><a href="#groom" data-chapter="groom"><span class="chapters__dot"></span><span class="chapters__label">The groom</span></a></li>
       <li><a href="#together" data-chapter="together"><span class="chapters__dot"></span><span class="chapters__label">Together</span></a></li>
       <li><a href="#invitation" data-chapter="invitation"><span class="chapters__dot"></span><span class="chapters__label">Invitation</span></a></li>
       <li><a href="#venue" data-chapter="venue"><span class="chapters__dot"></span><span class="chapters__label">Venue</span></a></li>
-      <li><a href="#save-the-date" data-chapter="save-the-date"><span class="chapters__dot"></span><span class="chapters__label">Save the date</span></a></li>
+      <li><a href="#save-the-date" data-chapter="save-the-date"><span class="chapters__dot"></span><span class="chapters__label">Until then</span></a></li>
     </ol>
   </nav>
 
   <main id="story">
 
-    <!-- ============ 1 · OPENING + ENVELOPE ============ -->
-    <section class="scene scene--opening" id="opening" data-scene="opening" data-time="0" data-time-end="0.22" data-pin aria-labelledby="opening-title">
+    <!-- ============ 1 · THE GARDEN GATE: little helpers pull a rope and reveal the date ============ -->
+    <section class="scene scene--opening" id="opening" data-scene="opening" data-opening="rope" data-time="0" data-time-end="0.3" data-pin aria-labelledby="opening-title">
       <div class="scene__stage">
         <div class="scene__art" data-art="opening" aria-hidden="true">
           <img class="layer" data-depth="0.5" data-zoom="0.05" src="assets/scenery/meadow-far.webp" alt="" decoding="async">
-          <img class="layer" data-depth="0.26" data-zoom="0.11" src="assets/scenery/meadow-mid.webp" alt="" decoding="async">
-          <img class="layer" data-depth="0" data-zoom="0.22" src="assets/scenery/meadow-near.webp" alt="" decoding="async">
+          <img class="layer" data-depth="0.26" data-zoom="0.1" src="assets/scenery/meadow-mid.webp" alt="" decoding="async">
+          <img class="layer" data-depth="0" data-zoom="0.16" src="assets/scenery/meadow-near.webp" alt="" decoding="async">
         </div>
         <img class="branch branch--left" src="assets/scenery/blossom-branch.webp" alt="" aria-hidden="true" decoding="async">
         <img class="branch branch--right" src="assets/scenery/blossom-branch.webp" alt="" aria-hidden="true" decoding="async">
 
+        <!-- ---- the hero ---- -->
+        <div class="hero" id="hero" data-state="idle">
+          <span class="butterfly butterfly--1 is-looping" aria-hidden="true"><i></i><i></i></span>
+          <span class="butterfly butterfly--2 is-looping" aria-hidden="true"><i></i><i></i></span>
+          <span class="butterfly butterfly--3 is-looping" aria-hidden="true"><i></i><i></i></span>
+
+          <div class="hero__title">
+            <p class="kicker hero__kicker" data-bind="text.heroKicker">You are invited to the wedding reception of</p>
+            <h1 class="hero__names" id="opening-title"><span data-bind="bride.short">Kenvi</span> <span class="amp">&amp;</span> <span data-bind="groom.short">Puru</span></h1>
+          </div>
+
+          <div class="gate" id="gate">
+            <span class="gate__glow" aria-hidden="true"></span>
+
+            <div class="datepanel" id="date-panel">
+              <svg class="datepanel__lotus" viewBox="0 0 120 72" aria-hidden="true" focusable="false"><use href="#lotus"/></svg>
+              <p class="datepanel__kicker" data-bind="text.dateKicker">Save the date</p>
+              <p class="datepanel__date"><time datetime="2026-11-28" data-bind-datetime="event.date"><span class="datepanel__day" data-bind="derived.weekdayComma">Saturday,</span> <span class="datepanel__dm" data-bind="derived.dateDayMonthYear">28 November 2026</span></time></p>
+              <p class="datepanel__event" data-bind="event.title">Wedding Reception</p>
+              <span class="datepanel__marigolds" aria-hidden="true"></span>
+            </div>
+
+            <div class="banner" aria-hidden="true">
+              <div class="banner__cloth">
+                <svg class="banner__lotus" viewBox="0 0 120 72" focusable="false"><use href="#lotus"/></svg>
+                <span class="banner__mono" data-bind="derived.monogram">K &amp; P</span>
+                <svg class="banner__corner banner__corner--tl" viewBox="0 0 60 60" focusable="false"><use href="#paisley"/></svg>
+                <svg class="banner__corner banner__corner--tr" viewBox="0 0 60 60" focusable="false"><use href="#paisley"/></svg>
+                <svg class="banner__corner banner__corner--bl" viewBox="0 0 60 60" focusable="false"><use href="#paisley"/></svg>
+                <svg class="banner__corner banner__corner--br" viewBox="0 0 60 60" focusable="false"><use href="#paisley"/></svg>
+                <span class="banner__fringe"></span>
+              </div>
+            </div>
+
+            <img class="gate__art" src="assets/scenery/gate.webp" alt="" aria-hidden="true" decoding="async">
+            <img class="gate__toran" src="assets/scenery/toran.webp" alt="" aria-hidden="true" decoding="async">
+            <span class="bell bell--l is-looping" aria-hidden="true"><svg viewBox="0 0 40 84" focusable="false"><use href="#bell"/></svg></span>
+            <span class="bell bell--r is-looping" aria-hidden="true"><svg viewBox="0 0 40 84" focusable="false"><use href="#bell"/></svg></span>
+            <span class="pulley" aria-hidden="true"></span>
+
+            <svg class="rangoli" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+              <g fill="none" stroke-linecap="round">
+                <circle cx="100" cy="100" r="94" stroke="#fff3dd" stroke-width="3" pathLength="1"/>
+                <g stroke="#f28c28" stroke-width="5"><use href="#rangoli-petal"/><use href="#rangoli-petal" transform="rotate(45 100 100)"/><use href="#rangoli-petal" transform="rotate(90 100 100)"/><use href="#rangoli-petal" transform="rotate(135 100 100)"/><use href="#rangoli-petal" transform="rotate(180 100 100)"/><use href="#rangoli-petal" transform="rotate(225 100 100)"/><use href="#rangoli-petal" transform="rotate(270 100 100)"/><use href="#rangoli-petal" transform="rotate(315 100 100)"/></g>
+                <g stroke="#e8578a" stroke-width="4" transform="rotate(22.500 100 100) translate(28 28) scale(.72)"><use href="#rangoli-petal"/><use href="#rangoli-petal" transform="rotate(45 100 100)"/><use href="#rangoli-petal" transform="rotate(90 100 100)"/><use href="#rangoli-petal" transform="rotate(135 100 100)"/><use href="#rangoli-petal" transform="rotate(180 100 100)"/><use href="#rangoli-petal" transform="rotate(225 100 100)"/><use href="#rangoli-petal" transform="rotate(270 100 100)"/><use href="#rangoli-petal" transform="rotate(315 100 100)"/></g>
+                <circle cx="100" cy="100" r="15" stroke="#0f8b8d" stroke-width="5" pathLength="1"/>
+              </g>
+              <circle class="rangoli__heart" cx="100" cy="100" r="9" fill="#f6c445"/>
+            </svg>
+
+            <span class="diya" style="--dx:5%;--i:0" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya" style="--dx:17%;--i:1" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya" style="--dx:29%;--i:2" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya" style="--dx:71%;--i:3" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya" style="--dx:83%;--i:4" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya" style="--dx:95%;--i:5" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+
+            <svg class="rope" id="rope" aria-hidden="true" focusable="false"><path class="rope__shade"/><path class="rope__line"/><path class="rope__twist"/></svg>
+            <span class="pot" aria-hidden="true"></span>
+            <!-- the three helpers are added here by src/hero.js -->
+          </div>
+
+          <p class="hero__actions">
+            <button type="button" class="btn btn--primary hero__begin" id="hero-begin"><span data-bind="text.beginLabel">Begin Our Story</span></button>
+            <a class="hero__follow" id="hero-follow" href="#bride"><span data-bind="text.followHint">Follow the little one</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </p>
+        </div>
+
+        <!-- ---- the classic envelope (used when opening: 'envelope') ---- -->
         <div class="scene__content opening">
           <p class="kicker opening__kicker" data-bind="text.openingKicker">You are invited</p>
 
@@ -102,7 +206,7 @@
 
               <div class="letter" id="letter">
                 <p class="letter__kicker" data-bind="text.letterKicker">With great joy</p>
-                <h1 class="letter__names" id="opening-title"><span data-bind="bride.short">Kenvi</span> <span class="amp">&amp;</span> <span data-bind="groom.short">Puru</span></h1>
+                <p class="letter__names" role="heading" aria-level="1"><span data-bind="bride.short">Kenvi</span> <span class="amp">&amp;</span> <span data-bind="groom.short">Puru</span></p>
                 <p class="letter__line" data-bind="text.letterLine">invite you to their</p>
                 <p class="letter__event" data-bind="event.title">Wedding Reception</p>
                 <p class="letter__date"><time datetime="2026-11-28" data-bind="derived.dateLong" data-bind-datetime="event.date">Saturday, 28 November 2026</time></p>
@@ -165,7 +269,7 @@
 
           <p class="opening__hint" id="opening-hint">
             <span class="opening__hint-closed" data-bind="text.openHint">Tap the envelope to open</span>
-            <a class="opening__hint-open" id="begin-link" href="#groom"><span data-bind="text.openedHint">Begin the story</span>
+            <a class="opening__hint-open" id="begin-link" href="#bride"><span data-bind="text.openedHint">Begin the story</span>
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </p>
@@ -174,55 +278,92 @@
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
-    <!-- ============ 2 · THE GROOM ============ -->
-    <section class="scene scene--groom" id="groom" data-scene="groom" data-time="1" aria-labelledby="groom-title">
-      <div class="scene__art" data-art="groom" aria-hidden="true">
-        <img class="layer" data-depth="0.5" src="assets/scenery/golden-far.webp" alt="" loading="lazy" decoding="async">
-        <img class="layer" data-depth="0.24" src="assets/scenery/golden-mid.webp" alt="" loading="lazy" decoding="async">
-        <img class="layer" data-depth="0" src="assets/scenery/golden-near.webp" alt="" loading="lazy" decoding="async">
-        <span class="lightshaft" aria-hidden="true"></span>
-      </div>
-      <div class="scene__cast">
-        <figure class="figure figure--groom" data-reveal="rise" data-fallback-initial="groom">
-          <img src="assets/characters/groom.webp" data-art-src="art.groom" width="534" height="1852" decoding="async"
-               alt="Illustration of the groom, Puru Tyagi, in an ivory sherwani with a red and gold stole and a cream turban">
-        </figure>
-      </div>
-      <div class="scene__content intro intro--groom">
-        <p class="kicker" data-reveal data-bind="text.groomKicker">Introducing the groom</p>
-        <h2 class="name" id="groom-title" data-reveal="write" data-bind="groom.name">Puru Tyagi</h2>
-        <span class="flourish" data-reveal aria-hidden="true"></span>
-        <p class="caption" data-reveal data-bind="text.groomCaption">As golden light settles over the garden, he waits.</p>
-      </div>
-      <span class="scene__mist" aria-hidden="true"></span>
-    </section>
-
-    <!-- ============ 3 · THE BRIDE ============ -->
-    <section class="scene scene--bride" id="bride" data-scene="bride" data-time="2" aria-labelledby="bride-title">
+    <!-- ============ 2 · THE BRIDE ============ -->
+    <section class="scene scene--bride" id="bride" data-scene="bride" data-time="1.4" aria-labelledby="bride-title">
       <div class="scene__art" data-art="bride" aria-hidden="true">
         <img class="layer" data-depth="0.5" src="assets/scenery/dusk-far.webp" alt="" loading="lazy" decoding="async">
         <img class="layer" data-depth="0.24" src="assets/scenery/dusk-mid.webp" alt="" loading="lazy" decoding="async">
         <img class="layer" data-depth="0" src="assets/scenery/dusk-near.webp" alt="" loading="lazy" decoding="async">
       </div>
       <div class="scene__cast">
-        <figure class="figure figure--bride" data-reveal="rise" data-fallback-initial="bride">
+        <span class="curtain curtain--l" aria-hidden="true"></span>
+        <span class="curtain curtain--r" aria-hidden="true"></span>
+        <img class="set set--arch" src="assets/scenery/arch.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <figure class="figure figure--bride" data-figure="bride" data-fallback-initial="bride">
           <img src="assets/characters/bride.webp" data-art-src="art.bride" width="1314" height="1709" decoding="async" loading="lazy"
-               alt="Illustration of the bride, Kenvi Dwivedi, in a maroon and gold lehenga, glancing over her shoulder">
+               alt="Illustration of the bride, Kenvi Dwivedi, in a maroon and gold lehenga, glancing over her shoulder and holding out a bouquet">
+          <span class="sparkle" style="--sx:48.5%;--sy:5.4%;--sd:0s" aria-hidden="true"></span>
+          <span class="sparkle" style="--sx:57%;--sy:15.6%;--sd:.9s" aria-hidden="true"></span>
+          <span class="sparkle" style="--sx:53%;--sy:20%;--sd:1.7s" aria-hidden="true"></span>
+          <span class="sparkle" style="--sx:27%;--sy:46.5%;--sd:2.4s" aria-hidden="true"></span>
+          <button type="button" class="bouquet" id="bride-bouquet" aria-label="Accept the flowers Kenvi is offering">
+            <svg viewBox="0 0 120 150" aria-hidden="true" focusable="false">
+              <g class="bouquet__stems"><path d="M60 148L48 96M60 148L60 92M60 148L73 96M60 148L38 100M60 148L82 100" stroke="#3f8a4a" stroke-width="3.400" stroke-linecap="round" fill="none"/><path d="M50 122h20l-3 14h-14z" fill="#b3202f"/><path d="M52 126l-12 16M68 126l12 16" stroke="#b3202f" stroke-width="3" stroke-linecap="round"/></g>
+              <g class="bouquet__leaves" fill="#4a9a5c"><ellipse cx="28" cy="88" rx="9" ry="18" transform="rotate(-38 28 88)"/><ellipse cx="92" cy="88" rx="9" ry="18" transform="rotate(38 92 88)"/><ellipse cx="60" cy="100" rx="8" ry="16"/></g>
+              <g class="bouquet__blooms">
+                <g class="bloom" style="--bx:36px;--by:66px"><circle cx="36" cy="66" r="17" fill="#f08aa8"/><circle cx="36" cy="66" r="11" fill="#f9c2d6"/><circle cx="36" cy="66" r="5" fill="#fff0f4"/></g>
+                <g class="bloom" style="--bx:84px;--by:66px"><circle cx="84" cy="66" r="17" fill="#ffb238"/><circle cx="84" cy="66" r="11" fill="#ffd76a"/><circle cx="84" cy="66" r="5" fill="#fff3c4"/></g>
+                <g class="bloom" style="--bx:60px;--by:48px"><circle cx="60" cy="48" r="20" fill="#fff5f8"/><circle cx="60" cy="48" r="13" fill="#f9c2d6"/><circle cx="60" cy="48" r="6" fill="#f08aa8"/></g>
+                <g class="bloom" style="--bx:46px;--by:84px"><circle cx="46" cy="84" r="13" fill="#ff8f2e"/><circle cx="46" cy="84" r="7" fill="#ffd76a"/></g>
+                <g class="bloom" style="--bx:76px;--by:84px"><circle cx="76" cy="84" r="13" fill="#f9c2d6"/><circle cx="76" cy="84" r="7" fill="#fff5f8"/></g>
+                <g class="bloom bloom--extra" style="--bx:18px;--by:50px"><circle cx="18" cy="50" r="12" fill="#ffb238"/><circle cx="18" cy="50" r="6" fill="#ffe9a0"/></g>
+                <g class="bloom bloom--extra" style="--bx:102px;--by:48px"><circle cx="102" cy="48" r="12" fill="#f08aa8"/><circle cx="102" cy="48" r="6" fill="#ffd9e6"/></g>
+                <g class="bloom bloom--extra" style="--bx:42px;--by:26px"><circle cx="42" cy="26" r="11" fill="#fff5f8"/><circle cx="42" cy="26" r="5" fill="#ffd76a"/></g>
+                <g class="bloom bloom--extra" style="--bx:80px;--by:24px"><circle cx="80" cy="24" r="11" fill="#ff8f2e"/><circle cx="80" cy="24" r="5" fill="#ffe08a"/></g>
+              </g>
+            </svg>
+            <span class="tap-ring" aria-hidden="true"></span>
+          </button>
         </figure>
         <span class="rosebed" aria-hidden="true"></span>
       </div>
+      <div class="troupe" data-troupe="bride" aria-hidden="true"></div>
       <img class="branch branch--right branch--bride" src="assets/scenery/blossom-branch.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
       <div class="scene__content intro intro--bride">
-        <p class="kicker" data-reveal data-bind="text.brideKicker">Introducing the bride</p>
-        <h2 class="name" id="bride-title" data-reveal="write" data-bind="bride.name">Kenvi Dwivedi</h2>
-        <span class="flourish" data-reveal aria-hidden="true"></span>
-        <p class="caption" data-reveal data-bind="text.brideCaption">And through the blossom, at the end of the day, she arrives.</p>
+        <p class="kicker" data-bind="text.brideKicker">Introducing the bride</p>
+        <div class="plaque" id="bride-plaque">
+          <svg class="plaque__lotus" viewBox="0 0 120 72" aria-hidden="true" focusable="false"><use href="#lotus"/></svg>
+          <h2 class="plaque__name" id="bride-title" data-bind="bride.name">Kenvi Dwivedi</h2>
+        </div>
+        <p class="caption" data-bind="text.brideCaption">Through a curtain of flowers, in the golden light, she arrives.</p>
+        <p class="taphint" data-bind="text.brideHint">Tap her flowers</p>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 3 · THE GROOM ============ -->
+    <section class="scene scene--groom" id="groom" data-scene="groom" data-time="1.95" aria-labelledby="groom-title">
+      <div class="scene__art" data-art="groom" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/golden-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0.24" src="assets/scenery/golden-mid.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/golden-near.webp" alt="" loading="lazy" decoding="async">
+        <span class="lightshaft is-looping" aria-hidden="true"></span>
+      </div>
+      <div class="scene__cast">
+        <figure class="figure figure--groom" data-figure="groom" data-fallback-initial="groom">
+          <img src="assets/characters/groom.webp" data-art-src="art.groom" width="534" height="1852" decoding="async" loading="lazy"
+               alt="Illustration of the groom, Puru Tyagi, in an ivory sherwani with a red and gold stole and a cream turban">
+          <svg class="garland-worn" id="groom-garland" viewBox="0 0 534 1852" aria-hidden="true" focusable="false"></svg>
+          <button type="button" class="figure__tap" id="groom-tap" aria-label="Say hello to Puru"><span class="tap-ring" aria-hidden="true"></span></button>
+        </figure>
+        <img class="set set--pillar" src="assets/scenery/pillar.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      </div>
+      <div class="petalfall" aria-hidden="true"></div>
+      <div class="troupe" data-troupe="groom" aria-hidden="true"></div>
+      <div class="scene__content intro intro--groom">
+        <p class="kicker" data-bind="text.groomKicker">Introducing the groom</p>
+        <div class="plaque" id="groom-plaque">
+          <svg class="plaque__lotus" viewBox="0 0 120 72" aria-hidden="true" focusable="false"><use href="#lotus"/></svg>
+          <h2 class="plaque__name" id="groom-title" data-bind="groom.name">Puru Tyagi</h2>
+        </div>
+        <p class="caption" data-bind="text.groomCaption">And as the sun sets over the courtyard, he steps out to welcome you.</p>
+        <p class="taphint" data-bind="text.groomHint">Tap to say hello</p>
       </div>
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
     <!-- ============ 4 · TOGETHER ============ -->
-    <section class="scene scene--together" id="together" data-scene="together" data-time="2.8" data-time-end="3.15" data-pin aria-labelledby="together-title">
+    <section class="scene scene--together" id="together" data-scene="together" data-time="2.25" data-time-end="3.15" data-pin aria-labelledby="together-title">
       <div class="scene__stage">
         <div class="scene__art" data-art="together" aria-hidden="true">
           <img class="layer" data-depth="0.5" src="assets/scenery/grove-far.webp" alt="" loading="lazy" decoding="async">
@@ -231,70 +372,100 @@
         </div>
 
         <div class="together" id="together-stage">
+          <img class="together__mandap" src="assets/scenery/mandap.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
           <span class="together__glow" aria-hidden="true"></span>
+          <div class="together__diyas" aria-hidden="true">
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+            <span class="diya"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          </div>
           <div class="together__solo together__solo--groom" aria-hidden="true"><img src="assets/characters/groom.webp" data-art-src="art.groom" alt="" loading="lazy" decoding="async"></div>
           <div class="together__solo together__solo--bride" aria-hidden="true"><img src="assets/characters/bride.webp" data-art-src="art.bride" alt="" loading="lazy" decoding="async"></div>
           <div class="together__medallion">
-            <figure class="together__portrait" data-fallback-initial="couple">
+            <figure class="together__portrait" data-figure="couple" data-fallback-initial="couple">
               <img src="assets/characters/couple.webp" data-art-src="art.couple" width="813" height="966" loading="lazy" decoding="async"
                    alt="Illustration of Kenvi and Puru together, smiling at each other">
             </figure>
             <img class="together__ring" src="assets/florals/floral-ring.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
           </div>
+          <div class="troupe" data-troupe="together" aria-hidden="true"></div>
         </div>
 
         <div class="scene__content together__text">
           <p class="together__before" data-bind="text.togetherBefore">Two paths through the same garden…</p>
           <h2 class="together__after" id="together-title">
-            <span class="together__line" data-bind="text.togetherAfter.0">Two hearts.</span>
-            <span class="together__line" data-bind="text.togetherAfter.1">One beautiful story.</span>
+            <span class="together__line together__line--name" data-bind="bride.name">Kenvi Dwivedi</span>
+            <span class="together__line together__line--amp" aria-hidden="true">&amp;</span><span class="sr-only">and</span>
+            <span class="together__line together__line--name" data-bind="groom.name">Puru Tyagi</span>
           </h2>
-          <p class="together__caption" data-bind="text.togetherCaption">And a celebration to begin the next chapter.</p>
+          <p class="together__caption" data-bind="text.togetherCaption">Together, let us celebrate a beautiful new chapter.</p>
         </div>
       </div>
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
-    <!-- ============ 5 · THE INVITATION CARD ============ -->
+    <!-- ============ 5 · THE INVITATION ============ -->
     <section class="scene scene--invitation" id="invitation" data-scene="invitation" data-time="3.45" aria-labelledby="card-title">
       <div class="scene__art" data-art="invitation" aria-hidden="true">
         <img class="layer" data-depth="0.5" src="assets/scenery/evening-far.webp" alt="" loading="lazy" decoding="async">
         <img class="layer" data-depth="0" src="assets/scenery/evening-garden.webp" alt="" loading="lazy" decoding="async">
       </div>
       <div class="scene__content">
-        <article class="card" data-reveal="unfold">
-          <img class="card__corner card__corner--tl" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="card__corner card__corner--br" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <div class="card__inner">
-            <p class="card__kicker" data-bind="text.cardKicker">With great joy, we invite you to the</p>
-            <h2 class="card__event" id="card-title" data-bind="event.title">Wedding Reception</h2>
-            <p class="card__of" data-bind="text.cardOf">of</p>
-            <p class="card__names">
-              <span class="card__name" data-bind="bride.name">Kenvi Dwivedi</span>
-              <span class="card__amp" aria-hidden="true">&amp;</span><span class="sr-only">and</span>
-              <span class="card__name" data-bind="groom.name">Puru Tyagi</span>
-            </p>
-            <span class="ornament" aria-hidden="true"></span>
-            <dl class="card__details">
-              <div class="card__row">
-                <dt>Date</dt>
-                <dd><time class="card__date" datetime="2026-11-28" data-bind="derived.dateLong" data-bind-datetime="event.date">Saturday, 28 November 2026</time></dd>
-              </div>
-              <div class="card__row" data-optional="event.time" hidden>
-                <dt>Time</dt>
-                <dd data-bind="event.time"></dd>
-              </div>
-              <div class="card__row">
-                <dt>Venue</dt>
-                <dd>
-                  <strong class="card__venue" data-bind="venue.name">Hotel Royal Residency</strong>
-                  <address class="card__address" data-bind-lines="venue.addressLines">Ambala Road, Opp. Kalpana Cinema,<br>Purani Mandi, Saharanpur,<br>Uttar Pradesh 247001, India</address>
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </article>
+        <div class="scrollcard" id="scrollcard" data-state="open">
+          <span class="scrollcard__stand" aria-hidden="true"></span>
+          <article class="card">
+            <svg class="card__goldline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect x="0.800" y="0.600" width="98.400" height="98.800" rx="1.600" pathLength="1" vector-effect="non-scaling-stroke"/></svg>
+            <img class="card__corner card__corner--tl" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="card__corner card__corner--br" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <div class="card__inner">
+              <svg class="card__lotus" viewBox="0 0 120 72" aria-hidden="true" focusable="false"><use href="#lotus"/></svg>
+              <p class="card__kicker" data-bind="text.cardKicker">With great joy, we invite you to the</p>
+              <h2 class="card__event" id="card-title" data-bind="event.title">Wedding Reception</h2>
+              <p class="card__of" data-bind="text.cardOf">of</p>
+              <p class="card__names">
+                <span class="card__name" data-bind="bride.name">Kenvi Dwivedi</span>
+                <span class="card__amp" aria-hidden="true">&amp;</span><span class="sr-only">and</span>
+                <span class="card__name" data-bind="groom.name">Puru Tyagi</span>
+              </p>
+              <span class="ornament" aria-hidden="true"></span>
+              <dl class="card__details">
+                <div class="card__row">
+                  <dt>Date</dt>
+                  <dd><time class="card__date" datetime="2026-11-28" data-bind="derived.dateLong" data-bind-datetime="event.date">Saturday, 28 November 2026</time></dd>
+                </div>
+                <div class="card__row" data-optional="event.time" hidden>
+                  <dt>Time</dt>
+                  <dd data-bind="event.time"></dd>
+                </div>
+                <div class="card__row">
+                  <dt>Venue</dt>
+                  <dd>
+                    <strong class="card__venue" data-bind="venue.name">Hotel Royal Residency</strong>
+                    <address class="card__address" data-bind-lines="venue.addressLines">Ambala Road, Opp. Kalpana Cinema,<br>Purani Mandi, Saharanpur,<br>Uttar Pradesh 247001, India</address>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </article>
+          <span class="scrollcard__roll" aria-hidden="true">
+            <svg class="scrollcard__ribbon" viewBox="0 0 120 90" focusable="false">
+              <path class="ribbon__tail ribbon__tail--l" d="M56 44C44 58 40 72 36 88l14-8 6 10c2-16 4-30 6-44z" fill="#96283f"/>
+              <path class="ribbon__tail ribbon__tail--r" d="M64 44c12 14 16 28 20 44l-14-8-6 10c-2-16-4-30-6-44z" fill="#96283f"/>
+              <path class="ribbon__loop ribbon__loop--l" d="M58 40C36 14 8 18 10 38c2 16 30 14 48 2z" fill="#b3202f"/>
+              <path class="ribbon__loop ribbon__loop--r" d="M62 40c22-26 50-22 48-2-2 16-30 14-48 2z" fill="#b3202f"/>
+              <circle class="ribbon__knot" cx="60" cy="40" r="10" fill="#7b1e36"/><circle class="ribbon__knot" cx="57" cy="37" r="3" fill="#d76a80"/>
+            </svg>
+          </span>
+          <span class="scrollcard__rod" aria-hidden="true"></span>
+          <button type="button" class="scrollcard__open" id="scroll-open"><span class="tap-ring" aria-hidden="true"></span><span class="scrollcard__hint" data-bind="text.cardHint">Tap the invitation to open it</span></button>
+        </div>
       </div>
+      <div class="troupe" data-troupe="invitation" aria-hidden="true"></div>
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
@@ -302,15 +473,16 @@
     <section class="scene scene--venue" id="venue" data-scene="venue" data-time="3.75" aria-labelledby="venue-title">
       <div class="scene__art" data-art="venue" aria-hidden="true">
         <img class="layer" data-depth="0.5" src="assets/scenery/evening-far.webp" alt="" loading="lazy" decoding="async">
-        <img class="layer" data-depth="0" src="assets/scenery/evening-garden.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/hotel-front.webp" alt="" loading="lazy" decoding="async">
       </div>
+      <div class="troupe" data-troupe="venue"></div>
       <div class="scene__content venue">
         <p class="kicker" data-reveal data-bind="text.venueKicker">Venue &amp; directions</p>
         <h2 class="title-script" id="venue-title" data-reveal="write" data-bind="text.venueTitle">Find your way to us</h2>
 
         <div class="venue__panel" data-reveal>
           <div class="venue__map" aria-hidden="true">
-            <svg viewBox="0 0 360 250" focusable="false">
+            <svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMid slice" focusable="false">
               <defs>
                 <linearGradient id="map-paper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdf6e4"/><stop offset="1" stop-color="#f4e6c6"/></linearGradient>
                 <path id="map-road" d="M-10 168 C80 150 150 142 200 128 S310 96 372 84"/>
@@ -329,13 +501,11 @@
               <text class="map__road" dy="4"><textPath href="#map-road" startOffset="9%" data-bind="venue.sketchRoad">Ambala Road</textPath></text>
               <g fill="#7fb072"><circle cx="46" cy="126" r="9"/><circle cx="62" cy="120" r="7"/><circle cx="318" cy="118" r="8"/><circle cx="302" cy="126" r="6"/><circle cx="170" cy="96" r="7"/><circle cx="96" cy="188" r="7"/></g>
               <g fill="#5f9460"><circle cx="50" cy="122" r="5"/><circle cx="314" cy="114" r="5"/></g>
-              <!-- the landmark across the road -->
               <g data-optional="venue.sketchLandmark">
                 <rect x="186" y="150" width="56" height="34" rx="3" fill="#cbb7d6"/><rect x="186" y="150" width="56" height="9" fill="#8f77a8"/>
                 <circle cx="204" cy="171" r="7" fill="none" stroke="#6f5a8c" stroke-width="2"/><circle cx="204" cy="171" r="2" fill="#6f5a8c"/><rect x="216" y="166" width="20" height="12" rx="2" fill="#f8efe0"/>
                 <text class="map__label" x="214" y="200" text-anchor="middle" data-bind="venue.sketchLandmark">Kalpana Cinema</text>
               </g>
-              <!-- the venue -->
               <g>
                 <path d="M198 96 h76 v-34 h-76z" fill="#fdf1e2"/><path d="M192 64 h88 l-8 -14 h-72z" fill="#7b1e36"/>
                 <path d="M228 96 v-18 a8 8 0 0 1 16 0 v18z" fill="#b9825f"/>
@@ -369,45 +539,53 @@
             <p class="venue__status" id="copy-status" role="status" aria-live="polite"></p>
           </div>
         </div>
+        <p class="venue__note" data-reveal data-bind="text.venueNote">The garden scene is an artist’s impression, not a picture of the hotel.</p>
       </div>
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
-    <!-- ============ 7 · SAVE THE DATE ============ -->
+    <!-- ============ 7 · UNTIL THEN: SAVE THE DATE ============ -->
     <section class="scene scene--finale" id="save-the-date" data-scene="finale" data-time="4" aria-labelledby="finale-title">
       <div class="scene__art" data-art="finale" aria-hidden="true">
         <img class="layer" data-depth="0.5" src="assets/scenery/night-far.webp" alt="" loading="lazy" decoding="async">
         <img class="layer" data-depth="0" src="assets/scenery/night-garden.webp" alt="" loading="lazy" decoding="async">
       </div>
-      <div class="skylanterns" aria-hidden="true">
+      <div class="skylanterns is-looping" aria-hidden="true">
         <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       </div>
       <div class="scene__cast">
         <img class="finale__stage" src="assets/florals/reception-stage.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <svg class="ladder" viewBox="0 0 60 300" aria-hidden="true" focusable="false">
+          <path d="M8 298L20 2M52 298L40 2" stroke="url(#wood)" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <g stroke="#9a6a34" stroke-width="5" stroke-linecap="round"><path d="M10 262h40"/><path d="M12 222h36"/><path d="M13.500 182h33"/><path d="M15 142h30"/><path d="M16.500 102h27"/><path d="M18 62h24"/><path d="M19.500 26h21"/></g>
+          <g fill="#ffb238"><circle cx="9" cy="270" r="5"/><circle cx="51" cy="270" r="5"/><circle cx="14" cy="150" r="4.500"/><circle cx="46" cy="150" r="4.500"/><circle cx="19" cy="34" r="4"/><circle cx="41" cy="34" r="4"/></g>
+        </svg>
+        <span class="finale__crown" aria-hidden="true"><svg viewBox="0 0 120 72" focusable="false"><use href="#lotus"/></svg></span>
         <figure class="finale__pair" data-reveal="rise">
           <img class="finale__groom" src="assets/characters/groom.webp" data-art-src="art.groom" alt="" loading="lazy" decoding="async">
           <img class="finale__bride" src="assets/characters/bride.webp" data-art-src="art.bride" loading="lazy" decoding="async"
                alt="Kenvi and Puru standing together before a flower-covered stage glowing with lights">
         </figure>
         <span class="rosebed" aria-hidden="true"></span>
+        <div class="troupe troupe--cast" data-troupe="finale" aria-hidden="true"></div>
       </div>
       <div class="scene__content finale">
         <p class="kicker" data-reveal data-bind="text.finaleKicker">Save the date</p>
-        <h2 class="finale__date" id="finale-title" data-reveal><time datetime="2026-11-28" data-bind="derived.dateNumeric" data-bind-datetime="event.date">28 · 11 · 2026</time></h2>
+        <h2 class="finale__date" id="finale-title" data-reveal><time datetime="2026-11-28" data-bind="derived.dateLong" data-bind-datetime="event.date">Saturday, 28 November 2026</time></h2>
         <p class="finale__line" data-reveal>
-          <span data-bind="derived.dateLong">Saturday, 28 November 2026</span>
+          <span data-bind="event.title">Wedding Reception</span>
           <span class="finale__dot" aria-hidden="true"></span>
           <span data-bind="derived.venueShort">Hotel Royal Residency, Saharanpur</span>
         </p>
         <div class="actions actions--center" data-reveal>
           <a class="btn btn--primary" id="calendar-link" href="assets/calendar/reception.ics" download="Kenvi-Puru-Wedding-Reception.ics" type="text/calendar">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5.500" width="16" height="14.500" rx="2.500" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 15l2.200 2.200L15.200 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Add to calendar<span class="sr-only"> (downloads a calendar file)</span>
+            Download calendar event
           </a>
-          <a class="btn js-directions" target="_blank" rel="noopener noreferrer"
+          <a class="btn js-directions" id="finale-directions" target="_blank" rel="noopener noreferrer"
              href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel%20Royal%20Residency%2C%20Ambala%20Road%2C%20Opp.%20Kalpana%20Cinema%2C%20Purani%20Mandi%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.800 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></svg>
-            Directions<span class="sr-only"> in Google Maps (opens in a new tab)</span>
+            Open Google Maps<span class="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
         <p class="finale__more" data-reveal>
@@ -418,7 +596,7 @@
         <p class="finale__again" data-reveal>
           <button type="button" class="btn btn--ghost" id="revisit">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3.6 3.8v4.4h4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Revisit the invitation
+            Replay invitation
           </button>
         </p>
       </div>
@@ -439,10 +617,16 @@
   <script src="src/sky.js"></script>
   <script src="src/particles.js"></script>
   <script src="src/audio.js"></script>
+  <script src="src/sfx.js"></script>
   <script src="src/scroll.js"></script>
+  <script src="src/helpers.js"></script>
+  <script src="src/hero.js"></script>
   <script src="src/envelope.js"></script>
+  <script src="src/entrances.js"></script>
   <script src="src/together.js"></script>
+  <script src="src/scrollcard.js"></script>
   <script src="src/venue.js"></script>
+  <script src="src/finale.js"></script>
   <script src="src/nav.js"></script>
   <script src="src/main.js"></script>
 </body>

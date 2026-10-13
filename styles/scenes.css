@@ -223,14 +223,14 @@ main { position: relative; }
 /* ============================================================================
    Per-chapter light: text colour, mist colour, which slice of the painting to show
    ============================================================================ */
-.scene--opening { --mist: #fff4dc; --pin-h: 165svh; }
-.scene--groom { --focus: 0.235; --mist: #ffdcbe; --fallback-far: #e6c58a; --fallback-mid: #b9b45c; --fallback-near: #8a9a48; }
+.scene--opening { --mist: #ffe9c9; --pin-h: 165svh; }
+.scene--groom { --focus: 0.235; --mist: #b58cc0; --ink-here: var(--cream); --halo: rgba(52, 28, 78, 0.6); --fallback-far: #e6c58a; --fallback-mid: #b9b45c; --fallback-near: #8a9a48; }
 .scene--bride .intro { text-shadow: 0 1px 2px rgba(45, 22, 70, 0.75), 0 0 12px rgba(45, 22, 70, 0.6), 0 0 34px rgba(45, 22, 70, 0.55); }
-.scene--bride { --focus: 0.765; --mist: #c9a6d4; --ink-here: var(--cream); --halo: rgba(52, 28, 78, 0.6); --fallback-far: #b9a0d0; --fallback-mid: #6f9a90; --fallback-near: #dcc6da; }
+.scene--bride { --focus: 0.765; --mist: #f3b6a6; --ink-here: var(--cream); --halo: rgba(52, 28, 78, 0.6); --fallback-far: #b9a0d0; --fallback-mid: #6f9a90; --fallback-near: #dcc6da; }
 .scene--together { --mist: #4b4f9a; --ink-here: var(--cream); --halo: rgba(12, 16, 60, 0.75); --pin-h: 330svh; --fallback-far: #4a4c98; --fallback-mid: #24485f; --fallback-near: #16304d; }
 .scene--invitation { --mist: #2f3478; --ink-here: var(--cream); --fallback-far: #34407f; --fallback-mid: #193853; --fallback-near: #0e1e38; }
 .scene--venue { --focus: 0.5; --mist: #1c2060; --ink-here: var(--cream); --halo: rgba(8, 12, 48, 0.8); --fallback-far: #2c3477; --fallback-mid: #193853; --fallback-near: #0e1e38; }
-.scene--venue .layer { scale: -1 1; }  /* the same garden, seen from the other side */
+/* (the venue has its own painted forecourt now, so nothing is mirrored) */
 .scene--bride .branch { top: 0; }
 .scene--finale { --ink-here: var(--cream); --halo: rgba(5, 8, 38, 0.85); --fallback-far: #1e2460; --fallback-mid: #142d4a; --fallback-near: #0a1630; }
 

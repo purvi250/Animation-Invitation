@@ -14,9 +14,13 @@
     ['particles', () => Invite.particles.init()],
     ['audio', () => Invite.audio.init()],
     ['scroll', () => Invite.scroll.init()],
+    ['hero', () => Invite.hero.init()],
     ['envelope', () => Invite.envelope.init()],
+    ['entrances', () => Invite.entrances.init()],
     ['together', () => Invite.together.init()],
+    ['scrollcard', () => Invite.scrollcard.init()],
     ['venue', () => Invite.venue.init()],
+    ['finale', () => Invite.finale.init()],
     ['nav', () => Invite.nav.init()],
   ];
 

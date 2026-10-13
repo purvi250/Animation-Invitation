@@ -30,6 +30,9 @@
     weekday: part({ weekday: 'long' }),
     dateLong: date ? `${part({ weekday: 'long' })}, ${date.getUTCDate()} ${part({ month: 'long' })} ${date.getUTCFullYear()}` : '',
     dateNumeric: date ? `${pad(date.getUTCDate())} · ${pad(date.getUTCMonth() + 1)} · ${date.getUTCFullYear()}` : '',
+    // the two halves of the long date, for the date panel at the gate
+    weekdayComma: date ? `${part({ weekday: 'long' })},` : '',
+    dateDayMonthYear: date ? `${date.getUTCDate()} ${part({ month: 'long' })} ${date.getUTCFullYear()}` : '',
     dateCompact: date ? `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}` : '',
     coupleShort: `${bride.short || bride.name || ''} & ${groom.short || groom.name || ''}`,
     coupleFull: `${bride.name || ''} & ${groom.name || ''}`,
@@ -49,6 +52,16 @@
 
   /* ---------- write the words into the page ---------- */
   Invite.bindContent = (scope = document) => {
+    // which opening to show: the rope-and-banner hero (default) or the classic envelope
+    let mode = cfg.opening === 'envelope' ? 'envelope' : 'rope';
+    try {
+      const asked = new URLSearchParams(location.search).get('opening');
+      if (asked === 'envelope' || asked === 'rope') mode = asked;
+    } catch (e) { /* keep the configured one */ }
+    Invite.openingMode = mode;
+    const opening = document.getElementById('opening');
+    if (opening) opening.setAttribute('data-opening', mode);
+
     scope.querySelectorAll('[data-bind]').forEach((el) => {
       const value = lookup(el.getAttribute('data-bind'));
       if (value !== undefined && value !== null && value !== '') el.textContent = value;

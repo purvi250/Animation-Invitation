@@ -1,0 +1,175 @@
+/* ============================================================================
+   HELPERS — how the little characters move.
+   Each helper is an SVG rig (see src/helpers.js): .h-leg--a/b, .h-arm--a/b,
+   .h-upper (torso + head), .h-head and .h-fig (the whole body) are separate
+   groups, each turning about its own joint. A helper's data-state picks the
+   action; every action below is real limb movement, not a sliding picture.
+   Lengths inside the rig are in its own drawing units (the SVG is 100 wide).
+   ============================================================================ */
+
+.troupe { position: absolute; inset: 0; pointer-events: none; }
+
+.helper {
+  --stride: 0.4s;                       /* time for one full step cycle */
+  position: absolute;
+  left: calc(var(--x, 50) * 1%); bottom: calc(var(--y, 0) * 1%);
+  width: var(--helper-w, 92px); aspect-ratio: 100 / 154;
+  z-index: var(--z, 2);
+  translate: -50% 0;
+  transform: scale(var(--s, 1)); transform-origin: 50% 100%;
+  will-change: left, bottom;
+}
+.helper__flip { display: block; width: 100%; height: 100%; }
+.helper[data-facing='left'] .helper__flip { transform: scaleX(-1); }
+.helper svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* joints */
+.h-fig { transform-origin: 50px 122px; }
+.h-upper { transform-origin: 50px 104px; }
+.h-head { transform-origin: 50px 66px; }
+.h-leg--a { transform-origin: 56px 97px; }
+.h-leg--b { transform-origin: 44px 97px; }
+.h-arm--a { transform-origin: 57px 76px; }
+.h-arm--b { transform-origin: 43px 76px; }
+.h-flag { transform-origin: 78px 33px; animation: h-flutter 0.7s ease-in-out infinite; }
+
+.h-shadow { fill: rgba(20, 16, 30, 0.26); transform-origin: 50px 124px; }
+.h-eyes { fill: #2b1e1c; transform-origin: 60px 44px; animation: h-blink 4.2s infinite; }
+.h-eyes-happy { display: none; fill: none; stroke: #2b1e1c; stroke-width: 2.2; stroke-linecap: round; }
+.h-mouth { fill: none; stroke: #7a3b2e; stroke-width: 2; stroke-linecap: round; }
+.h-mouth-open { display: none; fill: #8a2f3a; }
+.helper--chameli .h-eyes { animation-delay: -1.3s; }
+.helper--mor .h-eyes { animation-delay: -2.6s; }
+
+@keyframes h-blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+@keyframes h-flutter { 0%, 100% { transform: skewY(-6deg) scaleX(1); } 50% { transform: skewY(7deg) scaleX(0.9); } }
+
+/* ---------- standing ---------- */
+.helper[data-state='idle'] .h-upper, .helper[data-state='hold'] .h-upper { animation: h-breathe 2.8s ease-in-out infinite; }
+@keyframes h-breathe { 0%, 100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-0.8px) scaleY(1.025); } }
+
+/* arms held forward around whatever is being carried */
+.helper[data-state='hold'] .h-arm--a, .helper[data-state='carry'] .h-arm--a { transform: rotate(-78deg); }
+.helper[data-state='hold'] .h-arm--b, .helper[data-state='carry'] .h-arm--b { transform: rotate(-66deg); }
+
+/* ---------- running: legs alternate, arms swing against them, the body bounces twice a stride ---------- */
+.helper[data-state='run'] .h-fig, .helper[data-state='carry'] .h-fig { transform: rotate(6deg); }
+.helper[data-state='run'] .h-leg--a, .helper[data-state='carry'] .h-leg--a { animation: h-step-a var(--stride) linear infinite; }
+.helper[data-state='run'] .h-leg--b, .helper[data-state='carry'] .h-leg--b { animation: h-step-b var(--stride) linear infinite; }
+.helper[data-state='run'] .h-arm--a { animation: h-step-b var(--stride) linear infinite; }
+.helper[data-state='run'] .h-arm--b { animation: h-step-a var(--stride) linear infinite; }
+.helper[data-state='run'] .h-upper, .helper[data-state='carry'] .h-upper { animation: h-bounce calc(var(--stride) / 2) ease-in-out infinite; }
+.helper[data-state='run'] .h-shadow, .helper[data-state='carry'] .h-shadow { animation: h-shadow calc(var(--stride) / 2) ease-in-out infinite; }
+@keyframes h-step-a {
+  0% { transform: rotate(-40deg) translateY(-2px); } 25% { transform: rotate(-4deg); }
+  50% { transform: rotate(36deg); } 75% { transform: rotate(8deg) translateY(-6px); } 100% { transform: rotate(-40deg) translateY(-2px); }
+}
+@keyframes h-step-b {
+  0% { transform: rotate(36deg); } 25% { transform: rotate(8deg) translateY(-6px); }
+  50% { transform: rotate(-40deg) translateY(-2px); } 75% { transform: rotate(-4deg); } 100% { transform: rotate(36deg); }
+}
+@keyframes h-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes h-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.84); opacity: 0.7; } }
+
+/* ---------- taking hold of the rope: both hands out, weight back, feet planted ---------- */
+.helper[data-state='grab'] .h-fig { transform: rotate(-12deg); animation: h-brace 1.5s ease-in-out infinite; }
+.helper[data-state='grab'] .h-arm--a, .helper[data-state='pull'] .h-arm--a { transform: rotate(-74deg); }
+.helper[data-state='grab'] .h-arm--b, .helper[data-state='pull'] .h-arm--b { transform: rotate(-66deg); }
+.helper[data-state='grab'] .h-leg--a { transform: rotate(-30deg); }
+.helper[data-state='grab'] .h-leg--b { transform: rotate(-6deg); }
+@keyframes h-brace { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(-16deg); } }
+
+/* ---------- pulling: leaning hard, stepping backwards one foot after the other, heaving in rhythm ---------- */
+.helper[data-state='pull'] .h-fig { animation: h-heave var(--stride) ease-in-out infinite; }
+.helper[data-state='pull'] .h-leg--a { animation: h-tug-a var(--stride) linear infinite; }
+.helper[data-state='pull'] .h-leg--b { animation: h-tug-b var(--stride) linear infinite; }
+.helper[data-state='pull'] .h-arm--a { animation: h-haul-a var(--stride) ease-in-out infinite; }
+.helper[data-state='pull'] .h-arm--b { animation: h-haul-b var(--stride) ease-in-out infinite; }
+.helper[data-state='pull'] .h-head { animation: h-strain var(--stride) ease-in-out infinite; }
+@keyframes h-heave { 0%, 100% { transform: rotate(-22deg) translateY(0); } 50% { transform: rotate(-28deg) translateY(-3px); } }
+@keyframes h-tug-a { 0% { transform: rotate(-46deg); } 50% { transform: rotate(-8deg) translateY(-4px); } 100% { transform: rotate(-46deg); } }
+@keyframes h-tug-b { 0% { transform: rotate(-8deg) translateY(-4px); } 50% { transform: rotate(-46deg); } 100% { transform: rotate(-8deg) translateY(-4px); } }
+@keyframes h-haul-a { 0%, 100% { transform: rotate(-70deg); } 50% { transform: rotate(-84deg); } }
+@keyframes h-haul-b { 0%, 100% { transform: rotate(-80deg); } 50% { transform: rotate(-64deg); } }
+@keyframes h-strain { 0%, 100% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } }
+
+/* ---------- flop! sitting on the ground with legs out, laughing ---------- */
+.helper[data-state='sit'] .h-fig { animation: h-flop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+.helper[data-state='sit'] .h-leg--a { transform: rotate(-84deg); }
+.helper[data-state='sit'] .h-leg--b { transform: rotate(-70deg); }
+.helper[data-state='sit'] .h-arm--a { transform: rotate(38deg); }
+.helper[data-state='sit'] .h-arm--b { transform: rotate(22deg); }
+.helper[data-state='sit'] .h-head { animation: h-wobble 0.9s ease-in-out infinite; }
+@keyframes h-flop { 0% { transform: translateY(-6px) rotate(-26deg); } 100% { transform: translateY(17px) rotate(-7deg); } }
+@keyframes h-wobble { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+
+/* ---------- hooray: both arms up, jumping ---------- */
+.helper[data-state='cheer'] .h-fig { animation: h-jump 0.56s cubic-bezier(0.3, 0, 0.4, 1) infinite; }
+.helper[data-state='cheer'] .h-arm--a { animation: h-hooray-a 0.56s ease-in-out infinite; }
+.helper[data-state='cheer'] .h-arm--b { animation: h-hooray-b 0.56s ease-in-out infinite; }
+.helper[data-state='cheer'] .h-leg--a { animation: h-tuck-a 0.56s ease-in-out infinite; }
+.helper[data-state='cheer'] .h-leg--b { animation: h-tuck-b 0.56s ease-in-out infinite; }
+.helper[data-state='cheer'] .h-shadow { animation: h-shadow 0.56s ease-in-out infinite; }
+@keyframes h-jump { 0%, 100% { transform: translateY(0) scaleY(0.95); } 45% { transform: translateY(-15px) scaleY(1.04); } }
+@keyframes h-hooray-a { 0%, 100% { transform: rotate(-118deg); } 45% { transform: rotate(-142deg); } }
+@keyframes h-hooray-b { 0%, 100% { transform: rotate(118deg); } 45% { transform: rotate(142deg); } }
+@keyframes h-tuck-a { 0%, 100% { transform: rotate(0deg); } 45% { transform: rotate(-24deg); } }
+@keyframes h-tuck-b { 0%, 100% { transform: rotate(0deg); } 45% { transform: rotate(22deg); } }
+
+/* ---------- waving ---------- */
+.helper[data-state='wave'] .h-arm--a { animation: h-wave 0.46s ease-in-out infinite alternate; }
+.helper[data-state='wave'] .h-upper { animation: h-sway 0.92s ease-in-out infinite; }
+@keyframes h-wave { from { transform: rotate(-136deg); } to { transform: rotate(-98deg); } }
+@keyframes h-sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg); } }
+
+/* ---------- pointing, looking up, a quick excited hop ---------- */
+.helper[data-state='point'] .h-arm--a { animation: h-point 0.7s ease-in-out infinite; }
+.helper[data-state='point'] .h-head { transform: rotate(-9deg); }
+@keyframes h-point { 0%, 100% { transform: rotate(-112deg); } 50% { transform: rotate(-122deg) translateX(1.5px); } }
+.helper[data-state='lookup'] .h-head { transform: rotate(-19deg); transition: transform 0.35s; }
+.helper[data-state='lookup'] .h-fig { transform: rotate(-4deg); }
+.helper[data-state='lookup'] .h-arm--a { transform: rotate(-150deg); }   /* shading the eyes */
+.helper[data-state='hop'] .h-fig { animation: h-jump 0.4s cubic-bezier(0.3, 0, 0.4, 1) infinite; }
+.helper[data-state='hop'] .h-arm--a { transform: rotate(-40deg); }
+.helper[data-state='hop'] .h-arm--b { transform: rotate(30deg); }
+
+/* ---------- climbing a ladder: hand over hand, foot after foot ---------- */
+.helper[data-state='climb'] .h-arm--a { animation: h-reach-a 0.6s ease-in-out infinite; }
+.helper[data-state='climb'] .h-arm--b { animation: h-reach-b 0.6s ease-in-out infinite; }
+.helper[data-state='climb'] .h-leg--a { animation: h-rung-a 0.6s ease-in-out infinite; }
+.helper[data-state='climb'] .h-leg--b { animation: h-rung-b 0.6s ease-in-out infinite; }
+.helper[data-state='climb'] .h-shadow { display: none; }
+@keyframes h-reach-a { 0%, 100% { transform: rotate(-118deg); } 50% { transform: rotate(-76deg); } }
+@keyframes h-reach-b { 0%, 100% { transform: rotate(-76deg); } 50% { transform: rotate(-118deg); } }
+@keyframes h-rung-a { 0%, 100% { transform: rotate(-50deg) translateY(-5px); } 50% { transform: rotate(-6deg); } }
+@keyframes h-rung-b { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(-50deg) translateY(-5px); } }
+
+/* reaching up to put something in place */
+.helper[data-state='place'] .h-arm--a { transform: rotate(-158deg) scaleY(1.9); }
+.helper[data-state='place'] .h-arm--b { transform: rotate(-96deg); }
+.helper[data-state='place'] .h-head { transform: rotate(-16deg); }
+.helper[data-state='place'] .h-shadow { display: none; }
+
+/* happy faces */
+.helper[data-state='cheer'] .h-eyes, .helper[data-state='sit'] .h-eyes, .helper[data-state='hop'] .h-eyes { display: none; }
+.helper[data-state='cheer'] .h-eyes-happy, .helper[data-state='sit'] .h-eyes-happy, .helper[data-state='hop'] .h-eyes-happy { display: block; }
+.helper[data-state='cheer'] .h-mouth, .helper[data-state='sit'] .h-mouth, .helper[data-state='wave'] .h-mouth, .helper[data-state='pull'] .h-mouth { display: none; }
+.helper[data-state='cheer'] .h-mouth-open, .helper[data-state='sit'] .h-mouth-open, .helper[data-state='wave'] .h-mouth-open, .helper[data-state='pull'] .h-mouth-open { display: block; }
+
+/* ---------- scrubbed by scrolling: the run cycle advances with the page, frame by frame ---------- */
+.helper.is-scrubbed .h-leg, .helper.is-scrubbed .h-arm, .helper.is-scrubbed .h-upper, .helper.is-scrubbed .h-shadow, .helper.is-scrubbed .h-fig {
+  animation-play-state: paused !important;
+  animation-delay: calc(var(--scrub, 0) * -1s) !important;
+}
+
+/* ---------- offstage chapters rest: nothing animates where nobody is looking ---------- */
+.scene:not(.is-live) .helper *, .scene:not(.is-live) .is-looping { animation-play-state: paused !important; }
+
+/* ---------- reduced motion: the helpers stand in a friendly pose, completely still ---------- */
+.reduce-motion .helper *, .reduce-motion .helper { animation: none !important; transition: none !important; }
+.reduce-motion .helper[data-state='cheer'] .h-arm--a, .reduce-motion .helper[data-state='wave'] .h-arm--a { transform: rotate(-128deg); }
+.reduce-motion .helper[data-state='cheer'] .h-arm--b { transform: rotate(128deg); }
+.reduce-motion .helper[data-state='point'] .h-arm--a { transform: rotate(-114deg); }
+.reduce-motion .helper[data-state='pull'] .h-fig { transform: rotate(-22deg); }
+.reduce-motion .helper[data-state='pull'] .h-leg--a { transform: rotate(-40deg); }
+.reduce-motion .helper[data-state='sit'] .h-fig { transform: translateY(17px) rotate(-7deg); }

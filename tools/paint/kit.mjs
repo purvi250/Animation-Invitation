@@ -136,7 +136,12 @@ export class Sheet {
   add(...parts) { this.body.push(parts.flat().join('')); return this; }
 
   /** Finished SVG. `grain` lays a faint paper/brush texture over the painted pixels only. */
-  render({ grain = true, scale = 1 } = {}) {
+  render({ grain = true, scale = 1, grade = '' } = {}) {
+    // an optional colour grade re-lights a finished painting (for example golden hour → sunset)
+    if (grade) {
+      this.defs.push(`<filter id="grade" x="0" y="0" width="${this.w}" height="${this.h}" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${grade}"/></filter>`);
+      this.body = [`<g filter="url(#grade)">${this.body.join('')}</g>`];
+    }
     const gid = 'grain';
     const grainDef = grain
       ? `<filter id="${gid}" x="0" y="0" width="${this.w}" height="${this.h}" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">`

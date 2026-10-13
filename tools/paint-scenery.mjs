@@ -37,7 +37,7 @@ const jobs = [];
 for (const layer of layers) {
   // clouds keep their own size; hazy far layers are baked smaller, nobody can tell
   const s = layer.name.startsWith('cloud') ? 1 : layer.name.endsWith('-far') ? scale * 0.8 : scale;
-  const svg = layer.sheet.render({ grain: layer.grain !== false, scale: s });
+  const svg = layer.sheet.render({ grain: layer.grain !== false, scale: s, grade: layer.grade || '' });
   await fs.writeFile(path.join(SVG_DIR, `${layer.name}.svg`), svg);
   jobs.push({ name: layer.name, svg, width: Math.round(layer.sheet.w * s), height: Math.round(layer.sheet.h * s) });
 }

@@ -1,0 +1,521 @@
+/* ============================================================================
+   STORY — the set pieces and interactions of the fairytale:
+     1  the garden gate, the banner, the rope and the date
+     2  name plaques, the bride's arch, curtain and bouquet
+     3  the groom's pillar, garland and greeting
+     4  mandap, diyas and names for the couple
+     5  the invitation scroll on its stand
+     6  the hotel forecourt and the helper's map marker
+     7  the ladder and the last flower
+   The helpers themselves live in helpers.css.
+
+   Rule of thumb used throughout: the resting (no-script / reduced-motion) state
+   shows everything; the hidden "before" states only exist while a chapter is
+   staged by its script (.is-staged), so nothing can ever be left invisible.
+   ============================================================================ */
+
+.sprite { position: absolute; }
+
+/* ---------- shared small things ---------- */
+.scene > .troupe {
+  top: auto; height: var(--art-h); z-index: 3;
+  --helper-w: clamp(62px, calc(var(--art-h) * 0.105), 104px);
+}
+.troupe--cast { --helper-w: calc(var(--art-h) * 0.085); z-index: 5; }
+
+.tap-ring {
+  position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-radius: 50%; border: 2px solid rgba(255, 246, 214, 0.95);
+  box-shadow: 0 0 0 2px rgba(123, 30, 54, 0.4);
+  animation: tap-ping 1.9s ease-out infinite; pointer-events: none;
+}
+@keyframes tap-ping { 0% { transform: scale(0.5); opacity: 0.95; } 80%, 100% { transform: scale(1.5); opacity: 0; } }
+
+.taphint {
+  margin-top: 8px; padding: 6px 16px; border-radius: 999px;
+  font-family: var(--font-caps); font-weight: 600; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  background: rgba(255, 250, 238, 0.86); color: var(--maroon-deep); text-shadow: none;
+  box-shadow: 0 4px 14px rgba(20, 8, 30, 0.2);
+}
+.no-js .taphint { display: none; }
+
+/* a clay lamp; its flame appears when .is-lit (or its chapter wakes) */
+.diya { display: block; }
+.diya svg { display: block; width: 100%; height: auto; }
+.diya__flame {
+  position: absolute; left: 50%; bottom: 66%; width: 32%; aspect-ratio: 1 / 1.75; translate: -50% 0;
+  border-radius: 50% 50% 50% 50% / 66% 66% 34% 34%;
+  background: radial-gradient(ellipse at 50% 72%, #fffbe6 0 20%, #ffd76a 44%, #ff9a3c 70%, rgba(255, 120, 40, 0) 100%);
+  box-shadow: 0 0 14px 6px rgba(255, 176, 80, 0.7), 0 0 38px 16px rgba(255, 150, 70, 0.3);
+  opacity: 1; transform-origin: 50% 100%;
+  transition: opacity 0.6s, transform 0.6s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.diya.is-lit .diya__flame, .is-awake .diya .diya__flame { animation: flicker 1.7s ease-in-out infinite alternate; }
+@keyframes flicker { 0% { transform: scale(1) rotate(-2deg); } 50% { transform: scale(1.1, 0.94) rotate(2deg); } 100% { transform: scale(0.95, 1.08) rotate(-1deg); } }
+
+/* ============================== 1 · THE GARDEN GATE ============================== */
+.scene--opening[data-opening='envelope'] .hero { display: none; }
+.scene--opening[data-opening='rope'] .opening { display: none; }
+
+.hero { position: absolute; inset: 0; z-index: 3; --gate: min(94vw, 64svh); --lift: 1; }
+.js:not(.reduce-motion) .hero { --lift: 0; }
+
+.hero__title {
+  position: absolute; left: 0; right: 0; top: calc(var(--header-h) + 1svh); padding: 0 26px;
+  text-align: center; color: var(--maroon-deep);
+  text-shadow: 0 0 12px rgba(255, 252, 240, 0.95), 0 0 26px rgba(255, 252, 240, 0.9);
+}
+.hero__kicker { font-size: clamp(0.6rem, 2.5vw, 0.82rem); letter-spacing: 0.24em; line-height: 1.5; }
+.hero__names { font-family: var(--font-script); font-weight: 400; font-size: clamp(3rem, min(15vw, 8.5svh), 5.4rem); line-height: 1.1; color: var(--maroon); padding: 0 0.2em; }
+.hero__names .amp { color: var(--gold); font-size: 0.8em; }
+
+.gate {
+  position: absolute; left: 50%; bottom: 9.5svh; width: var(--gate); aspect-ratio: 1200 / 1300; translate: -50% 0;
+  --helper-w: calc(var(--gate) * 0.165);
+}
+.gate__art { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; max-width: none; pointer-events: none; }
+.gate__toran { position: absolute; z-index: 5; left: 15.5%; top: 22%; width: 69%; max-width: none; pointer-events: none; }
+.gate__glow {
+  position: absolute; z-index: 0; left: 8%; right: 8%; top: 14%; bottom: 20%;
+  background: radial-gradient(ellipse at 50% 55%, rgba(255, 236, 170, 0.95) 0, rgba(255, 214, 130, 0.5) 34%, transparent 68%);
+  opacity: var(--lift); transform: scale(calc(0.7 + var(--lift) * 0.3));
+}
+
+/* the date, on an ivory panel edged in gold */
+.datepanel {
+  position: absolute; z-index: 1; left: 21%; right: 21%; top: 36.5%; height: 32%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 3% 2.5% 2.5%; text-align: center; color: var(--maroon);
+  border-radius: calc(var(--gate) * 0.022);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 34%), radial-gradient(circle at 24% 12%, #fffdf7, var(--paper) 56%, var(--paper-deep));
+  box-shadow:
+    inset 0 0 0 calc(var(--gate) * 0.008) var(--paper), inset 0 0 0 calc(var(--gate) * 0.012) rgba(183, 138, 60, 0.9),
+    inset 0 0 0 calc(var(--gate) * 0.02) var(--paper), inset 0 0 0 calc(var(--gate) * 0.022) rgba(183, 138, 60, 0.4),
+    0 calc(var(--gate) * 0.03) calc(var(--gate) * 0.06) rgba(60, 30, 20, 0.3);
+}
+.datepanel__lotus { width: 23%; margin-bottom: 1.5%; }
+.datepanel__kicker { font-family: var(--font-caps); font-weight: 600; font-size: calc(var(--gate) * 0.034); letter-spacing: 0.3em; padding-left: 0.3em; text-transform: uppercase; color: var(--gold-deep); }
+.datepanel__date { display: grid; font-family: var(--font-caps); font-weight: 600; text-transform: uppercase; line-height: 1.2; margin: 1% 0; }
+.datepanel__day { font-size: calc(var(--gate) * 0.041); letter-spacing: 0.2em; padding-left: 0.2em; }
+.datepanel__dm { font-size: calc(var(--gate) * 0.048); letter-spacing: 0.05em; white-space: nowrap; }
+.datepanel__event { font-style: italic; font-size: calc(var(--gate) * 0.036); line-height: 1.2; color: var(--ink-soft); }
+.datepanel__marigolds {
+  position: absolute; left: 6%; right: 6%; bottom: -4%; height: 9%;
+  background: radial-gradient(circle, #ffb238 0 34%, #e88a1c 36% 48%, transparent 50%) 0 50% / calc(var(--gate) * 0.036) 100% repeat-x;
+}
+/* a shimmer runs across the panel the moment it is uncovered */
+.datepanel::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(105deg, transparent 36%, rgba(255, 248, 214, 0.9) 50%, transparent 64%) -120% 0 / 220% 100% no-repeat;
+  opacity: 0;
+}
+.hero[data-state='revealed'] .datepanel::after, .hero[data-state='done'] .datepanel::after { animation: panel-shine 1.5s ease-out 0.1s 1; }
+@keyframes panel-shine { 0% { opacity: 1; background-position: -120% 0; } 100% { opacity: 0; background-position: 220% 0; } }
+
+/* the banner that hides it — raised by the rope */
+.banner { position: absolute; z-index: 2; left: 18.5%; right: 18.5%; top: 23%; height: 47.5%; overflow: hidden; pointer-events: none; }
+.banner__cloth {
+  position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 2%;
+  transform: translate3d(0, calc(var(--lift) * -104%), 0);
+  background:
+    radial-gradient(circle, rgba(201, 150, 46, 0.22) 0 1.6px, transparent 2.4px) 0 0 / 20px 20px,
+    radial-gradient(circle, rgba(201, 150, 46, 0.16) 0 1.2px, transparent 2px) 10px 10px / 20px 20px,
+    linear-gradient(180deg, #fffaf0, #f7e7c8 70%, #efd9ae);
+  box-shadow: inset 0 0 0 calc(var(--gate) * 0.012) #c9962e, inset 0 0 0 calc(var(--gate) * 0.018) #fff6e0, inset 0 0 0 calc(var(--gate) * 0.022) rgba(179, 32, 47, 0.75);
+  will-change: transform;
+}
+.banner__lotus { width: 30%; margin-top: 6%; }
+.banner__mono { font-family: var(--font-script); font-size: calc(var(--gate) * 0.13); line-height: 1; color: var(--maroon); }
+.banner__corner { position: absolute; width: 13%; color: #b78a3c; }
+.banner__corner--tl { left: 6%; top: 22%; }
+.banner__corner--tr { right: 6%; top: 22%; scale: -1 1; }
+.banner__corner--bl { left: 6%; bottom: 9%; scale: 1 -1; }
+.banner__corner--br { right: 6%; bottom: 9%; scale: -1 -1; }
+.banner__fringe {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 5%;
+  background: radial-gradient(circle at 50% 0, #c9962e 0 58%, transparent 60%) 0 0 / calc(var(--gate) * 0.03) 100% repeat-x;
+}
+
+.bell { position: absolute; z-index: 6; top: 27%; width: 5.6%; transform-origin: 50% 0; animation: bell-swing 3.4s ease-in-out infinite; }
+.bell svg { display: block; width: 100%; }
+.bell--l { left: 31%; }
+.bell--r { right: 31%; animation-delay: -1.7s; }
+.hero.is-ringing .bell { animation: bell-ring 0.46s ease-in-out infinite; }
+@keyframes bell-swing { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes bell-ring { 0%, 100% { transform: rotate(-17deg); } 50% { transform: rotate(17deg); } }
+
+.pulley {
+  position: absolute; z-index: 9; left: 19.8%; top: 71.5%; width: 4.6%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: radial-gradient(circle, #8f6218 0 18%, #e3b548 20% 52%, #8f6218 54% 62%, #f6d98a 64% 100%);
+  box-shadow: 0 2px 5px rgba(60, 30, 10, 0.5);
+  transform: rotate(calc(var(--lift) * -900deg));
+}
+
+/* rangoli, laid flat on the path in front of the gate; it draws itself as the garden wakes */
+.rangoli { position: absolute; z-index: 5; left: 27%; width: 46%; bottom: -6.5%; transform: scaleY(0.27); transform-origin: 50% 100%; overflow: visible; }
+.rangoli g, .rangoli circle { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.rangoli__heart { transform-origin: 100px 100px; }
+.js:not(.reduce-motion) .hero:not(.is-awake) .rangoli g, .js:not(.reduce-motion) .hero:not(.is-awake) .rangoli circle[pathLength] { stroke-dashoffset: 1; }
+.js:not(.reduce-motion) .hero:not(.is-awake) .rangoli__heart { transform: scale(0); }
+.rangoli g, .rangoli circle { transition: stroke-dashoffset 2.2s ease-in-out 1.6s, transform 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) 3.6s; }
+.rangoli g:nth-of-type(2) { transition-delay: 2.4s; }
+
+.gate .diya { position: absolute; z-index: 7; left: var(--dx); bottom: -4.5%; width: 6.6%; translate: -50% 0; }
+.js:not(.reduce-motion) .hero:not(.is-awake) .diya__flame { opacity: 0; transform: scale(0.2); }
+.hero .diya__flame { transition-delay: calc(var(--i, 0) * 0.3s + 0.5s); }
+
+.rope { position: absolute; z-index: 8; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.rope path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.rope__shade { stroke: rgba(60, 30, 10, 0.28); stroke-width: calc(var(--gate) * 0.014); transform: translate(1px, 3px); }
+.rope__line { stroke: #dba63c; stroke-width: calc(var(--gate) * 0.011); }
+.rope__twist { stroke: #8a5a1e; stroke-width: calc(var(--gate) * 0.011); stroke-dasharray: 2 9; }
+
+.pot {
+  position: absolute; z-index: 9; left: 78.5%; bottom: 2.2%; width: 13.5%; aspect-ratio: 100 / 112; translate: -50% 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 112'%3E%3Cg fill='%233f8a4a'%3E%3Ccircle cx='28' cy='34' r='20'/%3E%3Ccircle cx='52' cy='24' r='23'/%3E%3Ccircle cx='74' cy='36' r='19'/%3E%3C/g%3E%3Cg fill='%2362b05e'%3E%3Ccircle cx='24' cy='28' r='11'/%3E%3Ccircle cx='48' cy='17' r='13'/%3E%3Ccircle cx='70' cy='29' r='10'/%3E%3C/g%3E%3Cg fill='%23ffb238'%3E%3Ccircle cx='20' cy='38' r='7'/%3E%3Ccircle cx='40' cy='30' r='8'/%3E%3Ccircle cx='62' cy='22' r='7'/%3E%3Ccircle cx='80' cy='40' r='7'/%3E%3C/g%3E%3Cg fill='%23ff8f2e'%3E%3Ccircle cx='30' cy='22' r='6'/%3E%3Ccircle cx='54' cy='38' r='7'/%3E%3Ccircle cx='72' cy='26' r='5'/%3E%3C/g%3E%3Cpath d='M12 46h76l-9 62H21z' fill='%23b9623a'/%3E%3Cpath d='M12 46h76l-2 12H14z' fill='%23d98a52'/%3E%3Cpath d='M26 60l5 44' stroke='%23e9a878' stroke-width='5' stroke-linecap='round' opacity='.6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* helpers at the gate can be tapped */
+.gate .helper { pointer-events: auto; cursor: pointer; z-index: var(--z, 10); }
+
+.hero__actions { position: absolute; z-index: 12; left: 0; right: 0; bottom: max(2.2svh, env(safe-area-inset-bottom)); display: grid; place-items: center; }
+.hero__begin, .hero__follow { grid-area: 1 / 1; transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), visibility 0.5s; }
+.hero__begin { min-height: 52px; padding: 0.6em 1.7em; font-size: 0.88rem; }
+.hero[data-state='ready'] .hero__begin { animation: begin-glow 1.8s ease-in-out infinite; }
+@keyframes begin-glow { 0%, 100% { box-shadow: 0 6px 18px rgba(20, 8, 30, 0.25), 0 0 0 0 rgba(236, 200, 120, 0.9); } 50% { box-shadow: 0 6px 18px rgba(20, 8, 30, 0.25), 0 0 0 12px rgba(236, 200, 120, 0); } }
+.hero__follow {
+  display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  font-family: var(--font-caps); font-weight: 600; font-size: clamp(0.72rem, 2.9vw, 0.86rem); letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--maroon-deep); padding: 12px 22px; border-radius: 999px;
+  background: rgba(255, 250, 238, 0.9); box-shadow: 0 4px 16px rgba(40, 30, 40, 0.18);
+}
+.hero__follow svg { width: 18px; height: 18px; animation: nudge 1.8s ease-in-out infinite; }
+.js:not(.reduce-motion) .hero:not([data-state='done']) .hero__follow { opacity: 0; visibility: hidden; transform: translate3d(0, 10px, 0); pointer-events: none; }
+.hero[data-state='pulling'] .hero__begin, .hero[data-state='revealed'] .hero__begin, .hero[data-state='done'] .hero__begin { opacity: 0; visibility: hidden; transform: translate3d(0, -8px, 0); pointer-events: none; }
+.reduce-motion .hero__begin, .no-js .hero__begin { display: none; }
+
+/* butterflies over the garden */
+.butterfly { position: absolute; z-index: 2; left: 0; top: 0; width: clamp(16px, 2.4svh, 26px); aspect-ratio: 1.25; pointer-events: none; }
+.butterfly i { position: absolute; top: 0; left: 0; width: 50%; height: 100%; border-radius: 80% 20% 60% 40%; transform-origin: 100% 50%; background: radial-gradient(circle at 60% 40%, #fff3c4, #f6a53c 62%, #c9621a); animation: flap 0.26s ease-in-out infinite alternate; }
+.butterfly i:last-child { left: 50%; border-radius: 20% 80% 40% 60%; transform-origin: 0 50%; }
+.butterfly--2 i { background: radial-gradient(circle at 60% 40%, #fff, #f6a6c0 62%, #d0688c); }
+.butterfly--3 i { background: radial-gradient(circle at 60% 40%, #f3fff6, #7fd0c8 62%, #0f8b8d); }
+.butterfly--1 { animation: fly-1 24s linear infinite; }
+.butterfly--2 { animation: fly-2 31s linear -9s infinite; }
+.butterfly--3 { animation: fly-3 27s linear -17s infinite; }
+@keyframes flap { from { transform: scaleX(1); } to { transform: scaleX(0.18); } }
+@keyframes fly-1 { 0% { transform: translate(-6vw, 62svh); } 25% { transform: translate(24vw, 44svh); } 50% { transform: translate(52vw, 56svh); } 75% { transform: translate(80vw, 38svh); } 100% { transform: translate(108vw, 50svh); } }
+@keyframes fly-2 { 0% { transform: translate(108vw, 34svh); } 30% { transform: translate(70vw, 48svh); } 60% { transform: translate(36vw, 30svh); } 100% { transform: translate(-8vw, 46svh); } }
+@keyframes fly-3 { 0% { transform: translate(-6vw, 30svh); } 40% { transform: translate(40vw, 20svh); } 70% { transform: translate(74vw, 34svh); } 100% { transform: translate(108vw, 22svh); } }
+.reduce-motion .butterfly, .no-js .butterfly { display: none; }
+
+@media (min-width: 700px) and (min-aspect-ratio: 11/10) {
+  .hero { --gate: min(60vw, 66svh); }
+  .hero__title { top: calc(var(--header-h) - 34px); }
+  .hero__names { font-size: clamp(2.6rem, 8svh, 4.6rem); }
+}
+@media (max-height: 520px) {
+  .hero { --gate: min(60vw, 78svh); }
+  .hero__title { display: none; }
+  .gate { bottom: 13svh; }
+}
+
+/* ============================== 2 · NAME PLAQUES ============================== */
+.plaque {
+  position: relative; display: inline-grid; place-items: center;
+  margin: 26px 0 10px; padding: clamp(18px, 4vw, 26px) clamp(20px, 5.4vw, 44px) clamp(10px, 2.6vw, 16px);
+  border-radius: 12px; color: var(--maroon); text-shadow: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 40%), radial-gradient(circle at 22% 10%, #fffdf7, var(--paper) 56%, var(--paper-deep));
+  box-shadow:
+    inset 0 0 0 4px var(--paper), inset 0 0 0 5.5px rgba(183, 138, 60, 0.9), inset 0 0 0 9px var(--paper), inset 0 0 0 10px rgba(183, 138, 60, 0.4),
+    0 16px 36px rgba(20, 8, 30, 0.38);
+}
+.plaque__lotus { position: absolute; left: 50%; top: 0; width: clamp(54px, 14vw, 76px); translate: -50% -58%; filter: drop-shadow(0 3px 4px rgba(60, 20, 30, 0.3)); }
+.plaque__name {
+  font-family: var(--font-caps); font-weight: 600; font-size: clamp(1.3rem, 6.1vw, 2.4rem);
+  letter-spacing: 0.12em; padding-left: 0.12em; text-transform: uppercase; line-height: 1.2; white-space: nowrap;
+}
+.plaque::before, .plaque::after {
+  content: ''; position: absolute; top: 50%; width: 12px; height: 12px; margin-top: -2px; border-radius: 50%;
+  background: radial-gradient(circle, #ffd76a 0 30%, #ffb238 32% 62%, #e88a1c 64%);
+}
+.plaque::before { left: -6px; } .plaque::after { right: -6px; }
+
+/* unfolding from its centre */
+.js:not(.reduce-motion) .is-staged .plaque { -webkit-clip-path: inset(-90px 50% -90px 50%); clip-path: inset(-90px 50% -90px 50%); transition: clip-path 1.1s var(--ease-out), -webkit-clip-path 1.1s var(--ease-out); }
+.js:not(.reduce-motion) .is-staged.show-plaque .plaque { -webkit-clip-path: inset(-90px -90px -90px -90px); clip-path: inset(-90px -90px -90px -90px); }
+.js:not(.reduce-motion) .is-staged .intro .kicker, .js:not(.reduce-motion) .is-staged .caption, .js:not(.reduce-motion) .is-staged .taphint { opacity: 0; transform: translate3d(0, 14px, 0); transition: opacity 0.9s var(--ease), transform 1s var(--ease-out); }
+.js:not(.reduce-motion) .is-staged.show-kicker .intro .kicker, .js:not(.reduce-motion) .is-staged.show-caption .caption, .js:not(.reduce-motion) .is-staged.show-caption .taphint { opacity: 1; transform: none; }
+
+/* The words sit in a full-height column over the scene. The column itself must never swallow taps
+   meant for the bouquet or the groom underneath it — only the words themselves take the pointer. */
+.intro { pointer-events: none; }
+.intro > * { pointer-events: auto; }
+.scene--groom .intro, .scene--bride .intro { text-shadow: 0 1px 2px rgba(45, 22, 70, 0.75), 0 0 12px rgba(45, 22, 70, 0.6), 0 0 34px rgba(45, 22, 70, 0.55); }
+@media (min-width: 700px) and (min-aspect-ratio: 11/10) {
+  .intro .plaque { margin-left: 0.1em; }
+  .intro .taphint { align-self: flex-start; }
+}
+
+/* ============================== 2 · THE BRIDE ============================== */
+.set { position: absolute; width: auto; max-width: none; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+.set--arch { z-index: 2; left: 76.5%; bottom: 0; height: 80%; translate: -50% 0; }
+.figure--bride { z-index: 3; }
+
+.curtain {
+  position: absolute; z-index: 1; left: 76.5%; bottom: 11%; height: 54%; aspect-ratio: 380 / 1000;
+  background: url('../assets/scenery/curtain.webp') center / 100% 100% no-repeat;
+  transform-origin: 50% 0;
+  transition: transform 1.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+/* resting state: drawn back to either side */
+.curtain--l { translate: -100% 0; transform: translateX(-24%) rotate(2deg) scaleX(0.3); }
+.curtain--r { translate: 0 0; transform: translateX(24%) rotate(-2deg) scaleX(-0.3); }
+/* staged: closed until the helper's cue */
+.js:not(.reduce-motion) .is-staged:not(.curtain-open) .curtain--l { transform: translateX(3%); }
+.js:not(.reduce-motion) .is-staged:not(.curtain-open) .curtain--r { transform: translateX(-3%) scaleX(-1); }
+.is-staged .curtain { animation: curtain-sway 5s ease-in-out infinite; }
+@keyframes curtain-sway { 0%, 100% { rotate: -0.6deg; } 50% { rotate: 0.6deg; } }
+
+/* she waits behind the flowers, then steps through */
+.js:not(.reduce-motion) .is-staged .figure--bride { opacity: 0; z-index: 0; transform: translate3d(0, 2.5%, 0) scale(0.9); transform-origin: 60% 100%; transition: opacity 0.9s ease 0.25s, transform 2.2s cubic-bezier(0.3, 0.6, 0.2, 1) 0.2s; }
+.js:not(.reduce-motion) .is-staged.has-entered .figure--bride { opacity: 1; z-index: 3; transform: none; }
+/* a single illustration cannot move its legs, so a walk is a soft rise-and-fall of the whole figure */
+.figure.is-walking > img { animation: step-bob 0.56s ease-in-out infinite; }
+@keyframes step-bob { 0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.35deg); } 50% { transform: translate3d(0, -1.1%, 0) rotate(0.35deg); } }
+.figure > img { transform-origin: 50% 100%; }
+.scene.is-live .figure.has-arrived > img { animation: breathe 6.5s ease-in-out infinite; }
+
+/* jewellery catching the light */
+.sparkle {
+  position: absolute; left: var(--sx); top: var(--sy); width: 4.2%; aspect-ratio: 1; translate: -50% -50%; pointer-events: none;
+  background: radial-gradient(circle, #fff 0 16%, rgba(255, 236, 170, 0.9) 30%, rgba(255, 236, 170, 0) 70%);
+  -webkit-clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  opacity: 0; animation: twinkle 3.4s ease-in-out var(--sd, 0s) infinite;
+}
+@keyframes twinkle { 0%, 62%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); } 74% { opacity: 1; transform: scale(1.25) rotate(40deg); } 86% { opacity: 0; transform: scale(0.5) rotate(80deg); } }
+.is-staged:not(.has-entered) .sparkle, .reduce-motion .sparkle, .no-js .sparkle { animation: none; opacity: 0; }
+
+/* the bouquet she offers — a real button */
+.bouquet {
+  position: absolute; left: 7.5%; top: 26.5%; width: 24%; aspect-ratio: 120 / 150; padding: 0; border: 0; background: none;
+  cursor: pointer; pointer-events: auto; transform-origin: 55% 96%; -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 6px 8px rgba(40, 10, 30, 0.35));
+  transition: transform 0.7s cubic-bezier(0.3, 1.5, 0.5, 1), opacity 0.5s;
+}
+.bouquet svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.bouquet .tap-ring { top: 38%; }
+.bloom { transform-box: view-box; transform-origin: var(--bx) var(--by); transition: transform 0.6s cubic-bezier(0.3, 1.7, 0.5, 1); }
+.bloom--extra { transform: scale(0); }
+.bouquet.is-bloomed .bloom--extra { transform: scale(1); }
+.bouquet.is-bloomed .bloom:not(.bloom--extra) { transform: scale(1.14); }
+.bouquet.is-bloomed .bloom:nth-child(2n) { transition-delay: 0.08s; }
+.bouquet.is-bloomed .bloom:nth-child(3n) { transition-delay: 0.16s; }
+.bouquet.is-bloomed .tap-ring { display: none; }
+.js:not(.reduce-motion) .is-staged:not(.show-bouquet) .bouquet { opacity: 0; transform: scale(0.2) rotate(-30deg); pointer-events: none; }
+.js:not(.reduce-motion) .is-staged.show-bouquet .bouquet { animation: offer 3s ease-in-out 0.8s infinite; }
+@keyframes offer { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-7deg) scale(1.07) translate(-3%, -3%); } }
+
+/* petals the helper scatters stay where they land */
+.trail-petal {
+  position: absolute; left: var(--px); bottom: var(--py); width: calc(var(--helper-w) * 0.16); aspect-ratio: 1.7; border-radius: 60% 40% 60% 40%;
+  background: var(--pc, #f9c2d6); rotate: var(--pr, 20deg); pointer-events: none;
+  animation: petal-land 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+@keyframes petal-land { 0% { transform: translate3d(0, calc(var(--helper-w) * -0.9), 0) rotate(-120deg) scale(0.6); opacity: 0; } 30% { opacity: 1; } 100% { transform: none; opacity: 0.95; } }
+
+@media (max-aspect-ratio: 11/10) {
+  .set--arch { height: 78%; }
+}
+
+/* ============================== 3 · THE GROOM ============================== */
+.figure--groom { z-index: 3; left: calc(var(--fx) - (1 - var(--walk, 1)) * 8.1%); }
+.set--pillar { z-index: 4; left: 15.1%; bottom: 2.4%; height: 85%; translate: -50% 0; }
+.no-js .set--pillar { opacity: 0.96; }
+
+.figure__tap { position: absolute; inset: 0 6%; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 30% / 12%; -webkit-tap-highlight-color: transparent; }
+.figure__tap .tap-ring { top: 30%; left: 78%; }
+.js:not(.reduce-motion) .is-staged:not(.show-caption) .figure__tap .tap-ring { display: none; }
+.no-js .figure__tap, .reduce-motion .tap-ring, .no-js .tap-ring { display: none; }
+.figure.is-greeting > img { animation: greet 1s cubic-bezier(0.3, 0.2, 0.3, 1) 1; }
+@keyframes greet { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); } 22% { transform: translate3d(0, -2.2%, 0) rotate(1.6deg); } 46% { transform: translate3d(0, 0, 0) rotate(2.6deg); } 72% { transform: translate3d(0, -0.8%, 0) rotate(0.6deg); } }
+
+/* the welcome garland, once the helper has handed it over */
+.garland-worn { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; transform-origin: 56% 22%; transition: opacity 0.6s, transform 0.9s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.js:not(.reduce-motion) .is-staged:not(.has-garland) .garland-worn { opacity: 0; transform: translate3d(0, -5%, 0) scale(0.7); }
+.flying-garland { position: absolute; z-index: 6; width: calc(var(--helper-w) * 0.9); aspect-ratio: 1 / 1.1; left: var(--gx); bottom: var(--gy); translate: -50% 0; pointer-events: none; }
+.flying-garland svg { width: 100%; height: 100%; overflow: visible; }
+
+/* petals from above */
+.petalfall { position: absolute; inset: 0; z-index: 4; overflow: hidden; pointer-events: none; }
+.petalfall i {
+  position: absolute; top: -4%; left: var(--px); width: var(--ps, 12px); aspect-ratio: 1.6; border-radius: 60% 40% 60% 40%; background: var(--pc, #ffb238);
+  animation: petal-fall var(--pd, 4s) linear var(--pw, 0s) 1 both;
+}
+@keyframes petal-fall { 0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; } 8% { opacity: 1; } 100% { transform: translate3d(var(--pdx, 40px), 112svh, 0) rotate(540deg); opacity: 0.9; } }
+
+/* ============================== 4 · THE COUPLE ============================== */
+.together__mandap {
+  position: absolute; left: 50%; top: 42%; height: min(70svh, 150vw); width: auto; max-width: none; translate: -50% -50%;
+  opacity: var(--m, 1);
+  transform: translate3d(0, calc((1 - var(--m, 1)) * 5%), 0) scale(calc(0.93 + var(--m, 1) * 0.07));
+  will-change: transform, opacity; pointer-events: none;
+}
+.together__diyas { position: absolute; left: 50%; bottom: 21svh; width: min(92vw, 82svh); translate: -50% 0; display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none; }
+.together__diyas .diya { position: relative; width: 7.5%; }
+.together__diyas .diya:nth-child(1), .together__diyas .diya:nth-child(8) { translate: 0 -150%; }
+.together__diyas .diya:nth-child(2), .together__diyas .diya:nth-child(7) { translate: 0 -70%; }
+.together__diyas .diya:nth-child(3), .together__diyas .diya:nth-child(6) { translate: 0 -24%; }
+.js:not(.reduce-motion) .together__diyas .diya:not(.is-lit) .diya__flame { opacity: 0; transform: scale(0.2); }
+.together .troupe { --helper-w: clamp(54px, calc(var(--vh) * 10.5), 100px); }
+
+.together__after { margin-top: auto; display: grid; justify-items: center; gap: 0; font-weight: 400; }
+.together__line--name {
+  font-family: var(--font-caps); font-weight: 500; font-size: clamp(1.2rem, min(5.9vw, 3.6svh), 2.1rem);
+  letter-spacing: 0.16em; padding-left: 0.16em; text-transform: uppercase; line-height: 1.25; color: #ffe9b4; white-space: nowrap;
+}
+.together__line--amp { font-family: var(--font-script); font-size: clamp(1.5rem, min(6.4vw, 4svh), 2.3rem); line-height: 0.95; color: #f6c9d6; }
+.together__line:nth-child(1) { opacity: var(--t1, 1); transform: translate3d(0, calc((1 - var(--t1, 1)) * 18px), 0); }
+.together__line--amp, .together__line:nth-of-type(3) { opacity: var(--t2, 1); transform: translate3d(0, calc((1 - var(--t2, 1)) * 18px), 0); }
+.together__after > .together__line:last-of-type { opacity: var(--t2, 1); transform: translate3d(0, calc((1 - var(--t2, 1)) * 18px), 0); }
+@media (min-width: 900px) {
+  .together__after { grid-auto-flow: column; align-items: baseline; gap: 0.5em; }
+}
+@media (max-height: 520px) {
+  .together__line--name { font-size: clamp(0.9rem, 5.4svh, 1.4rem); }
+  .together__mandap { top: 40%; height: 92svh; }
+}
+
+/* the couple's ring sits inside the mandap */
+.together { --ring: min(88vw, 50svh, 560px); }
+.together__medallion, .together__glow { top: 43%; }
+
+/* ============================== 5 · THE INVITATION SCROLL ============================== */
+/* the helper's strip of ground stays at the foot of the screen while this (tall) chapter scrolls */
+.scene--invitation > .troupe { position: sticky; bottom: 0; height: 20svh; margin-top: -20svh; }
+.scrollcard { position: relative; width: min(100%, 580px); padding-top: 34px; --u: 1; --b: 1; }
+.scrollcard .card { width: 100%; -webkit-clip-path: inset(-50px -50px calc((1 - var(--u)) * 100% - var(--u) * 50px) -50px); clip-path: inset(-50px -50px calc((1 - var(--u)) * 100% - var(--u) * 50px) -50px); }
+.scrollcard .card::before { display: none; }           /* replaced by the gold line that draws itself */
+.card__goldline { position: absolute; z-index: 1; inset: 10px; width: calc(100% - 20px); height: calc(100% - 20px); overflow: visible; pointer-events: none; }
+.card__goldline rect { fill: none; stroke: rgba(183, 138, 60, 0.92); stroke-width: 1.6; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--b)); }
+.card__lotus { display: block; width: 56px; margin: -8px auto 6px; }
+
+/* the stand: a carved crossbar on two slender posts */
+.scrollcard__stand {
+  position: absolute; left: -20px; right: -20px; top: 4px; bottom: -22px; pointer-events: none;
+  background:
+    linear-gradient(90deg, #7a4a22, #c08a4e 45%, #7a4a22) left top / 9px 100% no-repeat,
+    linear-gradient(90deg, #7a4a22, #c08a4e 45%, #7a4a22) right top / 9px 100% no-repeat;
+}
+.scrollcard__stand::before {
+  content: ''; position: absolute; left: -10px; right: -10px; top: 0; height: 15px; border-radius: 8px;
+  background: linear-gradient(180deg, #d09a5c, #8a5628 70%, #6b4020);
+  box-shadow: 0 5px 10px rgba(10, 6, 30, 0.45), inset 0 1px 0 rgba(255, 236, 200, 0.5);
+}
+.scrollcard__stand::after {
+  content: ''; position: absolute; left: -12px; right: -12px; bottom: 0; height: 9px;
+  background: linear-gradient(90deg, #8a5628 0 34px, transparent 34px calc(100% - 34px), #8a5628 calc(100% - 34px));
+  border-radius: 4px;
+}
+/* the rolled paper at the top, and the roller that travels down as it opens */
+.scrollcard__roll, .scrollcard__rod {
+  position: absolute; z-index: 4; left: -9px; right: -9px; border-radius: 14px; pointer-events: none;
+  background:
+    linear-gradient(90deg, #c9962e 0 12px, transparent 12px calc(100% - 12px), #c9962e calc(100% - 12px)),
+    linear-gradient(180deg, #fffdf6, #f3e2bc 50%, #d6bd8a);
+  box-shadow: 0 6px 14px rgba(10, 6, 30, 0.45), inset 0 0 0 1px rgba(183, 138, 60, 0.55);
+}
+.scrollcard__roll { top: 22px; height: calc(24px + (1 - var(--u)) * 16px); }
+.scrollcard__rod { top: calc(34px + var(--u) * (100% - 34px) - 9px); height: 18px; opacity: var(--u); }
+.scrollcard__ribbon { position: absolute; left: 50%; top: 50%; width: 84px; translate: -50% -42%; overflow: visible; transition: opacity 0.5s 0.5s; }
+.ribbon__loop, .ribbon__tail, .ribbon__knot { transform-box: view-box; transform-origin: 60px 40px; transition: transform 0.7s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.6s 0.3s; }
+.scrollcard:not([data-state='rolled']) .scrollcard__ribbon { opacity: 0; }
+.scrollcard:not([data-state='rolled']) .ribbon__loop--l { transform: rotate(-70deg) scale(0.4); }
+.scrollcard:not([data-state='rolled']) .ribbon__loop--r { transform: rotate(70deg) scale(0.4); }
+.scrollcard:not([data-state='rolled']) .ribbon__tail--l { transform: translate(-14px, 46px) rotate(24deg); }
+.scrollcard:not([data-state='rolled']) .ribbon__tail--r { transform: translate(14px, 46px) rotate(-24deg); }
+.scrollcard:not([data-state='rolled']) .ribbon__knot { transform: scale(0); }
+
+.scrollcard__open { position: absolute; z-index: 6; left: -12px; right: -12px; top: 0; height: 132px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.scrollcard__open .tap-ring { top: 40px; }
+.scrollcard__hint {
+  position: absolute; left: 50%; top: 84px; translate: -50% 0; white-space: nowrap; padding: 8px 18px; border-radius: 999px;
+  font-family: var(--font-caps); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  background: rgba(255, 250, 238, 0.92); color: var(--maroon-deep); box-shadow: 0 4px 14px rgba(10, 6, 30, 0.35);
+}
+.scrollcard:not([data-state='rolled']) .scrollcard__open { display: none; }
+.scrollcard[data-state='rolled'] { --u: 0; --b: 0; }
+/* before the helper arrives, the stand is empty */
+.scrollcard[data-state='rolled']:not(.has-scroll) .scrollcard__roll, .scrollcard[data-state='rolled']:not(.has-scroll) .scrollcard__open { opacity: 0; pointer-events: none; }
+.scrollcard__roll { transition: opacity 0.3s; }
+
+/* details arrive line by line once the paper is down */
+.scrollcard .card__inner > *, .scrollcard .card__row, .scrollcard .card__corner { transition: opacity 0.8s var(--ease), transform 1s var(--ease-out); transition-delay: calc(var(--n, 0) * 150ms + 250ms); }
+.scrollcard[data-state='rolled'] .card__inner > *, .scrollcard[data-state='opening'] .card__inner > *,
+.scrollcard[data-state='rolled'] .card__row, .scrollcard[data-state='opening'] .card__row { opacity: 0; transform: translate3d(0, 16px, 0); transition-delay: 0s; transition-duration: 0.2s; }
+.scrollcard[data-state='rolled'] .card__corner, .scrollcard[data-state='opening'] .card__corner { opacity: 0; transform: scale(0.6); transition-delay: 0s; }
+.scrollcard .card__inner > :nth-child(2) { --n: 1; } .scrollcard .card__inner > :nth-child(3) { --n: 2; } .scrollcard .card__inner > :nth-child(4) { --n: 3; }
+.scrollcard .card__inner > :nth-child(5) { --n: 4; } .scrollcard .card__inner > :nth-child(6) { --n: 5; } .scrollcard .card__inner > :nth-child(7) { --n: 6; }
+.scrollcard .card__row:nth-of-type(1) { --n: 7; } .scrollcard .card__row:nth-of-type(2) { --n: 8; } .scrollcard .card__row:nth-of-type(3) { --n: 9; }
+.scrollcard .card__corner { --n: 10; }
+.scrollcard .card__details { opacity: 1 !important; transform: none !important; }
+.reduce-motion .scrollcard, .no-js .scrollcard { --u: 1 !important; --b: 1 !important; }
+
+.flying-scroll { position: absolute; z-index: 8; left: 0; top: 0; width: 120px; height: 26px; margin: -13px 0 0 -60px; border-radius: 13px; pointer-events: none;
+  background: linear-gradient(90deg, #c9962e 0 10px, transparent 10px calc(100% - 10px), #c9962e calc(100% - 10px)), linear-gradient(180deg, #fffdf6, #f3e2bc 50%, #d6bd8a);
+  box-shadow: 0 6px 14px rgba(10, 6, 30, 0.45); }
+
+/* ============================== 6 · THE VENUE ============================== */
+.venue__note { margin-top: 12px; max-width: 27em; padding: 7px 16px; border-radius: 14px; background: rgba(10, 14, 52, 0.62); font-style: italic; font-size: 0.98rem; line-height: 1.35; text-shadow: none; }
+.marker-link { position: absolute; z-index: 3; left: 46%; top: 6%; width: 60%; height: 58%; border-radius: 50% 50% 46% 46%; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.marker-link .tap-ring { top: 34%; left: 50%; }
+.helper[data-facing='left'] .marker-link { left: -6%; }
+.scene--venue .helper { z-index: 2; }
+
+@media (max-aspect-ratio: 11/10) {
+  .scene--venue { min-height: max(152svh, 1040px); }
+  .venue { justify-content: flex-start; min-height: 0; padding-bottom: 0; }
+}
+@media (min-width: 700px) and (min-aspect-ratio: 11/10) {
+  .scene--venue { --focus: 0.3; }
+  .venue { align-items: flex-start; text-align: left; padding: calc(var(--header-h) + 6px) 0 4svh 5vw; max-width: 42%; justify-content: center; }
+  .venue .kicker { padding-left: 0.1em; }
+  .venue .title-script { padding-left: 0; font-size: clamp(2.4rem, 7svh, 3.8rem); margin-bottom: 4px; }
+  .venue__panel { grid-template-columns: 1fr; text-align: center; }
+  .venue__map { aspect-ratio: 360 / 150; min-height: 0; border-right: 0; border-bottom: 1px solid rgba(183, 138, 60, 0.5); }
+  .venue__info { padding: 16px 22px 18px; justify-items: center; gap: 6px; }
+  .venue__info .actions { justify-content: center; margin-top: 4px; }
+  .venue__status { min-height: 1.3em; }
+}
+
+/* ============================== 7 · THE FINALE ============================== */
+.finale__date { font-size: clamp(1.4rem, 6.6vw, 2.7rem); letter-spacing: 0.08em; padding-left: 0.08em; line-height: 1.25; text-transform: uppercase; white-space: normal; text-wrap: balance; max-width: 15em; }
+.ladder { position: absolute; z-index: 1; left: 40.8%; bottom: 6%; height: 53%; width: auto; translate: -50% 0; transform: rotate(3.5deg); transform-origin: 50% 100%; overflow: visible; pointer-events: none; }
+.finale__stage { z-index: 0; }
+.finale__pair { z-index: 2; }
+.scene--finale .rosebed { z-index: 3; }
+.finale__crown {
+  position: absolute; z-index: 4; left: 42.1%; bottom: 58.5%; width: 4.6%; translate: -50% 0;
+  --lotus-fill: #ff9fc0; --lotus-line: #f6d98a;
+  filter: drop-shadow(0 0 10px rgba(255, 220, 150, 0.9));
+  transition: transform 0.7s cubic-bezier(0.3, 1.7, 0.5, 1), opacity 0.4s;
+}
+.finale__crown svg { display: block; width: 100%; }
+.js:not(.reduce-motion) .scene--finale.is-staged:not(.is-crowned) .finale__crown { opacity: 0; transform: scale(0) rotate(-40deg); }
+.released-lantern {
+  position: absolute; z-index: 6; left: var(--lx); bottom: var(--ly); width: calc(var(--helper-w) * 0.34); aspect-ratio: 1 / 1.3; translate: -50% 0;
+  border-radius: 44% 44% 30% 30% / 40% 40% 24% 24%; background: linear-gradient(180deg, #ffe7a8, #ffb65a 62%, #f08a3c);
+  box-shadow: 0 0 18px 7px rgba(255, 176, 90, 0.6); pointer-events: none;
+  animation: lantern-float 9s ease-in 1 both;
+}
+@keyframes lantern-float { 0% { transform: translate3d(0, 0, 0); opacity: 1; } 100% { transform: translate3d(calc(var(--helper-w) * 0.8), -92svh, 0) scale(0.8); opacity: 0; } }
+
+@media (max-aspect-ratio: 11/10) {
+  /* on tall screens the pair stand a touch smaller so the ladder fits beside them */
+  .finale__groom { left: 46.8%; height: 55%; }
+  .finale__bride { left: 54.6%; height: 48.5%; }
+}
+
+/* ---------- reduced motion: every looping decoration rests ---------- */
+.reduce-motion .is-looping, .reduce-motion .tap-ring, .reduce-motion .curtain, .reduce-motion .bouquet, .reduce-motion .diya__flame, .reduce-motion .hero__begin, .reduce-motion .figure > img { animation: none !important; }

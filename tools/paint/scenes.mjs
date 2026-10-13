@@ -9,6 +9,7 @@ import {
   flower, pom, flowerField, grass, strokes, cloud, lantern, lampPost, lightString, diya, chhatri,
   pavilion, palaceFar, balustrade,
 } from './kit.mjs';
+import { SETPIECES } from './setpieces.mjs';
 
 const hill = (sh, pts, stops, y1, y2, wobble = 5) => {
   const d = ground(pts);
@@ -459,5 +460,18 @@ export function blossomBranch() {
   return [{ name: 'blossom-branch', sheet: sh }];
 }
 
-export const ALL = () => [...meadow(), ...golden(), ...dusk(), ...grove(), ...evening(), ...night(), ...clouds(), ...blossomBranch()];
+/* Colour grades: the story now meets the bride at golden hour and the groom at sunset, so the two
+   paintings are re-lit rather than repainted. Values are an SVG colour matrix (R, G, B, A rows). */
+const GRADE = {
+  // the marble terrace, warmed toward gold
+  goldenRose: '1.06 0.05 0 0 0.03  0.02 1.0 0 0 0.02  0 0.02 0.88 0 0  0 0 0 1 0',
+  // the sandstone garden, deepened toward a late, rosy sunset
+  sunset: '1.0 0.04 0 0 0.02  0.03 0.82 0 0 0  0.08 0 0.80 0 0.05  0 0 0 1 0',
+};
+const graded = (layers, grade) => layers.map((l) => ({ ...l, grade }));
+
+export const ALL = () => [
+  ...meadow(), ...graded(golden(), GRADE.sunset), ...graded(dusk(), GRADE.goldenRose),
+  ...grove(), ...evening(), ...night(), ...clouds(), ...blossomBranch(), ...SETPIECES(),
+];
 export { H };

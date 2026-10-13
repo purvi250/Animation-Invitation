@@ -68,11 +68,17 @@ export function createServer({ dir = ROOT } = {}) {
 export function listen(server, port, host) {
   return new Promise((resolve, reject) => {
     const attempt = (p, left) => {
-      server.once('error', (err) => {
+      // Report the port we are REALLY on (asked from the server itself), and never leave a stale
+      // "listening" callback behind from a port that turned out to be busy.
+      const onListening = () => { server.removeListener('error', onError); resolve(server.address().port); };
+      const onError = (err) => {
+        server.removeListener('listening', onListening);
         if (err.code === 'EADDRINUSE' && left > 0) attempt(p + 1, left - 1);
         else reject(err);
-      });
-      server.listen(p, host, () => { server.removeAllListeners('error'); resolve(p); });
+      };
+      server.once('error', onError);
+      server.once('listening', onListening);
+      server.listen(p, host);
     };
     attempt(port, 20);
   });

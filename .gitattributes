@@ -1,0 +1,10 @@
+# Keep line endings predictable on every machine.
+* text=auto eol=lf
+*.bat text eol=crlf
+# A calendar file must keep its CRLF line endings exactly as written.
+*.ics -text
+*.webp binary
+*.jpg binary
+*.png binary
+*.woff2 binary
+*.mp3 binary

@@ -73,6 +73,8 @@
     scenes.forEach((s) => {
       if (mid >= s.top) current = s;
       const near = s.top - y < vh * 1.4 && s.top + s.height - y > -vh * 0.4;
+      // chapters far from the screen are marked as resting, and their looping animations pause (see helpers.css)
+      if (s.live !== near) { s.live = near; s.el.classList.toggle('is-live', near); }
       if (!near) return;
       const enter = clamp01((y + vh - s.top) / vh);                 // 0 → 1 while the chapter slides in
       const exit = clamp01((y + vh - (s.top + s.height)) / vh);     // 0 → 1 while it slides out

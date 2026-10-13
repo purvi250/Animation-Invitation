@@ -35,8 +35,20 @@ window.INVITE_CONFIG = {
     mapsQuery: 'Hotel Royal Residency, Ambala Road, Opp. Kalpana Cinema, Purani Mandi, Saharanpur, Uttar Pradesh 247001, India',
   },
 
+  /* ---------- How the invitation opens ----------
+     'rope'      little helpers pull a ceremonial rope and raise a banner to reveal the date (the default)
+     'envelope'  the classic sealed envelope, as in the first version
+     Add ?opening=envelope to the address to try the other one without editing this file. */
+  opening: 'rope',
+
   /* ---------- Wording, chapter by chapter ---------- */
   text: {
+    // opening (rope)
+    heroKicker: 'You are invited to the wedding reception of',
+    beginLabel: 'Begin Our Story',
+    dateKicker: 'Save the date',
+    followHint: 'Follow the little one',
+    // opening (envelope)
     openingKicker: 'You are invited',
     envelopeFront: 'For our dearest family & friends',
     openHint: 'Tap the envelope to open',
@@ -44,19 +56,22 @@ window.INVITE_CONFIG = {
     letterKicker: 'With great joy',
     letterLine: 'invite you to their',
 
-    groomKicker: 'Introducing the groom',
-    groomCaption: 'As golden light settles over the garden, he waits.',
     brideKicker: 'Introducing the bride',
-    brideCaption: 'And through the blossom, at the end of the day, she arrives.',
+    brideCaption: 'Through a curtain of flowers, in the golden light, she arrives.',
+    brideHint: 'Tap her flowers',
+    groomKicker: 'Introducing the groom',
+    groomCaption: 'And as the sun sets over the courtyard, he steps out to welcome you.',
+    groomHint: 'Tap to say hello',
 
     togetherBefore: 'Two paths through the same garden…',
-    togetherAfter: ['Two hearts.', 'One beautiful story.'],
-    togetherCaption: 'And a celebration to begin the next chapter.',
+    togetherCaption: 'Together, let us celebrate a beautiful new chapter.',
 
+    cardHint: 'Tap the invitation to open it',
     cardKicker: 'With great joy, we invite you to the',
     cardOf: 'of',
     venueKicker: 'Venue & directions',
     venueTitle: 'Find your way to us',
+    venueNote: 'The garden scene is an artist’s impression, not a picture of the hotel.',
 
     finaleKicker: 'Save the date',
     finaleClosing: 'We look forward to celebrating with you.',
@@ -71,12 +86,26 @@ window.INVITE_CONFIG = {
     bride: 'assets/characters/bride.webp',
     couple: 'assets/characters/couple.webp',
 
+    // OPTIONAL extra poses. The bride and groom are single illustrations, so today they enter with a
+    // gentle step and respond to a tap with a small bow. Supply any of these (same framing and size as
+    // the main picture, transparent background) and the site uses them automatically:
+    //   walk  — two or more frames of a walk cycle, played while the character enters
+    //   wave  — the groom waving hello (shown when he is tapped)
+    //   offer — the bride holding her flowers out (shown when her flowers are tapped)
+    //   front — the couple facing the visitor (shown at the end of their scene)
+    // See assets/art/README.md for sizes, file names and ready-made image prompts.
+    poses: {
+      groom: { walk: [], wave: '' },
+      bride: { walk: [], offer: '' },
+      couple: { front: '' },
+    },
+
     // OPTIONAL full painted backdrops. Leave empty to use the built-in painted scenery.
     // If you add one (see assets/art/README.md for sizes and prompts), it replaces that chapter's scenery.
     backdrops: {
       opening: '',
-      groom: '',
       bride: '',
+      groom: '',
       together: '',
       invitation: '',
       venue: '',
@@ -84,12 +113,13 @@ window.INVITE_CONFIG = {
     },
   },
 
-  /* ---------- Music ----------
-     Plays only after the guest taps the envelope or the music button; they can mute it any time.
-     If the file is missing, a soft built-in chime melody is used instead. */
+  /* ---------- Music and sound ----------
+     Nothing is heard until the guest taps; the round button mutes everything at any time.
+     If the music file is missing, a soft built-in chime melody is used instead. */
   music: {
     src: 'assets/music/reception-theme.mp3',
     volume: 0.6,
     startOnOpen: true,   // false = music starts only when the guest presses the music button
+    effects: true,       // small sounds (a bell, a rustle of paper, a sparkle). They follow the mute button.
   },
 };

@@ -12,6 +12,7 @@
   const { span, ease, setVar } = Invite;
 
   let el, button, opening, beginLink;
+  let active = false;
   let tapped = 0;     // progress from the tap animation
   let scrolled = 0;   // progress from scrolling
   let shown = -1;
@@ -39,7 +40,7 @@
   }
 
   function open() {
-    if (tapped >= 1) return;
+    if (!active || tapped >= 1) return;
     Invite.audio.startFromGesture(); // must run inside the tap handler
     if (cancelTween) cancelTween();
     const hadFocus = document.activeElement === button;
@@ -62,17 +63,21 @@
   }
 
   function reset() {
+    if (!active) return;
     if (cancelTween) { cancelTween(); cancelTween = null; }
     tapped = 0;
     render();
   }
 
   function init() {
+    // the envelope is the alternative opening; it only runs when chosen (config: opening: 'envelope')
+    if (Invite.openingMode !== 'envelope') return;
     el = document.getElementById('envelope');
     button = document.getElementById('envelope-button');
     opening = el && el.closest('.opening');
     beginLink = document.getElementById('begin-link');
     if (!el || !button || !opening) return;
+    active = true;
 
     button.addEventListener('click', open);
     // scrolling through the first screen opens the envelope as well

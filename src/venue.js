@@ -91,9 +91,49 @@
     }
   }
 
+  /* ---------- a helper carries a map marker up the path; the marker itself is the directions link ---------- */
+  let markerTroupe = null;
+  function setupMarker() {
+    const scene = document.getElementById('venue');
+    const layer = scene && scene.querySelector('.troupe');
+    const art = scene && scene.querySelector('.scene__art');
+    if (!layer || !art || !Invite.helpers) return;
+    const troupe = (markerTroupe = Invite.helpers.troupe(layer));
+    const GROUND = 5;
+
+    const arrive = (walk) => {
+      troupe.clear();
+      const bearer = troupe.add('genda', { x: walk ? -9 : 0, y: GROUND, prop: 'marker' });
+      // the marker he holds is a real link, so it works with a tap, a click or the keyboard
+      bearer.el.removeAttribute('aria-hidden');
+      const link = document.createElement('a');
+      link.className = 'marker-link js-directions';
+      link.id = 'marker-link';
+      link.href = Invite.derived.mapsDirections;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.setAttribute('aria-label', `Directions to ${Invite.config.venue.name} in Google Maps (opens in a new tab)`);
+      link.innerHTML = '<span class="tap-ring" aria-hidden="true"></span>';
+      bearer.el.appendChild(link);
+      // stop a little short of the entrance, in the middle of the painted forecourt
+      const a = art.getBoundingClientRect(), l = layer.getBoundingClientRect();
+      const door = ((a.left + a.width * 0.5 - l.left) / l.width) * 100;
+      const spot = Math.min(88, Math.max(12, door - 9));
+      if (!walk) { bearer.at(spot, GROUND).set('hold'); return; }
+      troupe.play(async (s) => {
+        await bearer.go(spot, { s, speed: 20 });
+        bearer.face('right').set('hold');
+      });
+    };
+
+    if (Invite.motion.reduced) { arrive(false); return; }
+    Invite.helpers.onView(scene, () => arrive(true), () => troupe.clear(), 0.3);
+  }
+
   function init() {
     setupCopy();
     setupCalendar();
+    setupMarker();
   }
 
   Invite.venue = { init, copyText };

@@ -1,0 +1,109 @@
+/* ============================================================================
+   CHROME — the quiet controls that sit above the story:
+   monogram, music toggle, replay, progress line and chapter dots.
+   ============================================================================ */
+
+.chrome {
+  position: fixed; z-index: 20; left: 0; right: 0; top: 0;
+  height: var(--header-h);
+  padding: 0 max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left));
+  display: flex; align-items: center; justify-content: space-between;
+  pointer-events: none;
+}
+.chrome > * { pointer-events: auto; }
+
+.chrome__mark, .icon-btn {
+  background: rgba(255, 248, 236, 0.86);
+  color: var(--maroon);
+  border: 1px solid rgba(183, 138, 60, 0.6);
+  box-shadow: 0 4px 16px rgba(20, 10, 40, 0.2);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.chrome__mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 44px; height: 44px; padding: 0 16px;
+  border-radius: 999px;
+  font-family: var(--font-script); font-size: 1.55rem; line-height: 1; text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.25s var(--ease);
+}
+.chrome__mark span { transform: translateY(0.06em); }
+.chrome__mark:hover { transform: translateY(-1px); }
+
+.chrome__actions { display: flex; gap: 10px; }
+
+.icon-btn {
+  position: relative;
+  width: 44px; height: 44px; padding: 0;
+  display: inline-grid; place-items: center;
+  border-radius: 50%; cursor: pointer;
+  transition: transform 0.25s var(--ease), background-color 0.25s;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn:hover { transform: translateY(-1px) scale(1.04); background: var(--cream); }
+.icon-btn .icon { width: 22px; height: 22px; }
+.icon-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+/* music button: a note when silent (struck through), dancing bars while playing */
+.icon-btn__bars { position: absolute; inset: 0; display: none; align-items: flex-end; justify-content: center; gap: 3px; padding-bottom: 13px; }
+.icon-btn__bars i { display: block; width: 3px; height: 16px; border-radius: 2px; background: currentColor; transform-origin: 50% 100%; animation: bars 1s ease-in-out infinite; }
+.icon-btn__bars i:nth-child(1) { animation-delay: -0.2s; }
+.icon-btn__bars i:nth-child(2) { animation-delay: -0.6s; }
+.icon-btn__bars i:nth-child(3) { animation-delay: -0.4s; }
+.icon-btn__bars i:nth-child(4) { animation-delay: -0.8s; }
+@keyframes bars { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+.icon-btn__slash { position: absolute; left: 50%; top: 50%; width: 26px; height: 2px; border-radius: 2px; background: currentColor; box-shadow: 0 0 0 1.5px rgba(255, 248, 236, 0.95); transform: translate(-50%, -50%) rotate(-42deg); }
+#music-toggle[aria-pressed='true'] .icon--note, #music-toggle[aria-pressed='true'] .icon-btn__slash { display: none; }
+#music-toggle[aria-pressed='true'] .icon-btn__bars { display: flex; }
+.reduce-motion .icon-btn__bars i { animation: none; transform: scaleY(0.7); }
+.reduce-motion .icon-btn__bars i:nth-child(odd) { transform: scaleY(0.4); }
+
+/* ---------- Progress line ---------- */
+.progress { position: fixed; z-index: 21; left: 0; right: 0; top: 0; height: 3px; background: rgba(255, 248, 236, 0.18); pointer-events: none; }
+.progress__bar {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, #e9c77c, #f6dfa4 55%, #e58aa5);
+  transform-origin: 0 50%; transform: scaleX(0);
+  will-change: transform;
+}
+
+/* ---------- Chapter dots ---------- */
+.chapters {
+  position: fixed; z-index: 20; top: 50%; right: max(4px, env(safe-area-inset-right));
+  transform: translateY(-50%);
+}
+.chapters ol { display: grid; gap: 2px; }
+.chapters a {
+  position: relative; display: grid; place-items: center;
+  width: 30px; height: 30px; text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.chapters__dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255, 248, 236, 0.92);
+  box-shadow: 0 0 0 1.5px rgba(58, 39, 56, 0.6), 0 2px 6px rgba(20, 10, 40, 0.3);
+  transition: transform 0.3s var(--ease), background-color 0.3s, height 0.3s var(--ease), border-radius 0.3s;
+}
+.chapters a:hover .chapters__dot { transform: scale(1.35); }
+.chapters a[aria-current='true'] .chapters__dot { background: var(--gold-bright); height: 20px; border-radius: 6px; box-shadow: 0 0 0 1.5px rgba(92, 18, 39, 0.75), 0 0 12px rgba(236, 200, 120, 0.8); }
+.chapters__label {
+  position: absolute; right: calc(100% + 4px); top: 50%;
+  padding: 5px 12px; border-radius: 999px;
+  background: rgba(255, 248, 236, 0.95); color: var(--maroon);
+  font-family: var(--font-caps); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(20, 10, 40, 0.25);
+  opacity: 0; transform: translate(8px, -50%); pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s var(--ease);
+}
+.chapters a:hover .chapters__label, .chapters a:focus-visible .chapters__label { opacity: 1; transform: translate(0, -50%); }
+
+@media (max-width: 640px) {
+  :root { --header-h: 58px; }
+  .chapters a { width: 26px; height: 26px; }
+  .chapters__dot { width: 7px; height: 7px; }
+  .chapters a[aria-current='true'] .chapters__dot { height: 16px; }
+}
+@media (max-height: 480px) {
+  :root { --header-h: 52px; }
+  .chapters a { height: 24px; }
+}

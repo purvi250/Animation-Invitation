@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kenvi &amp; Puru · Wedding Reception · 28 November 2026</title>
+  <meta name="description" content="You are invited to the wedding reception of Kenvi Dwivedi and Puru Tyagi on Saturday, 28 November 2026 at Hotel Royal Residency, Saharanpur.">
+  <meta name="theme-color" content="#4a9be0">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kenvi &amp; Puru · Wedding Reception">
+  <meta property="og:description" content="Saturday, 28 November 2026 · Hotel Royal Residency, Saharanpur. Open your invitation.">
+  <meta property="og:image" content="assets/icons/share-preview.jpg">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/backdrop.css">
+  <link rel="stylesheet" href="styles/chrome.css">
+  <link rel="stylesheet" href="styles/scenes.css">
+  <link rel="stylesheet" href="styles/components.css">
+
+  <script>
+    // Runs before first paint so the page never flashes its no-script layout.
+    (function (d) {
+      d.className = d.className.replace('no-js', 'js');
+      try {
+        var q = new URLSearchParams(location.search).get('motion');
+        var reduce = q === 'reduce' || (q !== 'full' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        if (reduce) d.className += ' reduce-motion';
+      } catch (e) { /* older browsers: keep full layout */ }
+    })(document.documentElement);
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#invitation">Skip to the invitation details</a>
+
+  <!-- ===== The sky: one fixed backdrop that turns from afternoon to night as you scroll ===== -->
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="sky sky--day"></div>
+    <div class="sky sky--golden"></div>
+    <div class="sky sky--dusk"></div>
+    <div class="sky sky--blue"></div>
+    <div class="sky sky--night"></div>
+    <canvas class="stars" id="stars"></canvas>
+    <div class="sun" id="sun"><span class="sun__rays"></span><span class="sun__disc sun__disc--day"></span><span class="sun__disc sun__disc--warm"></span></div>
+    <div class="moon" id="moon"></div>
+    <div class="cloudfield" id="cloudfield"></div>
+    <div class="backdrop__grain"></div>
+  </div>
+
+  <canvas class="particles" id="particles" aria-hidden="true"></canvas>
+
+  <!-- ===== Unobtrusive controls ===== -->
+  <header class="chrome">
+    <a class="chrome__mark" href="#opening" aria-label="Back to the beginning"><span data-bind="derived.monogram">K &amp; P</span></a>
+    <div class="chrome__actions">
+      <button type="button" class="icon-btn" id="music-toggle" aria-pressed="false" aria-label="Play music">
+        <svg class="icon icon--note" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 17.5V5.2l10-2v11.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="6.6" cy="17.6" rx="2.6" ry="2.1" fill="currentColor"/><ellipse cx="16.6" cy="14.9" rx="2.6" ry="2.1" fill="currentColor"/></svg>
+        <span class="icon-btn__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="icon-btn__slash" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="icon-btn" id="replay" aria-label="Replay the opening">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3.6 3.8v4.4h4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="progress" aria-hidden="true"><span class="progress__bar" id="progress-bar"></span></div>
+
+  <nav class="chapters" aria-label="Chapters of the invitation">
+    <ol>
+      <li><a href="#opening" data-chapter="opening"><span class="chapters__dot"></span><span class="chapters__label">Opening</span></a></li>
+      <li><a href="#groom" data-chapter="groom"><span class="chapters__dot"></span><span class="chapters__label">The groom</span></a></li>
+      <li><a href="#bride" data-chapter="bride"><span class="chapters__dot"></span><span class="chapters__label">The bride</span></a></li>
+      <li><a href="#together" data-chapter="together"><span class="chapters__dot"></span><span class="chapters__label">Together</span></a></li>
+      <li><a href="#invitation" data-chapter="invitation"><span class="chapters__dot"></span><span class="chapters__label">Invitation</span></a></li>
+      <li><a href="#venue" data-chapter="venue"><span class="chapters__dot"></span><span class="chapters__label">Venue</span></a></li>
+      <li><a href="#save-the-date" data-chapter="save-the-date"><span class="chapters__dot"></span><span class="chapters__label">Save the date</span></a></li>
+    </ol>
+  </nav>
+
+  <main id="story">
+
+    <!-- ============ 1 · OPENING + ENVELOPE ============ -->
+    <section class="scene scene--opening" id="opening" data-scene="opening" data-time="0" data-time-end="0.22" data-pin aria-labelledby="opening-title">
+      <div class="scene__stage">
+        <div class="scene__art" data-art="opening" aria-hidden="true">
+          <img class="layer" data-depth="0.5" data-zoom="0.05" src="assets/scenery/meadow-far.webp" alt="" decoding="async">
+          <img class="layer" data-depth="0.26" data-zoom="0.11" src="assets/scenery/meadow-mid.webp" alt="" decoding="async">
+          <img class="layer" data-depth="0" data-zoom="0.22" src="assets/scenery/meadow-near.webp" alt="" decoding="async">
+        </div>
+        <img class="branch branch--left" src="assets/scenery/blossom-branch.webp" alt="" aria-hidden="true" decoding="async">
+        <img class="branch branch--right" src="assets/scenery/blossom-branch.webp" alt="" aria-hidden="true" decoding="async">
+
+        <div class="scene__content opening">
+          <p class="kicker opening__kicker" data-bind="text.openingKicker">You are invited</p>
+
+          <div class="envelope" id="envelope" data-state="sealed">
+            <span class="envelope__shadow" aria-hidden="true"></span>
+            <div class="envelope__body">
+              <span class="envelope__back" aria-hidden="true"></span>
+
+              <div class="letter" id="letter">
+                <p class="letter__kicker" data-bind="text.letterKicker">With great joy</p>
+                <h1 class="letter__names" id="opening-title"><span data-bind="bride.short">Kenvi</span> <span class="amp">&amp;</span> <span data-bind="groom.short">Puru</span></h1>
+                <p class="letter__line" data-bind="text.letterLine">invite you to their</p>
+                <p class="letter__event" data-bind="event.title">Wedding Reception</p>
+                <p class="letter__date"><time datetime="2026-11-28" data-bind="derived.dateLong" data-bind-datetime="event.date">Saturday, 28 November 2026</time></p>
+              </div>
+
+              <span class="envelope__front" aria-hidden="true">
+                <svg viewBox="0 0 440 290" preserveAspectRatio="none" focusable="false">
+                  <defs>
+                    <linearGradient id="env-l" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7e3d8"/><stop offset="1" stop-color="#fdf2ea"/></linearGradient>
+                    <linearGradient id="env-r" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#f4ddd1"/><stop offset="1" stop-color="#fcefe6"/></linearGradient>
+                    <linearGradient id="env-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf5"/><stop offset="1" stop-color="#f6e2d6"/></linearGradient>
+                  </defs>
+                  <path d="M0 0 L226 152 L0 290Z" fill="url(#env-l)"/>
+                  <path d="M440 0 L214 152 L440 290Z" fill="url(#env-r)"/>
+                  <path d="M0 290 L220 136 L440 290Z" fill="url(#env-b)"/>
+                  <path d="M0 290 L220 136 L440 290" fill="none" stroke="#d6b06a" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+                  <path d="M0 0 L220 147 M440 0 L220 147" fill="none" stroke="#e7cfa0" stroke-width="1" vector-effect="non-scaling-stroke" opacity=".7"/>
+                </svg>
+                <span class="envelope__to" data-bind="text.envelopeFront">For our dearest family &amp; friends</span>
+              </span>
+
+              <span class="envelope__flap" aria-hidden="true">
+                <span class="envelope__flap-face envelope__flap-face--out">
+                  <svg viewBox="0 0 440 170" preserveAspectRatio="none" focusable="false">
+                    <defs><linearGradient id="flap-o" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf3ec"/><stop offset="1" stop-color="#f3dccf"/></linearGradient></defs>
+                    <path d="M0 0 H440 L220 170Z" fill="url(#flap-o)"/>
+                    <path d="M0 0 L220 170 L440 0" fill="none" stroke="#d6b06a" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+                  </svg>
+                </span>
+                <span class="envelope__flap-face envelope__flap-face--in">
+                  <svg viewBox="0 0 440 170" preserveAspectRatio="none" focusable="false">
+                    <defs>
+                      <linearGradient id="flap-i" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a5354f"/><stop offset="1" stop-color="#7b1e36"/></linearGradient>
+                      <pattern id="lining" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="13" cy="13" r="1.7" fill="#e3bd6a" opacity=".7"/><path d="M13 5v4M13 17v4M5 13h4M17 13h4" stroke="#e3bd6a" stroke-width=".8" opacity=".45"/></pattern>
+                    </defs>
+                    <path d="M0 0 H440 L220 170Z" fill="url(#flap-i)"/>
+                    <path d="M0 0 H440 L220 170Z" fill="url(#lining)"/>
+                  </svg>
+                </span>
+              </span>
+
+              <span class="envelope__seal" aria-hidden="true">
+                <svg viewBox="0 0 120 120" focusable="false">
+                  <defs>
+                    <radialGradient id="wax" cx=".36" cy=".3" r=".8"><stop offset="0" stop-color="#c4486a"/><stop offset=".45" stop-color="#8f2340"/><stop offset="1" stop-color="#5c0f26"/></radialGradient>
+                  </defs>
+                  <path d="M60 5c9-3 16 5 25 6s15 9 17 18 11 15 9 25 3 19-4 27-7 18-17 21-15 12-25 12-17-7-27-10S20 96 15 87 3 73 5 63 4 44 10 35s8-19 18-22 22-5 32-8Z" fill="url(#wax)"/>
+                  <circle cx="60" cy="60" r="37" fill="none" stroke="#e9c77c" stroke-width="1.4" opacity=".75"/>
+                  <circle cx="60" cy="60" r="41" fill="none" stroke="#5c0f26" stroke-width="2" opacity=".35"/>
+                  <text x="60" y="72" text-anchor="middle" class="envelope__seal-text" data-bind="derived.monogramTight">K&amp;P</text>
+                  <ellipse cx="42" cy="34" rx="16" ry="8" fill="#fff" opacity=".16" transform="rotate(-28 42 34)"/>
+                </svg>
+              </span>
+            </div>
+
+            <button type="button" class="envelope__button" id="envelope-button" aria-expanded="false" aria-controls="letter">
+              <span class="sr-only">Open the invitation</span>
+            </button>
+          </div>
+
+          <p class="opening__hint" id="opening-hint">
+            <span class="opening__hint-closed" data-bind="text.openHint">Tap the envelope to open</span>
+            <a class="opening__hint-open" id="begin-link" href="#groom"><span data-bind="text.openedHint">Begin the story</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </p>
+        </div>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 2 · THE GROOM ============ -->
+    <section class="scene scene--groom" id="groom" data-scene="groom" data-time="1" aria-labelledby="groom-title">
+      <div class="scene__art" data-art="groom" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/golden-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0.24" src="assets/scenery/golden-mid.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/golden-near.webp" alt="" loading="lazy" decoding="async">
+        <span class="lightshaft" aria-hidden="true"></span>
+      </div>
+      <div class="scene__cast">
+        <figure class="figure figure--groom" data-reveal="rise" data-fallback-initial="groom">
+          <img src="assets/characters/groom.webp" data-art-src="art.groom" width="534" height="1852" decoding="async"
+               alt="Illustration of the groom, Puru Tyagi, in an ivory sherwani with a red and gold stole and a cream turban">
+        </figure>
+      </div>
+      <div class="scene__content intro intro--groom">
+        <p class="kicker" data-reveal data-bind="text.groomKicker">Introducing the groom</p>
+        <h2 class="name" id="groom-title" data-reveal="write" data-bind="groom.name">Puru Tyagi</h2>
+        <span class="flourish" data-reveal aria-hidden="true"></span>
+        <p class="caption" data-reveal data-bind="text.groomCaption">As golden light settles over the garden, he waits.</p>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 3 · THE BRIDE ============ -->
+    <section class="scene scene--bride" id="bride" data-scene="bride" data-time="2" aria-labelledby="bride-title">
+      <div class="scene__art" data-art="bride" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/dusk-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0.24" src="assets/scenery/dusk-mid.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/dusk-near.webp" alt="" loading="lazy" decoding="async">
+      </div>
+      <div class="scene__cast">
+        <figure class="figure figure--bride" data-reveal="rise" data-fallback-initial="bride">
+          <img src="assets/characters/bride.webp" data-art-src="art.bride" width="1314" height="1709" decoding="async" loading="lazy"
+               alt="Illustration of the bride, Kenvi Dwivedi, in a maroon and gold lehenga, glancing over her shoulder">
+        </figure>
+        <span class="rosebed" aria-hidden="true"></span>
+      </div>
+      <img class="branch branch--right branch--bride" src="assets/scenery/blossom-branch.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      <div class="scene__content intro intro--bride">
+        <p class="kicker" data-reveal data-bind="text.brideKicker">Introducing the bride</p>
+        <h2 class="name" id="bride-title" data-reveal="write" data-bind="bride.name">Kenvi Dwivedi</h2>
+        <span class="flourish" data-reveal aria-hidden="true"></span>
+        <p class="caption" data-reveal data-bind="text.brideCaption">And through the blossom, at the end of the day, she arrives.</p>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 4 · TOGETHER ============ -->
+    <section class="scene scene--together" id="together" data-scene="together" data-time="2.8" data-time-end="3.15" data-pin aria-labelledby="together-title">
+      <div class="scene__stage">
+        <div class="scene__art" data-art="together" aria-hidden="true">
+          <img class="layer" data-depth="0.5" src="assets/scenery/grove-far.webp" alt="" loading="lazy" decoding="async">
+          <img class="layer" data-depth="0.24" src="assets/scenery/grove-mid.webp" alt="" loading="lazy" decoding="async">
+          <img class="layer" data-depth="0" src="assets/scenery/grove-near.webp" alt="" loading="lazy" decoding="async">
+        </div>
+
+        <div class="together" id="together-stage">
+          <span class="together__glow" aria-hidden="true"></span>
+          <div class="together__solo together__solo--groom" aria-hidden="true"><img src="assets/characters/groom.webp" data-art-src="art.groom" alt="" loading="lazy" decoding="async"></div>
+          <div class="together__solo together__solo--bride" aria-hidden="true"><img src="assets/characters/bride.webp" data-art-src="art.bride" alt="" loading="lazy" decoding="async"></div>
+          <div class="together__medallion">
+            <figure class="together__portrait" data-fallback-initial="couple">
+              <img src="assets/characters/couple.webp" data-art-src="art.couple" width="813" height="966" loading="lazy" decoding="async"
+                   alt="Illustration of Kenvi and Puru together, smiling at each other">
+            </figure>
+            <img class="together__ring" src="assets/florals/floral-ring.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          </div>
+        </div>
+
+        <div class="scene__content together__text">
+          <p class="together__before" data-bind="text.togetherBefore">Two paths through the same garden…</p>
+          <h2 class="together__after" id="together-title">
+            <span class="together__line" data-bind="text.togetherAfter.0">Two hearts.</span>
+            <span class="together__line" data-bind="text.togetherAfter.1">One beautiful story.</span>
+          </h2>
+          <p class="together__caption" data-bind="text.togetherCaption">And a celebration to begin the next chapter.</p>
+        </div>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 5 · THE INVITATION CARD ============ -->
+    <section class="scene scene--invitation" id="invitation" data-scene="invitation" data-time="3.45" aria-labelledby="card-title">
+      <div class="scene__art" data-art="invitation" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/evening-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/evening-garden.webp" alt="" loading="lazy" decoding="async">
+      </div>
+      <div class="scene__content">
+        <article class="card" data-reveal="unfold">
+          <img class="card__corner card__corner--tl" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <img class="card__corner card__corner--br" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <div class="card__inner">
+            <p class="card__kicker" data-bind="text.cardKicker">With great joy, we invite you to the</p>
+            <h2 class="card__event" id="card-title" data-bind="event.title">Wedding Reception</h2>
+            <p class="card__of" data-bind="text.cardOf">of</p>
+            <p class="card__names">
+              <span class="card__name" data-bind="bride.name">Kenvi Dwivedi</span>
+              <span class="card__amp" aria-hidden="true">&amp;</span><span class="sr-only">and</span>
+              <span class="card__name" data-bind="groom.name">Puru Tyagi</span>
+            </p>
+            <span class="ornament" aria-hidden="true"></span>
+            <dl class="card__details">
+              <div class="card__row">
+                <dt>Date</dt>
+                <dd><time class="card__date" datetime="2026-11-28" data-bind="derived.dateLong" data-bind-datetime="event.date">Saturday, 28 November 2026</time></dd>
+              </div>
+              <div class="card__row" data-optional="event.time" hidden>
+                <dt>Time</dt>
+                <dd data-bind="event.time"></dd>
+              </div>
+              <div class="card__row">
+                <dt>Venue</dt>
+                <dd>
+                  <strong class="card__venue" data-bind="venue.name">Hotel Royal Residency</strong>
+                  <address class="card__address" data-bind-lines="venue.addressLines">Ambala Road, Opp. Kalpana Cinema,<br>Purani Mandi, Saharanpur,<br>Uttar Pradesh 247001, India</address>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 6 · VENUE & DIRECTIONS ============ -->
+    <section class="scene scene--venue" id="venue" data-scene="venue" data-time="3.75" aria-labelledby="venue-title">
+      <div class="scene__art" data-art="venue" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/evening-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/evening-garden.webp" alt="" loading="lazy" decoding="async">
+      </div>
+      <div class="scene__content venue">
+        <p class="kicker" data-reveal data-bind="text.venueKicker">Venue &amp; directions</p>
+        <h2 class="title-script" id="venue-title" data-reveal="write" data-bind="text.venueTitle">Find your way to us</h2>
+
+        <div class="venue__panel" data-reveal>
+          <div class="venue__map" aria-hidden="true">
+            <svg viewBox="0 0 360 250" focusable="false">
+              <defs>
+                <linearGradient id="map-paper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdf6e4"/><stop offset="1" stop-color="#f4e6c6"/></linearGradient>
+                <path id="map-road" d="M-10 168 C80 150 150 142 200 128 S310 96 372 84"/>
+              </defs>
+              <rect width="360" height="250" fill="url(#map-paper)"/>
+              <g fill="#ecdcb6" opacity=".7">
+                <rect x="18" y="20" width="84" height="58" rx="8"/><rect x="118" y="14" width="70" height="46" rx="8"/><rect x="250" y="150" width="92" height="72" rx="8"/>
+                <rect x="20" y="196" width="96" height="40" rx="8"/><rect x="136" y="186" width="92" height="48" rx="8"/><rect x="286" y="10" width="60" height="40" rx="8"/>
+              </g>
+              <g fill="none" stroke="#e6d2a4" stroke-linecap="round">
+                <path d="M110 -6 C104 60 112 110 124 150" stroke-width="9"/><path d="M240 255 C236 210 232 170 244 116" stroke-width="9"/><path d="M0 96 C60 92 90 96 112 108" stroke-width="7"/>
+              </g>
+              <use href="#map-road" fill="none" stroke="#d9bf86" stroke-width="30" stroke-linecap="round"/>
+              <use href="#map-road" fill="none" stroke="#f3dfb0" stroke-width="26" stroke-linecap="round"/>
+              <use href="#map-road" fill="none" stroke="#fffaf0" stroke-width="1.6" stroke-dasharray="9 9"/>
+              <text class="map__road" dy="4"><textPath href="#map-road" startOffset="9%" data-bind="venue.sketchRoad">Ambala Road</textPath></text>
+              <g fill="#7fb072"><circle cx="46" cy="126" r="9"/><circle cx="62" cy="120" r="7"/><circle cx="318" cy="118" r="8"/><circle cx="302" cy="126" r="6"/><circle cx="170" cy="96" r="7"/><circle cx="96" cy="188" r="7"/></g>
+              <g fill="#5f9460"><circle cx="50" cy="122" r="5"/><circle cx="314" cy="114" r="5"/></g>
+              <!-- the landmark across the road -->
+              <g data-optional="venue.sketchLandmark">
+                <rect x="186" y="150" width="56" height="34" rx="3" fill="#cbb7d6"/><rect x="186" y="150" width="56" height="9" fill="#8f77a8"/>
+                <circle cx="204" cy="171" r="7" fill="none" stroke="#6f5a8c" stroke-width="2"/><circle cx="204" cy="171" r="2" fill="#6f5a8c"/><rect x="216" y="166" width="20" height="12" rx="2" fill="#f8efe0"/>
+                <text class="map__label" x="214" y="200" text-anchor="middle" data-bind="venue.sketchLandmark">Kalpana Cinema</text>
+              </g>
+              <!-- the venue -->
+              <g>
+                <path d="M198 96 h76 v-34 h-76z" fill="#fdf1e2"/><path d="M192 64 h88 l-8 -14 h-72z" fill="#7b1e36"/>
+                <path d="M228 96 v-18 a8 8 0 0 1 16 0 v18z" fill="#b9825f"/>
+                <g fill="#e9c98a"><rect x="206" y="72" width="10" height="12" rx="2"/><rect x="256" y="72" width="10" height="12" rx="2"/></g>
+                <path d="M236 50 v-13" stroke="#7b1e36" stroke-width="1.6"/><path d="M236 37 l11 4 -11 4z" fill="#e3bd6a"/>
+              </g>
+              <g class="map__pin">
+                <circle class="map__pulse" cx="236" cy="22" r="10" fill="#c9627a"/>
+                <path d="M236 44 C224 30 222 26 222 20 a14 14 0 0 1 28 0 c0 6 -2 10 -14 24z" fill="#a5354f" stroke="#fff8ec" stroke-width="2"/>
+                <circle cx="236" cy="20" r="5" fill="#fff8ec"/>
+              </g>
+              <text class="map__venue" x="188" y="84" data-bind="venue.name">Hotel Royal Residency</text>
+              <text class="map__note" x="12" y="242">Hand-drawn sketch · not to scale</text>
+            </svg>
+          </div>
+
+          <div class="venue__info">
+            <h3 class="venue__name" data-bind="venue.name">Hotel Royal Residency</h3>
+            <address class="venue__address" id="venue-address" data-bind-lines="venue.addressLines">Ambala Road, Opp. Kalpana Cinema,<br>Purani Mandi, Saharanpur,<br>Uttar Pradesh 247001, India</address>
+            <div class="actions">
+              <a class="btn btn--primary js-directions" id="directions-link" target="_blank" rel="noopener noreferrer"
+                 href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel%20Royal%20Residency%2C%20Ambala%20Road%2C%20Opp.%20Kalpana%20Cinema%2C%20Purani%20Mandi%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.800 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></svg>
+                Get directions<span class="sr-only"> in Google Maps (opens in a new tab)</span>
+              </a>
+              <button type="button" class="btn" id="copy-address">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.500 5.500v-0.500a1.500 1.500 0 0 0-1.500-1.500H6A1.500 1.500 0 0 0 4.500 5v8A1.500 1.500 0 0 0 6 14.500h0.500" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span class="btn__text">Copy address</span>
+              </button>
+            </div>
+            <p class="venue__status" id="copy-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
+    <!-- ============ 7 · SAVE THE DATE ============ -->
+    <section class="scene scene--finale" id="save-the-date" data-scene="finale" data-time="4" aria-labelledby="finale-title">
+      <div class="scene__art" data-art="finale" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/night-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/night-garden.webp" alt="" loading="lazy" decoding="async">
+      </div>
+      <div class="skylanterns" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="scene__cast">
+        <img class="finale__stage" src="assets/florals/reception-stage.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <figure class="finale__pair" data-reveal="rise">
+          <img class="finale__groom" src="assets/characters/groom.webp" data-art-src="art.groom" alt="" loading="lazy" decoding="async">
+          <img class="finale__bride" src="assets/characters/bride.webp" data-art-src="art.bride" loading="lazy" decoding="async"
+               alt="Kenvi and Puru standing together before a flower-covered stage glowing with lights">
+        </figure>
+        <span class="rosebed" aria-hidden="true"></span>
+      </div>
+      <div class="scene__content finale">
+        <p class="kicker" data-reveal data-bind="text.finaleKicker">Save the date</p>
+        <h2 class="finale__date" id="finale-title" data-reveal><time datetime="2026-11-28" data-bind="derived.dateNumeric" data-bind-datetime="event.date">28 · 11 · 2026</time></h2>
+        <p class="finale__line" data-reveal>
+          <span data-bind="derived.dateLong">Saturday, 28 November 2026</span>
+          <span class="finale__dot" aria-hidden="true"></span>
+          <span data-bind="derived.venueShort">Hotel Royal Residency, Saharanpur</span>
+        </p>
+        <div class="actions actions--center" data-reveal>
+          <a class="btn btn--primary" id="calendar-link" href="assets/calendar/reception.ics" download="Kenvi-Puru-Wedding-Reception.ics" type="text/calendar">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5.500" width="16" height="14.500" rx="2.500" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 15l2.200 2.200L15.200 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Add to calendar<span class="sr-only"> (downloads a calendar file)</span>
+          </a>
+          <a class="btn js-directions" target="_blank" rel="noopener noreferrer"
+             href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel%20Royal%20Residency%2C%20Ambala%20Road%2C%20Opp.%20Kalpana%20Cinema%2C%20Purani%20Mandi%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.800 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></svg>
+            Directions<span class="sr-only"> in Google Maps (opens in a new tab)</span>
+          </a>
+        </div>
+        <p class="finale__more" data-reveal>
+          <a class="textlink" id="gcal-link" target="_blank" rel="noopener noreferrer" href="https://calendar.google.com/calendar/render?action=TEMPLATE">Add to Google Calendar<span class="sr-only"> (opens in a new tab)</span></a>
+        </p>
+        <p class="finale__closing" data-reveal data-bind="text.finaleClosing">We look forward to celebrating with you.</p>
+        <p class="finale__sign" data-reveal="write" data-bind="derived.coupleShort">Kenvi &amp; Puru</p>
+        <p class="finale__again" data-reveal>
+          <button type="button" class="btn btn--ghost" id="revisit">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3.6 3.8v4.4h4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Revisit the invitation
+          </button>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <audio id="music" preload="none" loop></audio>
+
+  <noscript>
+    <p class="noscript-note">This invitation is animated. You are seeing the simple version because JavaScript is switched off — every detail is still here.</p>
+  </noscript>
+
+  <script src="invitation.config.js"></script>
+  <script src="src/core.js"></script>
+  <script src="src/content.js"></script>
+  <script src="src/calendar.js"></script>
+  <script src="src/assets.js"></script>
+  <script src="src/sky.js"></script>
+  <script src="src/particles.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/scroll.js"></script>
+  <script src="src/envelope.js"></script>
+  <script src="src/together.js"></script>
+  <script src="src/venue.js"></script>
+  <script src="src/nav.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>

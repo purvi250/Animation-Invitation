@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Reception Invitation//Storybook//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wedding-reception-20261128-kenvi-puru@invitation
+DTSTAMP:20261013T063929Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:Wedding Reception of Kenvi Dwivedi & Puru Tyagi
+LOCATION:Hotel Royal Residency\, Ambala Road\, Opp. Kalpana Cinema\, Purani
+  Mandi\, Saharanpur\, Uttar Pradesh 247001\, India
+DESCRIPTION:You are invited to the wedding reception of Kenvi Dwivedi & Pur
+ u Tyagi.\nVenue: Hotel Royal Residency\, Ambala Road\, Opp. Kalpana Cinema
+ \, Purani Mandi\, Saharanpur\, Uttar Pradesh 247001\, India\nDirections: h
+ ttps://www.google.com/maps/dir/?api=1&destination=Hotel%20Royal%20Residenc
+ y%2C%20Ambala%20Road%2C%20Opp.%20Kalpana%20Cinema%2C%20Purani%20Mandi%2C%2
+ 0Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India
+URL:https://www.google.com/maps/dir/?api=1&destination=Hotel%20Royal%20Resi
+ dency%2C%20Ambala%20Road%2C%20Opp.%20Kalpana%20Cinema%2C%20Purani%20Mandi%
+ 2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

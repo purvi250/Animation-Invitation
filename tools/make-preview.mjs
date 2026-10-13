@@ -17,14 +17,22 @@ export async function makePreview() {
     await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 1 });
     await page.goto(`http://127.0.0.1:${port}/?motion=full`, { waitUntil: 'networkidle0' });
     await page.evaluate(() => document.fonts.ready);
-    // open the envelope without sound, hide the controls, let the letter settle
+    // play the opening without sound, hide the controls, and catch the best moment
     await page.evaluate(() => {
-      window.INVITE_CONFIG.music.startOnOpen = false;
-      document.querySelectorAll('.chrome, .chapters, .progress').forEach((el) => { el.style.visibility = 'hidden'; });
+      window.Invite.audio.startFromGesture = () => {};
+      document.querySelectorAll('.chrome, .chapters, .progress, .hero__actions').forEach((el) => { el.style.visibility = 'hidden'; });
       document.querySelectorAll('.opening__hint > *').forEach((el) => { el.style.display = 'none'; });
     });
-    await page.evaluate(() => { window.Invite.audio.startFromGesture = () => {}; document.getElementById('envelope-button').click(); });
-    await new Promise((r) => setTimeout(r, 3600));
+    if (await page.evaluate(() => window.Invite.openingMode === 'envelope')) {
+      await page.evaluate(() => document.getElementById('envelope-button').click());
+      await new Promise((r) => setTimeout(r, 3600));
+    } else {
+      // the date revealed, with the three helpers cheering beside it
+      await page.waitForFunction(() => window.Invite.hero.state === 'ready', { timeout: 20000 });
+      await page.evaluate(() => window.Invite.hero.begin(false));
+      await page.waitForFunction(() => [...document.querySelectorAll('#gate .helper')].filter((h) => h.dataset.state === 'cheer').length === 3, { timeout: 15000 });
+      await new Promise((r) => setTimeout(r, 420));
+    }
     const out = path.join(ROOT, 'assets', 'icons', 'share-preview.jpg');
     fs.mkdirSync(path.dirname(out), { recursive: true });
     await page.screenshot({ path: out, type: 'jpeg', quality: 86 });

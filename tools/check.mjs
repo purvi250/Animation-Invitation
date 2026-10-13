@@ -72,7 +72,20 @@ if (site) {
   else ok.push('directions link is well-formed');
 
   /* 5 · artwork and music named in the config */
+  if (!['rope', 'envelope'].includes(config.opening || 'rope')) errors.push(`config: opening must be 'rope' or 'envelope' (found "${config.opening}")`);
+  else ok.push(`opening: ${config.opening === 'envelope' ? 'the classic envelope' : 'rope pull and date reveal'}`);
   const art = config.art || {};
+  // optional extra poses: fine to leave empty, but a named file should exist
+  let poseCount = 0;
+  for (const [who, set] of Object.entries(art.poses || {})) {
+    for (const [name, value] of Object.entries(set || {})) {
+      for (const src of Array.isArray(value) ? value : value ? [value] : []) {
+        poseCount += 1;
+        if (!exists(src)) warnings.push(`art.poses.${who}.${name} → ${src} is missing — the built-in gentle movement will be used.`);
+      }
+    }
+  }
+  ok.push(poseCount ? `${poseCount} extra pose picture(s) configured` : 'no extra pose pictures configured (bride and groom use the built-in gentle movement)');
   for (const key of ['groom', 'bride', 'couple']) {
     if (!art[key]) warnings.push(`art.${key} is empty — a monogram medallion will be shown instead.`);
     else if (!exists(art[key])) warnings.push(`art.${key} → ${art[key]} is missing — a monogram medallion will be shown instead.`);

@@ -25,8 +25,31 @@
   const initial = (person) => ((person.short || person.name || '?').trim().charAt(0) || '?').toUpperCase();
   const mapsQuery = venue.mapsQuery || [venue.name].concat(lines).join(' ');
 
+  // the programme on Thursday (optional block in the config)
+  const programme = cfg.programme || {};
+  const pDate = parseDate(programme.date);
+  const pPart = (opts) => (pDate ? new Intl.DateTimeFormat('en-GB', Object.assign({ timeZone: 'UTC' }, opts)).format(pDate) : '');
+  const clock = (hhmm) => {
+    const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm || '');
+    if (!m) return hhmm || '';
+    const h = +m[1];
+    return `${h % 12 || 12}:${m[2]} ${h < 12 ? 'AM' : 'PM'}`;
+  };
+  const pLines = (programme.venue && programme.venue.addressLines) || [];
+  const pQuery = (programme.venue && programme.venue.mapsQuery) || pLines.join(' ');
+
   const derived = {
     date,
+    programmeDate: pDate,
+    programmeDateLong: pDate ? `${pPart({ weekday: 'long' })}, ${pDate.getUTCDate()} ${pPart({ month: 'long' })} ${pDate.getUTCFullYear()}` : '',
+    programmeItems: (programme.items || []).map((item) => ({
+      name: item.name,
+      time: item.time,
+      label: clock(item.time),
+      iso: `${programme.date}T${item.time}${programme.timezone || '+05:30'}`,
+    })),
+    programmeAddressOneLine: pLines.join(' ').replace(/\s+/g, ' ').replace(/,\s*$/, '').trim(),
+    programmeMaps: pQuery ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(pQuery)}` : '',
     weekday: part({ weekday: 'long' }),
     dateLong: date ? `${part({ weekday: 'long' })}, ${date.getUTCDate()} ${part({ month: 'long' })} ${date.getUTCFullYear()}` : '',
     dateNumeric: date ? `${pad(date.getUTCDate())} · ${pad(date.getUTCMonth() + 1)} · ${date.getUTCFullYear()}` : '',

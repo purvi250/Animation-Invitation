@@ -519,3 +519,67 @@
 
 /* ---------- reduced motion: every looping decoration rests ---------- */
 .reduce-motion .is-looping, .reduce-motion .tap-ring, .reduce-motion .curtain, .reduce-motion .bouquet, .reduce-motion .diya__flame, .reduce-motion .hero__begin, .reduce-motion .figure > img { animation: none !important; }
+
+/* ============================== 5b · THE PROGRAMME ============================== */
+/* Thursday's gathering: a second card in the same paper, gold and lotus as the invitation. */
+.scene--programme { --mist: #262c6e; --ink-here: var(--cream); }
+.no-js .scene--programme { background: linear-gradient(#0a1040, #262e80 60%, #5a52a0); }
+.scene--programme .scene__content {
+  min-height: 100vh; min-height: 100svh;
+  display: grid; place-items: center;
+  padding: calc(var(--header-h) + 34px) 22px 22svh;
+}
+/* the helper's strip of ground stays at the foot of the screen, like the invitation's */
+.scene--programme > .troupe { position: sticky; bottom: 0; top: auto; height: 20svh; margin-top: -20svh; }
+
+.programme-card {
+  position: relative; width: min(100%, 540px); border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 24%),
+    radial-gradient(circle at 18% 8%, #fffdf7, var(--paper) 52%, var(--paper-deep));
+  box-shadow: 0 30px 70px rgba(4, 6, 34, 0.55), 0 0 0 1px rgba(183, 138, 60, 0.5), 0 0 90px rgba(255, 214, 150, 0.22);
+  color: var(--ink); text-align: center; text-shadow: none;
+}
+.programme-card::before, .programme-card::after { content: ''; position: absolute; pointer-events: none; }
+.programme-card::before { inset: 10px; border: 1px solid rgba(183, 138, 60, 0.75); border-radius: 10px; }
+.programme-card::after { inset: 15px; border: 1px solid rgba(183, 138, 60, 0.3); border-radius: 7px; }
+.programme-card__inner { position: relative; z-index: 2; padding: clamp(40px, 9vw, 58px) clamp(22px, 6vw, 52px) clamp(28px, 6vw, 40px); }
+.programme-card__lotus { display: block; width: 58px; margin: -6px auto 4px; }
+.programme-card__kicker { font-style: italic; font-size: clamp(1.05rem, 4.3vw, 1.22rem); color: var(--ink-soft); }
+.programme-card__title { font-family: var(--font-script); font-weight: 400; font-size: clamp(3rem, 14vw, 4.6rem); line-height: 1.12; color: var(--maroon); padding: 0 0.2em; }
+.programme-card__date {
+  font-family: var(--font-caps); font-weight: 600; font-size: clamp(1rem, 4.5vw, 1.32rem);
+  letter-spacing: 0.12em; padding-left: 0.12em; text-transform: uppercase; line-height: 1.35; color: var(--maroon); text-wrap: balance;
+}
+.programme-card .ornament { margin: 14px auto 16px; }
+.programme-card__list { display: grid; gap: 12px; width: min(100%, 21em); margin: 0 auto; text-align: left; }
+.programme-card__item { display: flex; align-items: baseline; font-size: clamp(1.22rem, 5.3vw, 1.5rem); font-weight: 600; line-height: 1.3; }
+.programme-card__item dt { flex: 1; display: flex; align-items: baseline; color: var(--ink); }
+/* the dotted leader between an item and its time, as on a printed programme */
+.programme-card__item dt::after { content: ''; flex: 1; min-width: 1.4em; margin: 0 0.55em; border-bottom: 2.5px dotted var(--gold); transform: translateY(-0.3em); }
+.programme-card__item dd { margin: 0; color: var(--maroon); white-space: nowrap; font-variant-numeric: lining-nums; }
+.programme-card__label {
+  font-family: var(--font-caps); font-weight: 600; font-size: 0.74rem; letter-spacing: 0.34em; padding-left: 0.34em;
+  text-transform: uppercase; color: var(--gold-deep); margin-bottom: 3px;
+}
+.programme-card__address { font-size: clamp(1.1rem, 4.6vw, 1.26rem); font-weight: 500; line-height: 1.45; -webkit-user-select: text; user-select: text; }
+.programme-card__actions { margin-top: 18px; }
+.programme-card__status { min-height: 1.4em; margin-top: 8px; font-size: 1rem; font-weight: 600; color: #24542f; }
+
+/* staged: the card unfolds from its centre, then its lines arrive one after another */
+.programme-card { transition: clip-path 1.15s var(--ease-out), -webkit-clip-path 1.15s var(--ease-out); }
+.js:not(.reduce-motion) .scene--programme.is-staged:not(.show-card) .programme-card { -webkit-clip-path: inset(-70px 50% -70px 50%); clip-path: inset(-70px 50% -70px 50%); }
+.js:not(.reduce-motion) .scene--programme.is-staged.show-card .programme-card { -webkit-clip-path: inset(-70px -70px -70px -70px); clip-path: inset(-70px -70px -70px -70px); }
+.scene--programme .programme-card__inner > *, .scene--programme .programme-card__item { transition: opacity 0.8s var(--ease), transform 1s var(--ease-out); transition-delay: calc(var(--n, 0) * 140ms); }
+.js:not(.reduce-motion) .scene--programme.is-staged:not(.show-lines) .programme-card__inner > *,
+.js:not(.reduce-motion) .scene--programme.is-staged:not(.show-lines) .programme-card__item { opacity: 0; transform: translate3d(0, 14px, 0); transition-delay: 0s; transition-duration: 0.2s; }
+.scene--programme .programme-card__list { opacity: 1 !important; transform: none !important; }
+.programme-card__inner > :nth-child(2) { --n: 1; } .programme-card__inner > :nth-child(3) { --n: 2; } .programme-card__inner > :nth-child(4) { --n: 3; }
+.programme-card__item:nth-child(1) { --n: 5; } .programme-card__item:nth-child(2) { --n: 6; }
+.programme-card__inner > :nth-child(7) { --n: 7; } .programme-card__inner > :nth-child(8) { --n: 8; } .programme-card__inner > :nth-child(9) { --n: 8; }
+.programme-card__inner > :nth-child(10) { --n: 9; } .programme-card__inner > :nth-child(11) { --n: 9; }
+
+/* the row of lamps the helper lights */
+.programme-lamps { position: absolute; inset: 0; pointer-events: none; }
+.programme-lamps .diya { position: absolute; left: var(--dx); bottom: 18%; width: clamp(26px, 3.6svh, 42px); translate: -50% 0; }
+.js:not(.reduce-motion) .programme-lamps .diya:not(.is-lit) .diya__flame { opacity: 0; transform: scale(0.2); }

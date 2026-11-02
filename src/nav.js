@@ -22,7 +22,7 @@
 
   /** Everything back to how it was at the very beginning. */
   function resetStory() {
-    ['hero', 'envelope', 'entrances', 'scrollcard', 'finale'].forEach((name) => {
+    ['hero', 'envelope', 'entrances', 'scrollcard', 'programme', 'finale'].forEach((name) => {
       try { if (Invite[name] && Invite[name].reset) Invite[name].reset(); } catch (err) { console.error(err); }
     });
   }

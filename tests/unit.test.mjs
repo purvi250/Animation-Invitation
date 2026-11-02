@@ -92,7 +92,38 @@ test('the page works without scripting: its built-in wording matches the config'
     assert.ok(html.includes(text), `index.html should contain "${text}"`);
   }
   assert.ok(html.includes(derived.mapsDirections.replace(/&/g, '&amp;')), 'fallback directions link matches');
-  assert.ok(!/\b\d{1,2}[:.]\d{2}\s?(am|pm)\b/i.test(html.replace(/<script[\s\S]*?<\/script>/g, '')), 'no clock time appears in the page');
+  // the only clock times on the page are the programme's — the reception's time has not been announced
+  const outsideProgramme = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<section class="scene scene--programme"[\s\S]*?<\/section>/, '');
+  assert.ok(!/\b\d{1,2}[:.]\d{2}\s?(am|pm)\b/i.test(outsideProgramme), 'no clock time appears outside the programme');
+});
+
+test('the programme is exactly as given: Thursday 26 November 2026, Sundarkand 2:00 PM, Dinner 8:00 PM', () => {
+  assert.equal(config.programme.date, '2026-11-26');
+  assert.equal(derived.programmeDateLong, 'Thursday, 26 November 2026');
+  assert.equal(JSON.stringify(derived.programmeItems.map((i) => [i.name, i.label])), JSON.stringify([['Sundarkand', '2:00 PM'], ['Dinner', '8:00 PM']]));
+  assert.equal(config.programme.venue.addressLines.join(' '), 'Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur – 247001');
+  assert.equal(derived.programmeAddressOneLine, 'Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur – 247001');
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  for (const text of ['Programme', 'Thursday, 26 November 2026', 'Sundarkand', '2:00 PM', 'Dinner', '8:00 PM', 'Ankit Vihar Colony, Lane No. 3,<br>Nawada Road, Saharanpur – 247001']) {
+    assert.ok(html.includes(text), `index.html should contain "${text}" (no-script fallback)`);
+  }
+});
+
+test('programme calendar file: one entry per item, at the right Indian time, with no invented end time', () => {
+  const p = calendar.buildProgrammeICS(config, derived, new Date(Date.UTC(2026, 10, 2, 9, 0, 0)));
+  const flat = p.replace(/\r\n /g, '');
+  assert.equal((p.match(/BEGIN:VEVENT/g) || []).length, 2);
+  assert.ok(p.includes('\r\nDTSTART:20261126T083000Z\r\n'), 'Sundarkand 2:00 PM IST = 08:30 UTC');
+  assert.ok(p.includes('\r\nDTSTART:20261126T143000Z\r\n'), 'Dinner 8:00 PM IST = 14:30 UTC');
+  assert.ok(!/DTEND|DURATION/.test(p), 'no end time was given, so none may be invented');
+  assert.ok(flat.includes('SUMMARY:Sundarkand · Kenvi & Puru') && flat.includes('SUMMARY:Dinner · Kenvi & Puru'));
+  assert.ok(flat.includes('LOCATION:Ankit Vihar Colony\\, Lane No. 3\\, Nawada Road\\, Saharanpur – 247001'));
+  for (const line of p.split('\r\n')) assert.ok(Buffer.byteLength(line, 'utf8') <= 75, `line too long: ${line}`);
+  const bundled = fs.readFileSync(path.join(ROOT, 'assets/calendar/programme.ics'), 'utf8');
+  assert.equal(bundled.replace(/DTSTAMP:.*\r\n/g, ''), p.replace(/DTSTAMP:.*\r\n/g, ''), 'run "npm run ics" to refresh it');
+  assert.equal(calendar.programmeFilename(derived), 'Kenvi-Puru-Programme-26-November.ics');
+  const maps = new URL(derived.programmeMaps);
+  assert.equal(maps.searchParams.get('destination'), 'Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur, Uttar Pradesh 247001, India');
 });
 
 test('local server: when a port is busy it moves on and reports the port it is really using', async () => {

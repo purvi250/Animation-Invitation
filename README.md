@@ -39,6 +39,7 @@ optional tools below (`winget install OpenJS.NodeJS.LTS`).
 | 3 | **The groom** | A helper races through with a golden flag; Puru steps out from behind a pillar with a second helper at his side, who hands him a garland; his plaque unfolds and petals fall. | **Tap him** for a greeting. |
 | 4 | **Together** | Played by the scroll bar: the two approach, helpers run between them, the mandap rises, lamps light from the middle outward, the floral ring and portrait appear, then the names. Scroll back and it reverses. | Scroll, in either direction. |
 | 5 | **The invitation** | A helper tosses the rolled invitation onto its stand. | **Tap it**: the ribbon lets go, the paper unrolls, a gold border draws itself and the details arrive. (If nobody taps, it opens by itself after a few seconds.) |
+| 5b | **Programme** | Thursday, 26 November 2026, before the reception: a second card in the same style unfolds — Sundarkand 2:00 PM, Dinner 8:00 PM, and its venue (Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur – 247001). A helper walks along lighting a row of lamps. | *Get directions* (to this venue, not the hotel), *Copy address*, *Add to calendar* (both items, at their start times). |
 | 6 | **The venue** | A helper walks up the path of an illustrated hotel forecourt carrying a map marker. | **Tap the marker** or *Get directions* for Google Maps. *Copy address* copies the full address. |
 | 7 | **Until then** | One helper climbs a ladder to place the last flower, one lets a lantern go, one throws petals. The date appears once more. | *Download calendar event*, *Open Google Maps*, *Replay invitation*. |
 
@@ -104,6 +105,7 @@ event: {
   time:  '',             // empty = not shown anywhere. e.g. '7:00 PM onwards'
 },
 venue:   { name, addressLines: [ ... ], city, mapsQuery },
+programme: { title, date: '2026-11-26', items: [{ name, time: '14:00' }, …], venue: { addressLines, mapsQuery } },
 opening: 'rope',         // or 'envelope' for the classic sealed-envelope opening
 text:    { ... },        // every sentence in the story
 art:     { groom, bride, couple, poses: { ... }, backdrops: { ... } },
@@ -112,8 +114,12 @@ music:   { src, volume, startOnOpen, effects },
 
 * The weekday, "Saturday, 28 November 2026", the monogram, the map links and the calendar file are all derived
   from these values, so they cannot disagree with each other.
-* **No time, RSVP or host is stated anywhere**, because none was given. Fill in `event.time` when you know it and it
-  appears on the invitation card. (The calendar entry stays "all day" and mentions the time in its notes.)
+* **No reception time, RSVP or host is stated anywhere**, because none was given. Fill in `event.time` when you know it
+  and it appears on the invitation card. (The calendar entry stays "all day" and mentions the time in its notes.)
+* **The programme** (Thursday's Sundarkand and Dinner) has its own block. Times are typed 24-hour (`'14:00'`) and shown
+  as 2:00 PM. Its calendar file holds one entry per item at its start time, in India time; no end times were given,
+  so none are added. Add, remove or rename items in `programme.items` and the card, calendar file and check follow.
+  Delete the whole `programme` block to remove the chapter's data (and its section in `index.html`).
 * **The classic envelope** from the first version is still here: set `opening: 'envelope'`, or add
   `?opening=envelope` to the address to try it.
 * After changing details run `npm run check` (it confirms everything lines up) and `npm run ics`.
@@ -161,7 +167,7 @@ The project is under Git. The state before the cinematic upgrade is tagged **`v1
 
 ## 7. What is tested
 
-`npm test` runs **12 unit tests** (date, calendar file, map link, local server) and a **177-point browser test**
+`npm test` runs **14 unit tests** (date, calendar file, map link, local server) and a **192-point browser test**
 (`tests/e2e.mjs`) that uses the real page the way a guest would:
 
 * the hero: helpers reach the rope, the pull starts by button, by keyboard, by tapping a helper and by scrolling;
@@ -170,6 +176,8 @@ The project is under Git. The state before the cinematic upgrade is tagged **`v1
 * groom: flag bearer, stepping out, garland received, plaque, greeting on tap
 * scrolling back replays a chapter; the couple's scene forwards and in reverse, with scroll-scrubbed helpers
 * the invitation: delivered, opened by tap, and opening by itself when nobody taps; every line of the card
+* the programme: the card unfolds with every line, the lamps are lit, and its directions, copy-address and calendar
+  download all point at the programme venue and times (2:00 PM and 8:00 PM India time, no invented end times)
 * music stays silent until a tap, mutes and unmutes; sound effects obey the mute button
 * directions (including a live check that Google Maps answers), the map marker, copy address
 * the downloaded `.ics` file's contents; replay
@@ -201,7 +209,7 @@ For the link to show a picture in WhatsApp, open `index.html`, find `og:image`, 
 ```
 InvitationWeb/
 ├─ index.html                 the page: seven chapters, top to bottom
-├─ invitation.config.js       ← names, date, venue, wording, opening, artwork, music
+├─ invitation.config.js       ← names, date, venue, programme, wording, opening, artwork, music
 ├─ Start Invitation.bat       double-click to open
 ├─ styles/
 │  ├─ base.css                fonts, colours, buttons, focus ring, reduced-motion rules
@@ -218,6 +226,7 @@ InvitationWeb/
 │  ├─ entrances.js            chapters 2 and 3 — bride and groom, and the optional-pose system
 │  ├─ together.js             chapter 4 — the scroll-driven meeting
 │  ├─ scrollcard.js           chapter 5 — the invitation scroll
+│  ├─ programme.js            chapter 5b — Thursday's programme card and its lamps
 │  ├─ venue.js  finale.js     chapters 6 and 7
 │  └─ envelope.js  nav.js  main.js
 ├─ assets/

@@ -1,0 +1,42 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Reception Invitation//Storybook//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:sundarkand-20261126-kenvi-puru@invitation
+DTSTAMP:20261102T104502Z
+DTSTART:20261126T083000Z
+SUMMARY:Sundarkand · Kenvi & Puru
+LOCATION:Ankit Vihar Colony\, Lane No. 3\, Nawada Road\, Saharanpur – 247
+ 001
+DESCRIPTION:Programme\, Thursday\, 26 November 2026: Sundarkand 2:00 PM\, D
+ inner 8:00 PM.\nKenvi Dwivedi & Puru Tyagi\nVenue: Ankit Vihar Colony\, La
+ ne No. 3\, Nawada Road\, Saharanpur – 247001\nDirections: https://www.go
+ ogle.com/maps/dir/?api=1&destination=Ankit%20Vihar%20Colony%2C%20Lane%20No
+ .%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%
+ 20India
+URL:https://www.google.com/maps/dir/?api=1&destination=Ankit%20Vihar%20Colo
+ ny%2C%20Lane%20No.%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pra
+ desh%20247001%2C%20India
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:dinner-20261126-kenvi-puru@invitation
+DTSTAMP:20261102T104502Z
+DTSTART:20261126T143000Z
+SUMMARY:Dinner · Kenvi & Puru
+LOCATION:Ankit Vihar Colony\, Lane No. 3\, Nawada Road\, Saharanpur – 247
+ 001
+DESCRIPTION:Programme\, Thursday\, 26 November 2026: Sundarkand 2:00 PM\, D
+ inner 8:00 PM.\nKenvi Dwivedi & Puru Tyagi\nVenue: Ankit Vihar Colony\, La
+ ne No. 3\, Nawada Road\, Saharanpur – 247001\nDirections: https://www.go
+ ogle.com/maps/dir/?api=1&destination=Ankit%20Vihar%20Colony%2C%20Lane%20No
+ .%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%
+ 20India
+URL:https://www.google.com/maps/dir/?api=1&destination=Ankit%20Vihar%20Colo
+ ny%2C%20Lane%20No.%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pra
+ desh%20247001%2C%20India
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

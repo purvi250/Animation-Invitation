@@ -77,6 +77,56 @@
     return lines.map(fold).join('\r\n') + '\r\n';
   }
 
+  /** "2026-11-26" + "14:00" + "+05:30" → the same moment in UTC (so every calendar app agrees). */
+  function toUTC(date, time, zone) {
+    const [y, mo, d] = date.split('-').map(Number);
+    const [h, mi] = time.split(':').map(Number);
+    const z = /^([+-])(\d{2}):(\d{2})$/.exec(zone || '+05:30') || ['', '+', '05', '30'];
+    const offset = (z[1] === '-' ? -1 : 1) * (Number(z[2]) * 60 + Number(z[3]));
+    return new Date(Date.UTC(y, mo - 1, d, h, mi) - offset * 60000);
+  }
+
+  /**
+   * The programme as calendar entries: one per item (e.g. Sundarkand, Dinner), each at its start time.
+   * No end times have been given, so none are invented — the entries carry a start time only.
+   */
+  function buildProgrammeICS(cfg, derived, now) {
+    const p = cfg.programme || {};
+    const items = (derived.programmeItems || []).filter((i) => /^\d{1,2}:\d{2}$/.test(i.time || ''));
+    if (!p.date || !items.length) return '';
+    const title = p.title || 'Programme';
+    const details = [
+      `${title}, ${derived.programmeDateLong}: ${items.map((i) => `${i.name} ${i.label}`).join(', ')}.`,
+      `${derived.coupleFull}`,
+      `Venue: ${derived.programmeAddressOneLine}`,
+      derived.programmeMaps ? `Directions: ${derived.programmeMaps}` : '',
+    ].filter(Boolean).join('\n');
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Reception Invitation//Storybook//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+    items.forEach((item) => {
+      const start = toUTC(p.date, item.time, p.timezone);
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:${slug(item.name)}-${p.date.replace(/-/g, '')}-${slug(derived.coupleShort)}@invitation`,
+        `DTSTAMP:${stamp(now || new Date())}`,
+        `DTSTART:${stamp(start)}`,
+        `SUMMARY:${esc(`${item.name} · ${derived.coupleShort}`)}`,
+        `LOCATION:${esc(derived.programmeAddressOneLine)}`,
+        `DESCRIPTION:${esc(details)}`,
+        derived.programmeMaps ? `URL:${derived.programmeMaps}` : '',
+        'STATUS:CONFIRMED',
+        'END:VEVENT',
+      );
+    });
+    lines.push('END:VCALENDAR');
+    return lines.filter(Boolean).map(fold).join('\r\n') + '\r\n';
+  }
+
+  function programmeFilename(derived) {
+    const d = derived.programmeDate;
+    const day = d ? `${d.getUTCDate()}-${new Intl.DateTimeFormat('en-GB', { month: 'long', timeZone: 'UTC' }).format(d)}` : '';
+    return `${derived.coupleShort.replace(/\s*&\s*/, '-')}-Programme-${day}`.replace(/[^A-Za-z0-9-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') + '.ics';
+  }
+
   function googleUrl(cfg, derived) {
     const e = describe(cfg, derived);
     if (!e) return '';
@@ -95,5 +145,5 @@
     return `${name.replace(/[^A-Za-z0-9-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}.ics`;
   }
 
-  Invite.calendar = { buildICS, googleUrl, filename, fold, esc };
+  Invite.calendar = { buildICS, googleUrl, filename, fold, esc, buildProgrammeICS, programmeFilename, toUTC };
 })();

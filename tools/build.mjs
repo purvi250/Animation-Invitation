@@ -1,7 +1,7 @@
 /* ============================================================================
    Build — collects just the website into dist/, ready to upload to any static
    host (Netlify Drop, GitHub Pages, Cloudflare Pages…).   Run:  npm run build
-     1. refreshes the calendar file from invitation.config.js
+     1. refreshes the calendar files (reception, and programme if any) from invitation.config.js
      2. makes the link-preview picture (if Chrome or Edge is installed)
      3. copies index.html, the config, styles/, src/ and assets/ into dist/
    The tools, tests and painter sources are deliberately left out.
@@ -16,8 +16,9 @@ const DIST = path.join(ROOT, 'dist');
 const INCLUDE = ['index.html', 'invitation.config.js', 'styles', 'src', 'assets'];
 const SKIP = [/^assets\/art\/README\.md$/, /\.DS_Store$/, /Thumbs\.db$/];
 
-const { derived } = writeICS();
+const { derived, programmeFile } = writeICS();
 console.log(`  ✓ calendar file refreshed (${derived.dateLong}, all-day)`);
+if (programmeFile) console.log(`  ✓ programme calendar file refreshed (${derived.programmeDateLong}, start times only)`);
 
 try {
   await makePreview();

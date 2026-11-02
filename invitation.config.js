@@ -35,6 +35,27 @@ window.INVITE_CONFIG = {
     mapsQuery: 'Hotel Royal Residency, Ambala Road, Opp. Kalpana Cinema, Purani Mandi, Saharanpur, Uttar Pradesh 247001, India',
   },
 
+  /* ---------- Programme: the gathering on Thursday, before the reception ----------
+     Shown as its own chapter after the invitation card, with its own directions and calendar file.
+     Times are 24-hour ('14:00'); the page shows them as 2:00 PM. No end times have been given,
+     so the calendar entries carry start times only. */
+  programme: {
+    title: 'Programme',
+    date: '2026-11-26',
+    timezone: '+05:30',            // India Standard Time — used to put the right time in guests' calendars
+    items: [
+      { name: 'Sundarkand', time: '14:00' },
+      { name: 'Dinner', time: '20:00' },
+    ],
+    venue: {
+      addressLines: [
+        'Ankit Vihar Colony, Lane No. 3,',
+        'Nawada Road, Saharanpur – 247001',
+      ],
+      mapsQuery: 'Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur, Uttar Pradesh 247001, India',
+    },
+  },
+
   /* ---------- How the invitation opens ----------
      'rope'      little helpers pull a ceremonial rope and raise a banner to reveal the date (the default)
      'envelope'  the classic sealed envelope, as in the first version
@@ -69,7 +90,10 @@ window.INVITE_CONFIG = {
     cardHint: 'Tap the invitation to open it',
     cardKicker: 'With great joy, we invite you to the',
     cardOf: 'of',
-    venueKicker: 'Venue & directions',
+    programmeKicker: 'Before the reception',
+    programmeVenueLabel: 'Venue',
+
+    venueKicker: 'Reception venue & directions',
     venueTitle: 'Find your way to us',
     venueNote: 'The garden scene is an artist’s impression, not a picture of the hotel.',
 

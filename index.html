@@ -107,6 +107,7 @@
       <li><a href="#groom" data-chapter="groom"><span class="chapters__dot"></span><span class="chapters__label">The groom</span></a></li>
       <li><a href="#together" data-chapter="together"><span class="chapters__dot"></span><span class="chapters__label">Together</span></a></li>
       <li><a href="#invitation" data-chapter="invitation"><span class="chapters__dot"></span><span class="chapters__label">Invitation</span></a></li>
+      <li><a href="#programme" data-chapter="programme"><span class="chapters__dot"></span><span class="chapters__label">Programme</span></a></li>
       <li><a href="#venue" data-chapter="venue"><span class="chapters__dot"></span><span class="chapters__label">Venue</span></a></li>
       <li><a href="#save-the-date" data-chapter="save-the-date"><span class="chapters__dot"></span><span class="chapters__label">Until then</span></a></li>
     </ol>
@@ -469,6 +470,68 @@
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
+    <!-- ============ 5b · PROGRAMME (Thursday, before the reception) ============ -->
+    <section class="scene scene--programme" id="programme" data-scene="programme" data-time="3.6" aria-labelledby="programme-title">
+      <div class="scene__art" data-art="programme" aria-hidden="true">
+        <img class="layer" data-depth="0.5" src="assets/scenery/grove-far.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0.24" src="assets/scenery/grove-mid.webp" alt="" loading="lazy" decoding="async">
+        <img class="layer" data-depth="0" src="assets/scenery/grove-near.webp" alt="" loading="lazy" decoding="async">
+      </div>
+      <div class="scene__content">
+        <article class="programme-card" id="programme-card">
+          <img class="card__corner card__corner--tl" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <img class="card__corner card__corner--br" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <div class="programme-card__inner">
+            <svg class="programme-card__lotus" viewBox="0 0 120 72" aria-hidden="true" focusable="false"><use href="#lotus"/></svg>
+            <p class="programme-card__kicker" data-bind="text.programmeKicker">Before the reception</p>
+            <h2 class="programme-card__title" id="programme-title" data-bind="programme.title">Programme</h2>
+            <p class="programme-card__date"><time datetime="2026-11-26" data-bind="derived.programmeDateLong" data-bind-datetime="programme.date">Thursday, 26 November 2026</time></p>
+            <span class="ornament" aria-hidden="true"></span>
+            <dl class="programme-card__list">
+              <div class="programme-card__item">
+                <dt data-bind="programme.items.0.name">Sundarkand</dt>
+                <dd><time datetime="2026-11-26T14:00+05:30" data-bind="derived.programmeItems.0.label" data-bind-datetime="derived.programmeItems.0.iso">2:00 PM</time></dd>
+              </div>
+              <div class="programme-card__item">
+                <dt data-bind="programme.items.1.name">Dinner</dt>
+                <dd><time datetime="2026-11-26T20:00+05:30" data-bind="derived.programmeItems.1.label" data-bind-datetime="derived.programmeItems.1.iso">8:00 PM</time></dd>
+              </div>
+            </dl>
+            <span class="ornament" aria-hidden="true"></span>
+            <p class="programme-card__label" data-bind="text.programmeVenueLabel">Venue</p>
+            <address class="programme-card__address" id="programme-address" data-bind-lines="programme.venue.addressLines">Ankit Vihar Colony, Lane No. 3,<br>Nawada Road, Saharanpur – 247001</address>
+            <div class="actions actions--center programme-card__actions">
+              <a class="btn btn--primary" id="programme-directions" target="_blank" rel="noopener noreferrer"
+                 href="https://www.google.com/maps/dir/?api=1&amp;destination=Ankit%20Vihar%20Colony%2C%20Lane%20No.%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.800 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></svg>
+                Get directions<span class="sr-only"> to the programme venue in Google Maps (opens in a new tab)</span>
+              </a>
+              <button type="button" class="btn" id="programme-copy">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.500 5.500v-0.500a1.500 1.500 0 0 0-1.500-1.500H6A1.500 1.500 0 0 0 4.500 5v8A1.500 1.500 0 0 0 6 14.500h0.500" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span class="btn__text">Copy address</span>
+              </button>
+              <a class="btn" id="programme-calendar" href="assets/calendar/programme.ics" download="Kenvi-Puru-Programme-26-November.ics" type="text/calendar">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5.500" width="16" height="14.500" rx="2.500" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 15l2.200 2.200L15.200 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Add to calendar<span class="sr-only"> (downloads the programme as a calendar file)</span>
+              </a>
+            </div>
+            <p class="programme-card__status" id="programme-status" role="status" aria-live="polite"></p>
+          </div>
+        </article>
+      </div>
+      <div class="troupe" data-troupe="programme" aria-hidden="true">
+        <div class="programme-lamps">
+          <span class="diya" style="--dx:12%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:27%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:42%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:58%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:73%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:88%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+        </div>
+      </div>
+      <span class="scene__mist" aria-hidden="true"></span>
+    </section>
+
     <!-- ============ 6 · VENUE & DIRECTIONS ============ -->
     <section class="scene scene--venue" id="venue" data-scene="venue" data-time="3.75" aria-labelledby="venue-title">
       <div class="scene__art" data-art="venue" aria-hidden="true">
@@ -477,7 +540,7 @@
       </div>
       <div class="troupe" data-troupe="venue"></div>
       <div class="scene__content venue">
-        <p class="kicker" data-reveal data-bind="text.venueKicker">Venue &amp; directions</p>
+        <p class="kicker" data-reveal data-bind="text.venueKicker">Reception venue &amp; directions</p>
         <h2 class="title-script" id="venue-title" data-reveal="write" data-bind="text.venueTitle">Find your way to us</h2>
 
         <div class="venue__panel" data-reveal>
@@ -625,6 +688,7 @@
   <script src="src/entrances.js"></script>
   <script src="src/together.js"></script>
   <script src="src/scrollcard.js"></script>
+  <script src="src/programme.js"></script>
   <script src="src/venue.js"></script>
   <script src="src/finale.js"></script>
   <script src="src/nav.js"></script>

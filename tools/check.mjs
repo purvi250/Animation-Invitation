@@ -40,7 +40,7 @@ if (site) {
   for (const key of ['bride.name', 'groom.name', 'event.title', 'venue.name']) if (!lookup(key)) errors.push(`config: ${key} is empty`);
   if (!(config.venue.addressLines || []).length) errors.push('config: venue.addressLines is empty');
   if (config.event.time) warnings.push(`event.time is set ("${config.event.time}") — it is shown on the card; the calendar entry stays all-day.`);
-  else ok.push('no event time is stated anywhere (all-day calendar entry)');
+  else ok.push('no reception time is stated (all-day calendar entry)');
 
   /* 3 · bound words resolve, and the static (no-script) wording matches the config */
   const bindRe = /<([a-zA-Z0-9]+)([^>]*?)\sdata-bind="([^"]+)"([^>]*)>([^<]*)</g;
@@ -70,6 +70,27 @@ if (site) {
   staticMaps.forEach((url) => { if (url !== derived.mapsDirections) warnings.push('index.html: a fallback directions link differs from the config (only used with scripting off).'); });
   if (!/^https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=.+/.test(derived.mapsDirections)) errors.push('directions link is malformed');
   else ok.push('directions link is well-formed');
+
+  /* 4b · the programme (optional) */
+  const programme = config.programme;
+  if (programme) {
+    if (!derived.programmeDate) errors.push('programme.date must look like 2026-11-26');
+    else ok.push(`programme date ${programme.date} is a ${derived.programmeDateLong.split(',')[0]} → "${derived.programmeDateLong}"`);
+    (programme.items || []).forEach((item, i) => {
+      if (!item.name) errors.push(`programme.items[${i}] has no name`);
+      if (!/^([01]?\d|2[0-3]):[0-5]\d$/.test(item.time || '')) errors.push(`programme.items[${i}].time must be 24-hour like 14:00 (found "${item.time}")`);
+    });
+    ok.push(`programme: ${derived.programmeItems.map((i) => `${i.name} ${i.label}`).join(', ')}`);
+    const pPath = 'assets/calendar/programme.ics';
+    if (!exists(pPath)) errors.push(`${pPath} is missing — run "npm run ics"`);
+    else {
+      const fresh = calendar.buildProgrammeICS(config, derived, new Date(0)).replace(/DTSTAMP:.*\r\n/g, '');
+      if (fs.readFileSync(path.join(ROOT, pPath), 'utf8').replace(/DTSTAMP:.*\r\n/g, '') !== fresh) errors.push(`${pPath} is out of date — run "npm run ics"`);
+      else ok.push('programme calendar file matches the config (start times only)');
+    }
+    const fallback = /id="programme-directions"[^>]*?href="([^"]+)"/.exec(html);
+    if (fallback && decodeEntities(fallback[1]) !== derived.programmeMaps) warnings.push('index.html: the programme directions link differs from the config (only used with scripting off).');
+  }
 
   /* 5 · artwork and music named in the config */
   if (!['rope', 'envelope'].includes(config.opening || 'rope')) errors.push(`config: opening must be 'rope' or 'envelope' (found "${config.opening}")`);

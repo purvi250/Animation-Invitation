@@ -19,6 +19,7 @@
     ['entrances', () => Invite.entrances.init()],
     ['together', () => Invite.together.init()],
     ['scrollcard', () => Invite.scrollcard.init()],
+    ['programme', () => Invite.programme.init()],
     ['venue', () => Invite.venue.init()],
     ['finale', () => Invite.finale.init()],
     ['nav', () => Invite.nav.init()],

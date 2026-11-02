@@ -206,7 +206,7 @@ try {
     await page.keyboard.press('Home'); await wait(900);
     check('keyboard (Home) returns to the top', (await scrollY(page)) < 5);
     const labels = await page.evaluate(() => [...document.querySelectorAll('.chapters a')].map((a) => a.textContent.trim()));
-    check('seven chapters, each with a labelled dot', labels.length === 7 && labels.every(Boolean), labels.join(','));
+    check('eight chapters, each with a labelled dot (including the programme)', labels.length === 8 && labels.every(Boolean) && labels.includes('Programme'), labels.join(','));
 
     /* ================================================================== */
     section('7 · The bride\'s entrance');
@@ -310,6 +310,44 @@ try {
     await page.screenshot({ path: path.join(OUT, 'desktop-card.jpg'), type: 'jpeg', quality: 80 });
 
     /* ================================================================== */
+    section('10b · Programme: Thursday, before the reception');
+    await page.click('.chapters a[data-chapter="programme"]'); await wait(1500);
+    const progTop = await page.evaluate(() => Math.round(document.getElementById('programme').getBoundingClientRect().top));
+    check('the chapter dot leads to the programme', Math.abs(progTop) < 6, `top=${progTop}`);
+    check('the programme card unfolds as the chapter arrives', await until(page, () => document.getElementById('programme').classList.contains('show-card'), 4000));
+    check('its lines arrive', await until(page, () => document.getElementById('programme').classList.contains('show-lines'), 4000));
+    await wait(1800);
+    check('the card is fully readable', (await visible(page, '#programme-title')) && (await visible(page, '#programme-address')));
+    const prog = await page.evaluate(() => document.getElementById('programme-card').innerText.replace(/\s+/g, ' ').trim());
+    check('it shows "Programme" and the date: THURSDAY, 26 NOVEMBER 2026', /Programme/.test(prog) && /THURSDAY, 26 NOVEMBER 2026/i.test(prog), prog);
+    check('it lists Sundarkand at 2:00 PM and Dinner at 8:00 PM', /Sundarkand\s*2:00 PM/.test(prog) && /Dinner\s*8:00 PM/.test(prog), prog);
+    check('it shows the programme venue in full', prog.includes('Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur – 247001'), prog);
+    check('a helper walks the row lighting all six lamps', await until(page, () => document.querySelectorAll('#programme .diya.is-lit').length === 6, 16000) && (await helpers(page, '#programme')).length === 1);
+    const pdir = await page.evaluate(() => { const a = document.getElementById('programme-directions'); return { href: a.href, target: a.target, rel: a.rel }; });
+    check('"Get directions" goes to Google Maps for the programme venue (not the hotel)', pdir.href === derived.programmeMaps && pdir.href !== derived.mapsDirections && pdir.target === '_blank' && /noopener/.test(pdir.rel), JSON.stringify(pdir));
+    await browser.defaultBrowserContext().overridePermissions(ORIGIN, ['clipboard-read', 'clipboard-write']);
+    await page.bringToFront();
+    await page.click('#programme-copy'); await wait(500);
+    const pclip = await page.evaluate(() => navigator.clipboard.readText());
+    check('"Copy address" copies the programme address', pclip === derived.programmeAddressOneLine, pclip);
+    check('…and says so', /copied/i.test(await page.evaluate(() => document.getElementById('programme-status').textContent)));
+    {
+      const dl = fs.mkdtempSync(path.join(os.tmpdir(), 'invite-prog-'));
+      const cdp0 = await page.createCDPSession();
+      await cdp0.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dl });
+      await page.click('#programme-calendar');
+      let pf = '';
+      for (let i = 0; i < 40 && !pf; i++) { await wait(150); pf = fs.readdirSync(dl).find((x) => x.endsWith('.ics')) || ''; }
+      check('"Add to calendar" downloads the programme', pf === 'Kenvi-Puru-Programme-26-November.ics', fs.readdirSync(dl).join(','));
+      if (pf) {
+        const ics = fs.readFileSync(path.join(dl, pf), 'utf8');
+        check('with Sundarkand at 2:00 PM and Dinner at 8:00 PM, India time', ics.includes('DTSTART:20261126T083000Z') && ics.includes('DTSTART:20261126T143000Z') && (ics.match(/BEGIN:VEVENT/g) || []).length === 2);
+        check('and no made-up end times', !/DTEND|DURATION/.test(ics));
+      }
+      fs.rmSync(dl, { recursive: true, force: true });
+    }
+    await page.screenshot({ path: path.join(OUT, 'desktop-programme.jpg'), type: 'jpeg', quality: 80 });
+
     section('11 · Venue: directions, the helper\'s map marker, copy address');
     await goTo(page, 'venue', 0, 600);
     check('a helper walks up the path carrying a map marker', await until(page, () => { const h = document.querySelector('#venue .helper'); return h && h.dataset.state === 'hold' && document.getElementById('marker-link'); }, 12000));
@@ -424,7 +462,7 @@ try {
     check('…and swiping back works', (await scrollY(page)) < swiped - 200, `scrollY=${await scrollY(page)}`);
 
     let overflow = 0;
-    for (const id of ['opening', 'bride', 'groom', 'together', 'invitation', 'venue', 'save-the-date']) {
+    for (const id of ['opening', 'bride', 'groom', 'together', 'invitation', 'programme', 'venue', 'save-the-date']) {
       await goTo(page, id, 0.5, 1500);
       overflow = Math.max(overflow, await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth));
       await page.screenshot({ path: path.join(OUT, `phone-${id}.jpg`), type: 'jpeg', quality: 78 });
@@ -511,6 +549,8 @@ try {
     await page.screenshot({ path: path.join(OUT, 'reduced-motion-together.jpg'), type: 'jpeg', quality: 80 });
     await goTo(page, 'invitation', 0, 400);
     check('the invitation card is readable straight away', await visible(page, '.card__address'));
+    await goTo(page, 'programme', 0, 400);
+    check('the programme card is open and its lamps are lit', (await visible(page, '#programme-address')) && (await page.evaluate(() => document.querySelectorAll('#programme .diya.is-lit').length)) === 6);
     await goTo(page, 'opening', 0, 300);
     await page.screenshot({ path: path.join(OUT, 'reduced-motion-hero.jpg'), type: 'jpeg', quality: 80 });
     await page.close();
@@ -549,7 +589,7 @@ try {
   {
     const { page } = await open({ viewport: DESKTOP, js: false });
     const text = await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' '));
-    check('every detail is still on the page', ['Kenvi Dwivedi', 'Puru Tyagi', 'Saturday, 28 November 2026', 'Hotel Royal Residency', 'Uttar Pradesh 247001, India'].every((t) => text.includes(t)));
+    check('every detail is still on the page, the programme included', ['Kenvi Dwivedi', 'Puru Tyagi', 'Saturday, 28 November 2026', 'Hotel Royal Residency', 'Uttar Pradesh 247001, India', 'Thursday, 26 November 2026', 'Sundarkand', '2:00 PM', 'Dinner', '8:00 PM', 'Nawada Road, Saharanpur – 247001'].every((t) => text.toLowerCase().includes(t.toLowerCase())));
     check('the date at the gate is uncovered, and nothing is pinned', (await dateUncovered(page)) && (await page.evaluate(() => getComputedStyle(document.querySelector('.scene__stage')).position !== 'sticky')));
     check('the invitation card is open and the bride is in view', await page.evaluate(() => getComputedStyle(document.getElementById('scrollcard')).getPropertyValue('--u').trim() === '1' && +getComputedStyle(document.querySelector('.figure--bride')).opacity === 1));
     const hrefs = await page.evaluate(() => ({ maps: document.getElementById('directions-link').getAttribute('href'), ics: document.getElementById('calendar-link').getAttribute('href') }));

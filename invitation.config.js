@@ -62,6 +62,12 @@ window.INVITE_CONFIG = {
      Add ?opening=envelope to the address to try the other one without editing this file. */
   opening: 'rope',
 
+  /* ---------- Sharing: the GIF, video and PDF made by "npm run share" ----------
+     The address of the live invitation — printed on the PDF (with a QR code to scan) and on the animated card. */
+  share: {
+    url: 'https://purvi250.github.io/Animation-Invitation/',
+  },
+
   /* ---------- Wording, chapter by chapter ---------- */
   text: {
     // opening (rope)

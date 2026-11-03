@@ -1,0 +1,189 @@
+<!doctype html>
+<!-- The printable invitation (A5, three pages) — turned into a PDF by tools/make-share.mjs.
+     Page 1 is a still of the opening scene; pages 2 and 3 carry the reception and the programme.
+     Every word comes from invitation.config.js; links (directions, calendar, the live invitation) stay tappable in the PDF. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Invitation</title>
+  <link rel="stylesheet" href="/styles/base.css">
+  <style>
+    @page { size: 148mm 210mm; margin: 0; }
+    html, body { margin: 0; padding: 0; background: #fff; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing: border-box; }
+    body { font-family: var(--font-serif); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    p, address { margin: 0; }
+    address { font-style: normal; }
+    a { color: inherit; }
+
+    .page { position: relative; width: 148mm; height: 210mm; overflow: hidden; page-break-after: always; break-after: page; }
+    .page:last-child { page-break-after: auto; break-after: auto; }
+
+    /* ---------- 1 · cover: the opening scene ---------- */
+    .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+    .cover::after { content: ''; position: absolute; inset: 4.5mm; border: 0.5mm solid rgba(255, 250, 236, 0.9); border-radius: 3mm; box-shadow: 0 0 0 0.6mm rgba(183, 138, 60, 0.75), inset 0 0 0 0.6mm rgba(183, 138, 60, 0.55); pointer-events: none; }
+    .cover__turn { position: absolute; z-index: 2; left: 50%; bottom: 9mm; translate: -50% 0; padding: 1.6mm 5mm; border-radius: 99mm; background: rgba(255, 250, 238, 0.92); color: var(--maroon-deep); font-family: var(--font-caps); font-weight: 600; font-size: 7.4pt; letter-spacing: 0.22em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 1mm 3mm rgba(40, 30, 40, 0.2); }
+
+    /* ---------- 2 & 3 · the paper pages ---------- */
+    .paper {
+      background:
+        radial-gradient(circle at 18% 6%, #fffdf7, var(--paper) 46%, var(--paper-deep) 100%);
+      text-align: center;
+    }
+    .paper::before, .paper::after { content: ''; position: absolute; pointer-events: none; z-index: 1; }
+    .paper::before { inset: 6mm; border: 0.35mm solid rgba(183, 138, 60, 0.85); border-radius: 3mm; }
+    .paper::after { inset: 7.6mm; border: 0.25mm solid rgba(183, 138, 60, 0.35); border-radius: 2.2mm; }
+    .corner { position: absolute; z-index: 2; width: 40mm; pointer-events: none; }
+    .corner--tl { left: 0; top: 0; }
+    .corner--br { right: 0; bottom: 0; rotate: 180deg; }
+    .content { position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14mm 15mm; }
+
+    .kicker { font-family: var(--font-caps); font-weight: 600; font-size: 7.6pt; letter-spacing: 0.32em; padding-left: 0.32em; text-transform: uppercase; color: var(--gold-deep); }
+    .italic { font-style: italic; font-size: 12pt; color: var(--ink-soft); }
+    .event { margin-top: 1mm; font-family: var(--font-caps); font-weight: 600; font-size: 17pt; letter-spacing: 0.1em; padding-left: 0.1em; text-transform: uppercase; color: var(--maroon); line-height: 1.2; }
+    .of { font-style: italic; font-size: 12pt; color: var(--ink-soft); margin: 0.6mm 0; }
+    .script { font-family: var(--font-script); font-weight: 400; color: var(--maroon); line-height: 1.12; padding: 0 0.2em; }
+    .names .script { display: block; font-size: 29pt; }
+    .names .amp { display: block; font-family: var(--font-script); font-size: 20pt; color: var(--gold); line-height: 0.9; }
+    .rule { display: block; position: relative; width: 52mm; height: 0.4mm; margin: 4.5mm auto; background: linear-gradient(90deg, transparent, var(--gold) 22%, var(--gold) 78%, transparent); }
+    .rule::after { content: ''; position: absolute; left: 50%; top: 50%; width: 2.2mm; height: 2.2mm; translate: -50% -50%; rotate: 45deg; background: var(--gold); box-shadow: 0 0 0 1.1mm var(--paper); }
+    .label { font-family: var(--font-caps); font-weight: 600; font-size: 6.8pt; letter-spacing: 0.34em; padding-left: 0.34em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 0.6mm; }
+    .value { font-weight: 600; font-size: 13.5pt; line-height: 1.3; color: var(--ink); }
+    .venue { display: block; font-weight: 700; font-size: 15pt; color: var(--maroon); line-height: 1.2; }
+    .address { font-weight: 500; font-size: 11.5pt; line-height: 1.4; }
+    .row + .row { margin-top: 3.4mm; }
+
+    .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.4mm; margin-top: 4.5mm; }
+    .pill { display: inline-flex; align-items: center; gap: 1.6mm; padding: 1.8mm 4.2mm; border-radius: 99mm; border: 0.3mm solid var(--gold); background: var(--cream); color: var(--maroon); font-family: var(--font-caps); font-weight: 600; font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+    .pill--primary { background: linear-gradient(180deg, #96284a, var(--maroon)); color: var(--cream); border-color: var(--gold-bright); }
+    .pill svg { width: 3.4mm; height: 3.4mm; }
+
+    /* the couple, framed in flowers */
+    .medallion { position: relative; width: 50mm; aspect-ratio: 1; margin: -2mm auto 1mm; }
+    .medallion::before { content: ''; position: absolute; inset: 6%; border-radius: 50%; background: radial-gradient(circle, #fffaf0 40%, rgba(255, 236, 200, 0.6) 70%, transparent 72%); }
+    .medallion .portrait { position: absolute; inset: 16% 13% 12% 13%; width: 74%; height: 72%; object-fit: contain; object-position: center bottom; }
+    .medallion .ring { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; max-width: none; }
+
+    /* ---------- 3 · the programme ---------- */
+    .toran { position: absolute; z-index: 4; left: 50%; top: -1.5mm; width: 132mm; translate: -50% 0; }
+    .programme .content { padding-top: 30mm; }
+    .title { font-size: 40pt; }
+    .pdate { display: grid; font-family: var(--font-caps); font-weight: 600; text-transform: uppercase; color: var(--maroon); line-height: 1.22; }
+    .pdate .wd { font-size: 9pt; letter-spacing: 0.26em; padding-left: 0.26em; color: var(--gold-deep); }
+    .pdate .dm { font-size: 14pt; letter-spacing: 0.07em; }
+    .items { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; width: 100mm; margin: 6mm auto 4.4mm; }
+    .item { position: relative; padding: 7.6mm 2mm 2.6mm; border-radius: 3.4mm; background: linear-gradient(180deg, #fffaf0, #fbe3b8); box-shadow: inset 0 0 0 0.3mm rgba(183, 138, 60, 0.85), inset 0 0 0 1.2mm rgba(255, 250, 238, 0.9), inset 0 0 0 1.5mm rgba(183, 138, 60, 0.35); }
+    .item .ico { position: absolute; left: 50%; top: -5mm; translate: -50% 0; width: 10.5mm; height: 10.5mm; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 40% 32%, #fffdf6, #f6e6c0); box-shadow: 0 0 0 0.4mm var(--gold), 0 0 0 1.1mm var(--paper), 0 0 0 1.4mm rgba(183, 138, 60, 0.4); }
+    .item .nm { display: block; font-weight: 700; font-size: 13pt; line-height: 1.2; }
+    .item .tm { display: block; font-family: var(--font-caps); font-weight: 700; font-size: 12.5pt; letter-spacing: 0.05em; color: var(--maroon); }
+    .watch { display: flex; align-items: center; gap: 4mm; margin-top: 1mm; text-align: left; text-decoration: none; }
+    .qr { flex: none; width: 21mm; height: 21mm; padding: 1.4mm; border-radius: 2mm; background: #fff; box-shadow: 0 0 0 0.3mm var(--gold); }
+    .qr svg { display: block; width: 100%; height: 100%; }
+    .watch b { display: block; font-family: var(--font-caps); font-weight: 600; font-size: 7.2pt; letter-spacing: 0.16em; text-transform: uppercase; color: var(--maroon); }
+    .watch span { display: block; font-size: 10.5pt; font-weight: 600; color: var(--ink-soft); line-height: 1.3; }
+    .watch u { font-size: 9.5pt; color: var(--gold-deep); text-decoration-thickness: 0.2mm; text-underline-offset: 0.6mm; }
+    .closing { margin-top: 4.4mm; font-style: italic; font-size: 11.5pt; color: var(--ink-soft); }
+    .sign { font-size: 26pt; margin-top: -0.6mm; }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff0b0"/><stop offset=".4" stop-color="#e3b548"/><stop offset="1" stop-color="#8f6218"/></linearGradient>
+    </defs>
+    <symbol id="bell" viewBox="0 0 40 84">
+      <path d="M20 0v30" stroke="#8a5a2b" stroke-width="2"/>
+      <path d="M20 26c-9 2-13 13-13 26l-5 9h36l-5-9c0-13-4-24-13-26z" fill="url(#brass)"/>
+      <path d="M2 61h36" stroke="#8f6218" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="67" r="4.4" fill="#8f6218"/>
+    </symbol>
+    <symbol id="thali" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="22.5" fill="url(#brass)"/><circle cx="24" cy="24" r="18" fill="#f8e6b4" stroke="#b78a3c" stroke-width="1.2"/>
+      <circle cx="15.5" cy="17" r="5.6" fill="#e9a53a" stroke="#8f6218" stroke-width="1.1"/><circle cx="30.5" cy="14.5" r="5.2" fill="#5f9a46" stroke="#8f6218" stroke-width="1.1"/><circle cx="34" cy="27.5" r="5" fill="#c2452f" stroke="#8f6218" stroke-width="1.1"/>
+      <ellipse cx="18.5" cy="30.5" rx="8.6" ry="7" fill="#f1cf8e" stroke="#c99a52" stroke-width="1"/><circle cx="27" cy="37.5" r="3.6" fill="#fffaf0"/>
+    </symbol>
+    <symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></symbol>
+    <symbol id="cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 15l2.2 2.2L15.2 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <!-- 1 · the opening scene -->
+  <section class="page cover">
+    <img id="cover" alt="">
+    <p class="cover__turn">Kenvi &amp; Puru · <span data-bind="derived.dateNumeric">28 · 11 · 2026</span></p>
+  </section>
+
+  <!-- 2 · the reception -->
+  <section class="page paper">
+    <img class="corner corner--tl" src="/assets/florals/corner-floral.webp" alt="">
+    <img class="corner corner--br" src="/assets/florals/corner-floral.webp" alt="">
+    <div class="content">
+      <div class="medallion">
+        <img class="portrait" src="/assets/characters/couple.webp" data-art-src="art.couple" alt="">
+        <img class="ring" src="/assets/florals/floral-ring.webp" alt="">
+      </div>
+      <p class="italic" data-bind="text.cardKicker">With great joy, we invite you to the</p>
+      <p class="event" data-bind="event.title">Wedding Reception</p>
+      <p class="of" data-bind="text.cardOf">of</p>
+      <p class="names"><span class="script" data-bind="bride.name">Kenvi Dwivedi</span><span class="amp">&amp;</span><span class="script" data-bind="groom.name">Puru Tyagi</span></p>
+      <span class="rule"></span>
+      <div class="row"><p class="label">Date</p><p class="value" data-bind="derived.dateLong">Saturday, 28 November 2026</p></div>
+      <div class="row" id="time-row" hidden><p class="label">Time</p><p class="value" data-bind="event.time"></p></div>
+      <div class="row"><p class="label">Venue</p><p class="value"><span class="venue" data-bind="venue.name">Hotel Royal Residency</span></p><address class="address" data-bind-lines="venue.addressLines">Ambala Road, Opp. Kalpana Cinema,<br>Purani Mandi, Saharanpur,<br>Uttar Pradesh 247001, India</address></div>
+      <div class="links">
+        <a class="pill pill--primary" id="reception-maps" href="#"><svg><use href="#pin"/></svg>Get directions</a>
+        <a class="pill" id="reception-gcal" href="#"><svg><use href="#cal"/></svg>Add to Google Calendar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · the programme -->
+  <section class="page paper programme">
+    <img class="toran" src="/assets/scenery/toran.webp" alt="">
+    <img class="corner corner--br" src="/assets/florals/corner-floral.webp" alt="">
+    <div class="content">
+      <p class="italic" data-bind="text.programmeKicker">Before the reception</p>
+      <p class="script title" data-bind="programme.title">Programme</p>
+      <p class="pdate"><span class="wd" data-bind="derived.programmeWeekdayComma">Thursday,</span><span class="dm" data-bind="derived.programmeDayMonthYear">26 November 2026</span></p>
+      <div class="items" id="items"></div>
+      <p class="label" data-bind="text.programmeVenueLabel">Venue</p>
+      <address class="address value" data-bind-lines="programme.venue.addressLines">Ankit Vihar Colony, Lane No. 3,<br>Nawada Road, Saharanpur – 247001</address>
+      <div class="links">
+        <a class="pill pill--primary" id="programme-maps" href="#"><svg><use href="#pin"/></svg>Get directions</a>
+        <a class="pill" id="programme-cal" href="#"><svg><use href="#cal"/></svg>Add to calendar</a>
+      </div>
+      <span class="rule"></span>
+      <a class="watch" id="watch" href="#">
+        <span class="qr" id="qr"></span>
+        <span><b>Scan or tap</b><span>to watch the invitation come alive</span><u id="url">purvi250.github.io/Animation-Invitation</u></span>
+      </a>
+      <p class="closing" data-bind="text.finaleClosing">We look forward to celebrating with you.</p>
+      <p class="script sign" data-bind="derived.coupleShort">Kenvi &amp; Puru</p>
+    </div>
+  </section>
+
+  <script src="/invitation.config.js"></script>
+  <script src="/src/core.js"></script>
+  <script src="/src/content.js"></script>
+  <script src="/src/calendar.js"></script>
+  <script>
+    (function () {
+      const Invite = window.Invite, d = Invite.derived, cfg = Invite.config;
+      Invite.bindContent(document);
+      if (cfg.event && cfg.event.time) document.getElementById('time-row').hidden = false;
+      const art = (cfg.art || {}).couple; if (art) document.querySelector('.medallion .portrait').src = '/' + art.replace(/^\//, '');
+      const url = ((cfg.share && cfg.share.url) || '').replace(/\/?$/, '/');
+      const set = (id, href) => { const a = document.getElementById(id); if (href) a.href = href; else a.remove(); };
+      set('reception-maps', d.mapsDirections);
+      set('reception-gcal', Invite.calendar.googleUrl(cfg, d));
+      set('programme-maps', d.programmeMaps);
+      set('programme-cal', url.length > 1 ? `${url}assets/calendar/programme.ics` : '');
+      if (url.length > 1) { set('watch', url); document.getElementById('url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, ''); }
+      else document.getElementById('watch').remove();
+      const icon = (name) => (/dinner|lunch|breakfast|bhoj|meal|food|feast/i.test(name)
+        ? '<svg viewBox="0 0 48 48" width="28" height="28"><use href="#thali"/></svg>'
+        : '<svg viewBox="0 0 40 84" width="13" height="27"><use href="#bell"/></svg>');
+      document.getElementById('items').innerHTML = d.programmeItems.map((it) =>
+        `<div class="item"><span class="ico">${icon(it.name)}</span><span class="nm">${it.name}</span><span class="tm">${it.label}</span></div>`).join('');
+    })();
+  </script>
+</body>
+</html>

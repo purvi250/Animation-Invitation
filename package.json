@@ -15,12 +15,14 @@
     "build": "node tools/build.mjs",
     "preview": "node tools/serve.mjs --dir=dist",
     "ics": "node tools/make-ics.mjs",
-    "paint": "node tools/paint-scenery.mjs"
+    "paint": "node tools/paint-scenery.mjs",
+    "share": "node tools/make-share.mjs"
   },
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
-    "puppeteer-core": "^25.13.0"
+    "puppeteer-core": "^25.13.0",
+    "qrcode-generator": "^2.0.4"
   }
 }

@@ -162,9 +162,11 @@ becomes a soft painted hillside, a set piece simply is not shown, and music beco
 | `npm run preview` | Serve the built `dist/` folder. |
 | `npm run ics` | Rewrite `assets/calendar/reception.ics` from the config. |
 | `npm run paint` | Repaint the scenery and set pieces (`npm run paint -- --only=gate` for one). |
+| `npm run share` | Makes the animated GIF, the video and the PDF in `share/` (see section 8). Add `pdf`, `gif` or `video` to make just one. |
 
-`npm test`, `npm run build` (preview picture) and `npm run paint` use Chrome or Edge behind the scenes and one
-small helper package. Install it once with **`npm install`**. Viewing the invitation needs none of this.
+`npm test`, `npm run build` (preview picture), `npm run paint` and `npm run share` use Chrome or Edge behind the scenes
+and two small helper packages. Install them once with **`npm install`**. `npm run share` also needs **ffmpeg**.
+Viewing the invitation needs none of this.
 
 The project is under Git. The state before the cinematic upgrade is tagged **`v1-baseline`**
 (`git checkout v1-baseline` to look at it, `git checkout main` to come back).
@@ -210,6 +212,21 @@ For the link to show a picture in WhatsApp, open `index.html`, find `og:image`, 
 `assets/icons/share-preview.jpg` with the full address, e.g. `https://your-site.example/assets/icons/share-preview.jpg`
 (messaging apps require a complete web address there), then build again.
 
+### Files to send on their own — `share/`
+
+`npm run share` records three files from the real invitation, so they always match it:
+
+| File | What it is | Best for |
+|---|---|---|
+| `Kenvi-Puru-Invitation.mp4` | 12½ seconds, 1080 × 1350, with the music. The helpers pull the rope, the banner rises to reveal the date, the Thursday sign drops in and the helpers cheer; then the scene dissolves into a night-time card with every detail of the reception and the programme, lamps lighting one by one. | WhatsApp chats and status, Instagram |
+| `Kenvi-Puru-Invitation.gif` | The same, silent and looping (540 × 675). | Anywhere that takes GIFs |
+| `Kenvi-Puru-Invitation.pdf` | Three A5 pages: the opening scene as the cover; the reception (the couple in their ring of flowers, date, venue); the programme (Sundarkand and Dinner, its venue) with a QR code to the live invitation. Directions, calendar and website links can be tapped. | Printing, or sending as a document |
+
+A PDF cannot play animation on phones (only the first frame of a GIF inside it would show), which is why the PDF
+carries a still of the opening and a QR code / link to the animated invitation instead. The website address
+printed on them is `share.url` in `invitation.config.js`; the wording and details come from the same config as the site.
+The animation is recorded on a virtual clock, so every frame is smooth however slow the computer.
+
 ---
 
 ## 9. What is in the folder
@@ -246,7 +263,9 @@ InvitationWeb/
 ├─ tools/
 │  ├─ serve.mjs               tiny local web server
 │  ├─ check.mjs  build.mjs  make-ics.mjs  make-preview.mjs
+│  ├─ make-share.mjs + share/   the GIF, video and PDF (card.html = the closing card, print.html = the PDF pages)
 │  └─ paint-scenery.mjs + paint/   kit.mjs (brushes), scenes.mjs (landscapes), setpieces.mjs (gate, arch, mandap…)
+├─ share/                     the GIF, video and PDF made by `npm run share`
 └─ tests/                     unit.test.mjs, e2e.mjs
 ```
 

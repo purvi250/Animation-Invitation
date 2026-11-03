@@ -1,23 +1,34 @@
 /* ============================================================================
    PROGRAMME — Thursday's gathering, before the reception (config → programme).
 
-   When the chapter comes into view the card unfolds and its lines arrive one
-   by one; then a helper walks along the foot of the screen with a lantern,
-   lighting a row of lamps. The card's own buttons give directions to the
-   programme venue, copy its address, and download its calendar entries.
+   A pinned chapter, played by the scroll bar, so nobody can scroll past it
+   without seeing it:
 
-   Information first: the card opens as soon as the chapter is reached — the
-   helper's lamp-lighting only follows it. With reduced motion or without
-   scripting the card is simply open and the lamps are lit.
+     while it rises into view (entry 0 → 1)
+       0.28 – 0.72   the card unfolds from its centre
+       0.40 – 0.96   its lines arrive, one after another
+       0.58 – 0.99   a marigold toran drops into place above it
+     while it is held on screen (progress 0 → 1) — the card is fully readable
+       0.02 – 0.78   a helper walks the row with a lantern, lighting six lamps;
+                     the evening warms, and the two items light up in turn
+       0.80 →        all lit: a shower of petals, a bell, and the helper cheers
+
+   Information first: the moment the chapter is reached (by scrolling, a chapter
+   dot or one of the "see the programme" links) every line is already in place.
+   Scrolling back plays it in reverse. If a screen is too short to hold the card
+   it simply scrolls past like any other chapter, and with reduced motion or
+   without scripting the card is open and the lamps are lit.
    ============================================================================ */
 (function () {
   'use strict';
   const Invite = window.Invite;
-  const GROUND = 20;      // feet, as a % of the helper's strip of ground (see .scene--programme > .troupe)
-  const STEPS = ['show-card', 'show-lines'];
+  const { span, ease, setVar, lerp, clamp01 } = Invite;
+  const GROUND = 16;        // the helper's feet, as a % of the strip of ground below the card
+  const MIN_ZOOM = 0.74;    // below this the card would be too small to read — let the chapter scroll instead
+  const canZoom = !!(window.CSS && CSS.supports && CSS.supports('zoom', '0.5'));
 
-  let scene, layer, troupe, lamps = [];
-  let statusTimer = 0;
+  let scene, stage, frame, card, layer, lamps = [], items = [];
+  let helper = null, lastB = 0, cheering = false, statusTimer = 0;
 
   function setupButtons() {
     const cfg = Invite.config, derived = Invite.derived;
@@ -70,58 +81,112 @@
     }
   }
 
-  function reset() {
-    if (!troupe) return;
-    troupe.clear();
-    STEPS.forEach((c) => scene.classList.remove(c));
-    lamps.forEach((l) => l.classList.remove('is-lit'));
+  /* ---------- does the card fit between the header and the lamps? ---------- */
+  function fit() {
+    if (!frame) return;
+    const vh = window.innerHeight;
+    const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 64;
+    frame.style.zoom = '';
+    frame.style.removeProperty('--z');
+    scene.classList.remove('is-loose');
+    const room = vh - header - 22 - vh * 0.15;           // the strip of ground for the lamps is 15% of the screen
+    let zoom = Math.min(1, room / Math.max(1, frame.offsetHeight));
+    // the buttons grow as the card shrinks (--z), so they stay a comfortable size for a finger: settle on a zoom that allows for it
+    for (let i = 0; i < 3 && zoom < 1 && zoom >= MIN_ZOOM; i++) {
+      frame.style.setProperty('--z', zoom.toFixed(3));
+      zoom = Math.min(1, room / Math.max(1, frame.offsetHeight));
+    }
+    if (zoom < 1 && (!canZoom || zoom < MIN_ZOOM)) { scene.classList.add('is-loose'); frame.style.removeProperty('--z'); }
+    else if (zoom < 1) { frame.style.setProperty('--z', zoom.toFixed(3)); frame.style.zoom = zoom.toFixed(3); }
+    Invite.scroll.refresh();
   }
 
-  function play() {
-    reset();
-    troupe.play(async (s) => {
-      scene.classList.add('show-card');                  // the card unfolds…
-      await s.wait(650);
-      scene.classList.add('show-lines');                 // …and its lines arrive one by one
-      Invite.sfx.play('paper');
-      await s.wait(1400);
+  /* ---------- the scroll plays the chapter ---------- */
+  function play(q, s) {
+    const vh = window.innerHeight;
+    const raw = (Invite.scroll.y + vh - s.top) / vh;      // 1 = the chapter has reached the top of the screen
+    const enter = clamp01(raw);
+    setVar(scene, '--u', ease.out(span(enter, 0.28, 0.72)));
+    setVar(scene, '--l', span(enter, 0.4, 0.96));
+    setVar(scene, '--t', ease.outBack(span(enter, 0.58, 0.99)));
 
-      // a helper walks the row with a lantern, lighting each lamp in turn
-      const helper = troupe.add('chameli', { x: -9, y: GROUND, prop: 'lantern' });
-      const order = lamps.slice().sort((a, b) => parseFloat(a.style.getPropertyValue('--dx')) - parseFloat(b.style.getPropertyValue('--dx')));
-      for (const lamp of order) {
-        const x = parseFloat(lamp.style.getPropertyValue('--dx'));
-        await helper.go(x - 3.2, { s, speed: 26 });
-        helper.face('right').set('point');
-        await s.wait(240);
-        lamp.classList.add('is-lit');
-        await s.wait(180);
-      }
-      Invite.sfx.play('sparkle');
-      await helper.go(Math.min(94, parseFloat(order[order.length - 1].style.getPropertyValue('--dx')) + 5), { s, speed: 26 });
-      helper.face('left').set('cheer');
-      await s.wait(1800);
-      helper.set('hold');
+    // once it is held, the lamplighting (a chapter that only scrolls by gets it on the way past)
+    const b = s.pinned ? q : span(raw, 1, 1.6);
+    const x = lerp(-8, 91, span(b, 0.02, 0.78));
+    let lit = 0;
+    lamps.forEach((lamp) => {
+      const on = x >= lamp.__x - 1.5;
+      lamp.classList.toggle('is-lit', on);
+      if (on) lit += 1;
     });
+    setVar(scene, '--glow', lit / Math.max(1, lamps.length));
+    items.forEach((item, i) => item.classList.toggle('is-lit', lit >= Math.ceil(((i + 1) * lamps.length) / items.length)));
+
+    if (helper) {
+      const done = b >= 0.8;
+      if (done !== cheering) {
+        cheering = done;
+        helper.el.classList.toggle('is-scrubbed', !done);
+        helper.set(done ? 'cheer' : 'carry');
+      }
+      const facing = done ? 'left' : 'right';
+      if (helper.facing !== facing) helper.face(facing);
+      helper.at(x, GROUND);
+      if (!done) helper.el.style.setProperty('--scrub', (b * 16).toFixed(3));
+    }
+
+    // every lamp lit: petals, a bell, and the card glows (only when scrolling forward into it)
+    if (lastB < 0.8 && b >= 0.8 && b < 0.95) {
+      const r = card.getBoundingClientRect();
+      Invite.particles.burst(r.left + r.width / 2, Math.max(70, r.top + r.height * 0.3), 46);
+      if (Invite.shower) Invite.shower(stage, 22);
+      Invite.sfx.play('bell');
+      scene.classList.remove('is-glowing'); void scene.offsetWidth; scene.classList.add('is-glowing');
+    }
+    if (b < 0.6) scene.classList.remove('is-glowing');
+    lastB = b;
+  }
+
+  function reset() {
+    lastB = 0;
+    if (scene) scene.classList.remove('is-glowing');
   }
 
   function init() {
     scene = document.getElementById('programme');
+    stage = document.getElementById('programme-stage');
+    frame = document.getElementById('programme-frame');
+    card = document.getElementById('programme-card');
     layer = scene && scene.querySelector('.troupe');
-    if (!scene || !layer) return;
-    lamps = Array.prototype.slice.call(layer.querySelectorAll('.diya'));
+    if (!scene || !stage || !frame || !card) return;
+    lamps = Array.prototype.slice.call(scene.querySelectorAll('.programme-lamps .diya'));
+    lamps.forEach((l) => { l.__x = parseFloat(l.style.getPropertyValue('--dx')) || 0; });
+    items = Array.prototype.slice.call(scene.querySelectorAll('.programme-card__item'));
     setupButtons();
-    if (!Invite.helpers) return;
-    troupe = Invite.helpers.troupe(layer);
+    const troupe = layer && Invite.helpers ? Invite.helpers.troupe(layer) : null;
 
     if (Invite.motion.reduced) {                         // everything simply in place
-      lamps.forEach((l) => l.classList.add('is-lit'));
-      troupe.add('chameli', { x: 6, y: GROUND, prop: 'lantern' }).set('hold');
+      lamps.concat(items).forEach((l) => l.classList.add('is-lit'));
+      if (troupe) troupe.add('chameli', { x: 90, y: GROUND, prop: 'lantern', facing: 'left' }).set('hold');
       return;
     }
+    if (troupe) {
+      helper = troupe.add('chameli', { x: -8, y: GROUND, prop: 'lantern', state: 'carry' });
+      helper.el.classList.add('is-scrubbed');
+    }
     scene.classList.add('is-staged');
-    Invite.helpers.onView(scene, play, reset, 0.2);
+    Invite.scroll.handlers.programme = play;
+
+    let pending = 0;
+    const refit = () => { cancelAnimationFrame(pending); pending = requestAnimationFrame(fit); };
+    window.addEventListener('resize', refit);
+    window.addEventListener('orientationchange', refit);
+    window.addEventListener('load', refit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit).catch(() => {});
+    fit();
+    const s = Invite.scroll.scene('programme');
+    if (s) play(0, s);
   }
 
-  Invite.programme = { init, reset };
+  Invite.programme = { init, reset, fit };
 })();

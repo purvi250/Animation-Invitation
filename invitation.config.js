@@ -92,6 +92,10 @@ window.INVITE_CONFIG = {
     cardOf: 'of',
     programmeKicker: 'Before the reception',
     programmeVenueLabel: 'Venue',
+    // the reminders of the programme elsewhere in the story (opening, invitation card, finale)
+    programmeTagKicker: 'Also',
+    programmeAlsoKicker: 'Also join us on',
+    programmeAlsoLink: 'See the programme',
 
     venueKicker: 'Reception venue & directions',
     venueTitle: 'Find your way to us',

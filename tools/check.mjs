@@ -17,7 +17,7 @@ const warnings = [];
 const ok = [];
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join('/');
 const exists = (p) => fs.existsSync(path.join(ROOT, p));
-const decodeEntities = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+const decodeEntities = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
 
 /* 1 · scripts parse */
 const scripts = ['invitation.config.js', ...walk(path.join(ROOT, 'src')).map((f) => `src/${f}`)];

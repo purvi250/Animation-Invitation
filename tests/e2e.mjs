@@ -121,6 +121,7 @@ try {
     section('2 · Hero: the helpers get ready');
     check('three little helpers are on stage', (await helpers(page, '#gate')).length === 3);
     check('the banner starts down, hiding the date', (await bannerRaised(page)) < 0.05 && !(await dateUncovered(page)));
+    check('…and the programme sign beneath it is not there yet', !(await visible(page, '#date-tag')));
     await page.screenshot({ path: path.join(OUT, 'desktop-hero-intro.jpg'), type: 'jpeg', quality: 80 });
     const walkA = await limbs(page, '#gate .helper--genda');
     check('the helpers act out finding the rope, and end up holding it', await heroIs(page, ['ready'], 16000), await hero(page));
@@ -167,6 +168,11 @@ try {
     await wait(800);   // the link fades in
     check('"Follow the little one" appears and leads to the bride', (await visible(page, '#hero-follow')) && (await page.evaluate(() => document.getElementById('hero-follow').getAttribute('href'))) === '#bride');
     check('the "Begin" button steps aside once used', !(await visible(page, '#hero-begin')));
+    await until(page, () => +getComputedStyle(document.getElementById('date-tag')).opacity > 0.98, 4000);
+    const tag = await page.evaluate(() => { const a = document.getElementById('date-tag'); return { href: a.getAttribute('href'), text: a.innerText.replace(/\s+/g, ' ').replace(/\u00a0/g, ' ').trim() }; });
+    check('a little sign has dropped in beneath the date: Sundarkand & Dinner, Thursday', (await visible(page, '#date-tag')) && tag.href === '#programme' && /THU, 26 NOV/i.test(tag.text) && /Sundarkand & Dinner/.test(tag.text), JSON.stringify(tag));
+    const sway1 = await page.evaluate(() => getComputedStyle(document.querySelector('.datetag__card')).transform); await wait(700);
+    check('…swaying gently on its threads', sway1 !== (await page.evaluate(() => getComputedStyle(document.querySelector('.datetag__card')).transform)));
 
     section('4 · Music controls');
     check('music button offers "Mute music"', (await music(page)).label === 'Mute music');
@@ -306,23 +312,57 @@ try {
     check('card shows both full names', text.includes('Kenvi Dwivedi') && text.includes('Puru Tyagi'), text);
     check('card shows the event and date', /WEDDING RECEPTION/i.test(text) && text.includes('Saturday, 28 November 2026'));
     check('card shows the complete venue address', text.includes('Hotel Royal Residency') && text.includes('Ambala Road, Opp. Kalpana Cinema, Purani Mandi, Saharanpur, Uttar Pradesh 247001, India'), text);
-    check('no time or RSVP is shown (none was given)', (await page.evaluate(() => document.querySelector('[data-optional="event.time"]').hidden)) && !/rsvp/i.test(text));
+    check('no reception time or RSVP is shown (none was given)', (await page.evaluate(() => document.querySelector('[data-optional="event.time"]').hidden)) && !/rsvp/i.test(text));
+    await page.evaluate(() => document.getElementById('card-also').scrollIntoView({ block: 'center', behavior: 'instant' })); await wait(600);
+    const also = await page.evaluate(() => { const a = document.getElementById('card-also'); return { href: a.getAttribute('href'), text: a.innerText.replace(/\s+/g, ' ').replace(/\u00a0/g, ' ').trim() }; });
+    check('at its foot, a slip invites guests to Thursday\'s programme as well', (await visible(page, '#card-also')) && also.href === '#programme' && /THURSDAY, 26 NOVEMBER 2026/i.test(also.text) && also.text.includes('Sundarkand 2:00 PM · Dinner 8:00 PM'), JSON.stringify(also));
     await page.screenshot({ path: path.join(OUT, 'desktop-card.jpg'), type: 'jpeg', quality: 80 });
 
     /* ================================================================== */
-    section('10b · Programme: Thursday, before the reception');
-    await page.click('.chapters a[data-chapter="programme"]'); await wait(1500);
-    const progTop = await page.evaluate(() => Math.round(document.getElementById('programme').getBoundingClientRect().top));
-    check('the chapter dot leads to the programme', Math.abs(progTop) < 6, `top=${progTop}`);
-    check('the programme card unfolds as the chapter arrives', await until(page, () => document.getElementById('programme').classList.contains('show-card'), 4000));
-    check('its lines arrive', await until(page, () => document.getElementById('programme').classList.contains('show-lines'), 4000));
-    await wait(1800);
-    check('the card is fully readable', (await visible(page, '#programme-title')) && (await visible(page, '#programme-address')));
-    const prog = await page.evaluate(() => document.getElementById('programme-card').innerText.replace(/\s+/g, ' ').trim());
-    check('it shows "Programme" and the date: THURSDAY, 26 NOVEMBER 2026', /Programme/.test(prog) && /THURSDAY, 26 NOVEMBER 2026/i.test(prog), prog);
-    check('it lists Sundarkand at 2:00 PM and Dinner at 8:00 PM', /Sundarkand\s*2:00 PM/.test(prog) && /Dinner\s*8:00 PM/.test(prog), prog);
-    check('it shows the programme venue in full', prog.includes('Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur – 247001'), prog);
-    check('a helper walks the row lighting all six lamps', await until(page, () => document.querySelectorAll('#programme .diya.is-lit').length === 6, 16000) && (await helpers(page, '#programme')).length === 1);
+    section('10b · Programme: held on screen while the page scrolls');
+    const prog = () => page.evaluate(() => {
+      const s = document.getElementById('programme'); const cs = getComputedStyle(s); const h = s.querySelector('.helper');
+      const box = document.getElementById('programme-card').getBoundingClientRect();
+      return {
+        u: +cs.getPropertyValue('--u'), l: +cs.getPropertyValue('--l'), t: +cs.getPropertyValue('--t'),
+        lamps: s.querySelectorAll('.programme-lamps .diya.is-lit').length, items: s.querySelectorAll('.programme-card__item.is-lit').length,
+        stageTop: Math.round(s.querySelector('.scene__stage').getBoundingClientRect().top), card: [Math.round(box.top), Math.round(box.bottom)],
+        helper: h ? { state: h.dataset.state, x: +h.style.getPropertyValue('--x'), scrubbed: h.classList.contains('is-scrubbed') } : null,
+        held: s.offsetHeight - s.querySelector('.scene__stage').offsetHeight, vh: innerHeight, loose: s.classList.contains('is-loose'), glowing: s.classList.contains('is-glowing'),
+      };
+    });
+    await page.evaluate(() => { const el = document.getElementById('programme'); window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - innerHeight * 0.45, behavior: 'instant' }); });
+    await wait(1200);
+    const rising = await prog();
+    check('as it rises into view the card is unfolding, the toran not yet dropped', rising.u > 0.05 && rising.u < 1 && rising.t < 0.05, JSON.stringify(rising));
+    await page.click('.chapters a[data-chapter="programme"]');
+    check('the chapter dot leads to the programme', await until(page, () => Math.abs(document.getElementById('programme').getBoundingClientRect().top) < 6, 5000), `top=${(await prog()).stageTop}`);
+    await wait(900);
+    const arrived = await prog();
+    check('the moment it is reached, the card is open, every line is in and the toran is up', arrived.u === 1 && arrived.l === 1 && arrived.t === 1, JSON.stringify(arrived));
+    check('the card is fully readable', (await visible(page, '#programme-title')) && (await visible(page, '#programme-address')) && (await visible(page, '.programme-card__actions')));
+    check('it is held on screen for well over a screen\'s worth of scrolling', !arrived.loose && arrived.held >= arrived.vh * 1.2, JSON.stringify(arrived));
+    const prog0 = await page.evaluate(() => document.getElementById('programme-card').innerText.replace(/\s+/g, ' ').trim());
+    check('it shows "Programme" and the date: THURSDAY, 26 NOVEMBER 2026', /Programme/.test(prog0) && /THURSDAY, 26 NOVEMBER 2026/i.test(prog0), prog0);
+    check('it lists Sundarkand at 2:00 PM and Dinner at 8:00 PM', /Sundarkand\s*2:00 PM/.test(prog0) && /Dinner\s*8:00 PM/.test(prog0), prog0);
+    check('it shows the programme venue in full', prog0.includes('Ankit Vihar Colony, Lane No. 3, Nawada Road, Saharanpur – 247001'), prog0);
+    await goTo(page, 'programme', 0.36);
+    const held = await prog(); const pl1 = await limbs(page, '#programme .helper');
+    await goTo(page, 'programme', 0.42);
+    const pl2 = await limbs(page, '#programme .helper');
+    check('still held in place while it plays', held.stageTop === 0 && held.card[0] >= 0 && held.card[1] <= held.vh, JSON.stringify(held));
+    check('a helper walks the row with a lantern, lighting the lamps as she passes', held.lamps >= 1 && held.lamps <= 5 && held.helper && held.helper.state === 'carry' && held.helper.scrubbed, JSON.stringify(held));
+    check('…her steps keeping time with the scroll', pl1 !== pl2);
+    check('the first item lights up when she is half way', held.items === (held.lamps >= 3 ? 1 : 0), JSON.stringify(held));
+    await goTo(page, 'programme', 1, 1600);
+    const lit = await prog();
+    check('at the end all six lamps are lit and both items glow', lit.lamps === 6 && lit.items === 2, JSON.stringify(lit));
+    check('the helper turns to the card and cheers', lit.helper.state === 'cheer' && !lit.helper.scrubbed, JSON.stringify(lit.helper));
+    check('the last lamp brings a shimmer across the card and a shower of petals', lit.glowing && (await page.evaluate(() => document.querySelectorAll('#programme-stage .petalfall i').length)) > 0);
+    await page.screenshot({ path: path.join(OUT, 'desktop-programme.jpg'), type: 'jpeg', quality: 80 });
+    await goTo(page, 'programme', 0.1);
+    const back2 = await prog();
+    check('scrolling back plays it in reverse', back2.lamps < 3 && back2.items === 0 && back2.helper.state === 'carry', JSON.stringify(back2));
     const pdir = await page.evaluate(() => { const a = document.getElementById('programme-directions'); return { href: a.href, target: a.target, rel: a.rel }; });
     check('"Get directions" goes to Google Maps for the programme venue (not the hotel)', pdir.href === derived.programmeMaps && pdir.href !== derived.mapsDirections && pdir.target === '_blank' && /noopener/.test(pdir.rel), JSON.stringify(pdir));
     await browser.defaultBrowserContext().overridePermissions(ORIGIN, ['clipboard-read', 'clipboard-write']);
@@ -346,7 +386,6 @@ try {
       }
       fs.rmSync(dl, { recursive: true, force: true });
     }
-    await page.screenshot({ path: path.join(OUT, 'desktop-programme.jpg'), type: 'jpeg', quality: 80 });
 
     section('11 · Venue: directions, the helper\'s map marker, copy address');
     await goTo(page, 'venue', 0, 600);
@@ -400,6 +439,8 @@ try {
     fs.rmSync(downloads, { recursive: true, force: true });
     const gcal = await page.evaluate(() => document.getElementById('gcal-link').href);
     check('Google Calendar link carries the same all-day date', new URL(gcal).searchParams.get('dates') === '20261128/20261129', gcal);
+    const fin = await page.evaluate(() => { const a = document.getElementById('finale-also'); return { href: a.getAttribute('href'), text: a.innerText.replace(/\s+/g, ' ').replace(/\u00a0/g, ' ').trim() }; });
+    check('before the goodbye, Thursday\'s programme is recalled once more', (await visible(page, '#finale-also')) && fin.href === '#programme' && fin.text.includes('Thursday, 26 November 2026') && fin.text.includes('Sundarkand 2:00 PM · Dinner 8:00 PM'), JSON.stringify(fin));
     await page.screenshot({ path: path.join(OUT, 'desktop-finale.jpg'), type: 'jpeg', quality: 80 });
 
     /* ================================================================== */
@@ -424,6 +465,11 @@ try {
     check('scrolling on, without pressing anything, sets the helpers pulling', await heroIs(page, ['pulling', 'revealed', 'done'], 2000), await hero(page));
     check('…but scrolling alone never starts music', (await music(page)).paused);
     check('…and the date is revealed', await heroIs(page, ['revealed', 'done'], 8000) && (await dateUncovered(page)));
+    check('…with the programme sign hanging beneath it', await until(page, () => +getComputedStyle(document.getElementById('date-tag')).opacity > 0.98, 6000));
+    await page.evaluate(() => document.getElementById('date-tag').click());
+    check('…which leads straight to the programme', await until(page, () => Math.abs(document.getElementById('programme').getBoundingClientRect().top) < 6, 6000));
+    await wait(900);
+    check('…already open and readable on arrival', (await visible(page, '#programme-title')) && (await visible(page, '#programme-address')));
     await goTo(page, 'invitation', 0, 300);
     check('an invitation nobody taps opens by itself, so the details are never hidden', await until(page, () => document.getElementById('scrollcard').dataset.state === 'open', 16000));
     await wait(2400);
@@ -446,6 +492,9 @@ try {
     const date = await page.evaluate(() => ['.datepanel__kicker', '.datepanel__day', '.datepanel__dm'].map((sel) => { const el = document.querySelector(sel); const range = document.createRange(); range.selectNodeContents(el); const r = range.getBoundingClientRect(); const p = document.getElementById('date-panel').getBoundingClientRect(); return { size: +parseFloat(getComputedStyle(el).fontSize).toFixed(1), inside: r.left >= p.left && r.right <= p.right }; }));
     check('the date fits its panel and is large enough to read (weekday 14px+, date 16px+)', date.every((d) => d.inside) && date[0].size >= 12 && date[1].size >= 14 && date[2].size >= 16, JSON.stringify(date));
     await heroIs(page, ['done'], 12000);
+    await until(page, () => +getComputedStyle(document.getElementById('date-tag')).opacity > 0.98, 4000); await wait(300);
+    const sign = await page.evaluate(() => { const t = document.querySelector('.datetag__card').getBoundingClientRect(); const g = document.getElementById('gate').getBoundingClientRect(); const p = document.getElementById('date-panel').getBoundingClientRect(); return { inside: t.left >= g.left && t.right <= g.right, below: t.top >= p.bottom - 2, kicker: parseFloat(getComputedStyle(document.querySelector('.datetag__kicker')).fontSize), names: parseFloat(getComputedStyle(document.querySelector('.datetag__names')).fontSize) }; });
+    check('the programme sign hangs inside the gate, under the date, and is readable', sign.inside && sign.below && sign.kicker >= 10 && sign.names >= 13, JSON.stringify(sign));
     await page.screenshot({ path: path.join(OUT, 'phone-hero.jpg'), type: 'jpeg', quality: 80 });
     await page.click('#music-toggle'); await wait(300);
     // a real finger drag: touch down, move in small steps, lift
@@ -468,6 +517,11 @@ try {
       await page.screenshot({ path: path.join(OUT, `phone-${id}.jpg`), type: 'jpeg', quality: 78 });
     }
     check('no sideways scrolling anywhere', overflow <= 0, `overflow=${overflow}px`);
+    await goTo(page, 'programme', 0.3, 1500);
+    const pfit = await page.evaluate(() => { const s = document.getElementById('programme'); const c = document.getElementById('programme-card').getBoundingClientRect(); const z = parseFloat(document.getElementById('programme-frame').style.zoom) || 1; return { loose: s.classList.contains('is-loose'), stage: Math.round(s.querySelector('.scene__stage').getBoundingClientRect().top), top: Math.round(c.top), bottom: Math.round(c.bottom), left: Math.round(c.left), right: Math.round(c.right), time: +(parseFloat(getComputedStyle(document.querySelector('.programme-card__item dd')).fontSize) * z).toFixed(1), vh: innerHeight }; });
+    check('on a phone the whole programme card fits on screen while it is held', !pfit.loose && pfit.stage === 0 && pfit.top >= 0 && pfit.bottom <= pfit.vh && pfit.left >= 0 && pfit.right <= 390, JSON.stringify(pfit));
+    check('…and its times are large enough to read (16px+)', pfit.time >= 16, JSON.stringify(pfit));
+    await page.screenshot({ path: path.join(OUT, 'phone-programme.jpg'), type: 'jpeg', quality: 78 });
 
     await goTo(page, 'bride', 0, 400);
     await until(page, () => document.getElementById('bride').classList.contains('show-bouquet'), 14000);
@@ -550,8 +604,9 @@ try {
     await goTo(page, 'invitation', 0, 400);
     check('the invitation card is readable straight away', await visible(page, '.card__address'));
     await goTo(page, 'programme', 0, 400);
-    check('the programme card is open and its lamps are lit', (await visible(page, '#programme-address')) && (await page.evaluate(() => document.querySelectorAll('#programme .diya.is-lit').length)) === 6);
+    check('the programme card is open, not pinned, and its lamps are lit', (await visible(page, '#programme-address')) && (await page.evaluate(() => document.querySelectorAll('#programme .programme-lamps .diya.is-lit').length === 6 && getComputedStyle(document.querySelector('#programme .scene__stage')).position !== 'sticky')));
     await goTo(page, 'opening', 0, 300);
+    check('the programme sign is simply there beneath the date', await visible(page, '#date-tag'));
     await page.screenshot({ path: path.join(OUT, 'reduced-motion-hero.jpg'), type: 'jpeg', quality: 80 });
     await page.close();
   }

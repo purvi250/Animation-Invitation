@@ -92,9 +92,10 @@ test('the page works without scripting: its built-in wording matches the config'
     assert.ok(html.includes(text), `index.html should contain "${text}"`);
   }
   assert.ok(html.includes(derived.mapsDirections.replace(/&/g, '&amp;')), 'fallback directions link matches');
-  // the only clock times on the page are the programme's — the reception's time has not been announced
-  const outsideProgramme = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<section class="scene scene--programme"[\s\S]*?<\/section>/, '');
-  assert.ok(!/\b\d{1,2}[:.]\d{2}\s?(am|pm)\b/i.test(outsideProgramme), 'no clock time appears outside the programme');
+  // the only clock times on the page are the programme's (in its chapter and its reminders) — the reception's time has not been announced
+  const times = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/&nbsp;/g, ' ').match(/\b\d{1,2}[:.]\d{2}\s?(am|pm)\b/gi) || [];
+  const allowed = derived.programmeItems.map((i) => i.label);
+  assert.ok(times.length > 0 && times.every((t) => allowed.includes(t)), `a clock time that is not the programme's: ${times.filter((t) => !allowed.includes(t)).join(', ')}`);
 });
 
 test('the programme is exactly as given: Thursday 26 November 2026, Sundarkand 2:00 PM, Dinner 8:00 PM', () => {

@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Kenvi &amp; Puru · Wedding Reception · 28 November 2026</title>
-  <meta name="description" content="You are invited to the wedding reception of Kenvi Dwivedi and Puru Tyagi on Saturday, 28 November 2026 at Hotel Royal Residency, Saharanpur.">
+  <meta name="description" content="You are invited to the wedding reception of Kenvi Dwivedi and Puru Tyagi on Saturday, 28 November 2026 at Hotel Royal Residency, Saharanpur — and to Sundarkand &amp; Dinner on Thursday, 26 November 2026.">
   <meta name="theme-color" content="#4a9be0">
   <meta name="color-scheme" content="light">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Kenvi &amp; Puru · Wedding Reception">
-  <meta property="og:description" content="Saturday, 28 November 2026 · Hotel Royal Residency, Saharanpur. Open your invitation.">
+  <meta property="og:description" content="Reception: Saturday, 28 November 2026 · Hotel Royal Residency, Saharanpur. Sundarkand &amp; Dinner: Thursday, 26 November 2026. Open your invitation.">
   <meta property="og:image" content="assets/icons/share-preview.jpg">
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
 
@@ -57,6 +57,11 @@
       <path d="M20 26c-9 2-13 13-13 26l-5 9h36l-5-9c0-13-4-24-13-26z" fill="url(#brass)"/>
       <path d="M2 61h36" stroke="#8f6218" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="67" r="4.400" fill="#8f6218"/>
       <path d="M14 34c-3 5-4 12-4 18" fill="none" stroke="#fff" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="thali" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="22.5" fill="url(#brass)"/><circle cx="24" cy="24" r="18" fill="#f8e6b4" stroke="#b78a3c" stroke-width="1.2"/>
+      <circle cx="15.5" cy="17" r="5.6" fill="#e9a53a" stroke="#8f6218" stroke-width="1.1"/><circle cx="30.5" cy="14.5" r="5.2" fill="#5f9a46" stroke="#8f6218" stroke-width="1.1"/><circle cx="34" cy="27.5" r="5" fill="#c2452f" stroke="#8f6218" stroke-width="1.1"/>
+      <ellipse cx="18.5" cy="30.5" rx="8.6" ry="7" fill="#f1cf8e" stroke="#c99a52" stroke-width="1"/><circle cx="16" cy="29" r="1.1" fill="#c99a52"/><circle cx="21" cy="32.5" r="1" fill="#c99a52"/><circle cx="27" cy="37.5" r="3.6" fill="#fffaf0"/>
     </symbol>
     <symbol id="diya" viewBox="0 0 60 30">
       <path d="M4 6q26 30 52 0q-4 22-26 22T4 6z" fill="url(#clay)"/><path d="M4 6q26 9 52 0" fill="none" stroke="#f0b27c" stroke-width="2.400" stroke-linecap="round"/>
@@ -147,6 +152,15 @@
               <p class="datepanel__event" data-bind="event.title">Wedding Reception</p>
               <span class="datepanel__marigolds" aria-hidden="true"></span>
             </div>
+
+            <!-- the programme, hung beneath the date: it drops in once the banner is up, and leads to the programme -->
+            <a class="datetag" id="date-tag" href="#programme">
+              <span class="datetag__card is-looping">
+                <span class="datetag__kicker"><span data-bind="text.programmeTagKicker">Also</span> · <span data-bind="derived.programmeShort">Thu, 26 Nov</span></span>
+                <span class="datetag__names" data-bind="derived.programmeNames">Sundarkand &amp; Dinner</span>
+              </span>
+              <span class="sr-only"> — see the programme</span>
+            </a>
 
             <div class="banner" aria-hidden="true">
               <div class="banner__cloth">
@@ -451,6 +465,13 @@
                   </dd>
                 </div>
               </dl>
+              <a class="card__also" id="card-also" href="#programme">
+                <span class="diya is-lit card__also-lamp" aria-hidden="true"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+                <span class="card__also-kicker" data-bind="text.programmeAlsoKicker">Also join us on</span>
+                <time class="card__also-when" datetime="2026-11-26" data-bind-datetime="programme.date"><span data-bind="derived.programmeWeekdayComma">Thursday,</span> <span data-bind="derived.programmeDayMonthYear">26 November 2026</span></time>
+                <span class="card__also-times" data-bind="derived.programmeSummary">Sundarkand&nbsp;2:00&nbsp;PM · Dinner&nbsp;8:00&nbsp;PM</span>
+                <span class="card__also-link"><span data-bind="text.programmeAlsoLink">See the programme</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
             </div>
           </article>
           <span class="scrollcard__roll" aria-hidden="true">
@@ -470,63 +491,78 @@
       <span class="scene__mist" aria-hidden="true"></span>
     </section>
 
-    <!-- ============ 5b · PROGRAMME (Thursday, before the reception) ============ -->
-    <section class="scene scene--programme" id="programme" data-scene="programme" data-time="3.6" aria-labelledby="programme-title">
-      <div class="scene__art" data-art="programme" aria-hidden="true">
-        <img class="layer" data-depth="0.5" src="assets/scenery/grove-far.webp" alt="" loading="lazy" decoding="async">
-        <img class="layer" data-depth="0.24" src="assets/scenery/grove-mid.webp" alt="" loading="lazy" decoding="async">
-        <img class="layer" data-depth="0" src="assets/scenery/grove-near.webp" alt="" loading="lazy" decoding="async">
-      </div>
-      <div class="scene__content">
-        <article class="programme-card" id="programme-card">
-          <img class="card__corner card__corner--tl" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="card__corner card__corner--br" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <div class="programme-card__inner">
-            <svg class="programme-card__lotus" viewBox="0 0 120 72" aria-hidden="true" focusable="false"><use href="#lotus"/></svg>
-            <p class="programme-card__kicker" data-bind="text.programmeKicker">Before the reception</p>
-            <h2 class="programme-card__title" id="programme-title" data-bind="programme.title">Programme</h2>
-            <p class="programme-card__date"><time datetime="2026-11-26" data-bind="derived.programmeDateLong" data-bind-datetime="programme.date">Thursday, 26 November 2026</time></p>
-            <span class="ornament" aria-hidden="true"></span>
-            <dl class="programme-card__list">
-              <div class="programme-card__item">
-                <dt data-bind="programme.items.0.name">Sundarkand</dt>
-                <dd><time datetime="2026-11-26T14:00+05:30" data-bind="derived.programmeItems.0.label" data-bind-datetime="derived.programmeItems.0.iso">2:00 PM</time></dd>
+    <!-- ============ 5b · PROGRAMME (Thursday, before the reception) ============
+         Held on screen while the page scrolls (src/programme.js): the card unfolds as it rises into
+         view and a marigold toran drops above it; then, still held, a helper walks the row lighting
+         lamps and the two items of the programme light up one after the other. -->
+    <section class="scene scene--programme" id="programme" data-scene="programme" data-time="3.55" data-time-end="3.68" data-pin aria-labelledby="programme-title">
+      <div class="scene__stage" id="programme-stage">
+        <div class="scene__art" data-art="programme" aria-hidden="true">
+          <img class="layer" data-depth="0.5" src="assets/scenery/grove-far.webp" alt="" loading="lazy" decoding="async">
+          <img class="layer" data-depth="0.24" src="assets/scenery/grove-mid.webp" alt="" loading="lazy" decoding="async">
+          <img class="layer" data-depth="0" src="assets/scenery/grove-near.webp" alt="" loading="lazy" decoding="async">
+        </div>
+        <span class="programme-glow" aria-hidden="true"></span>
+
+        <div class="scene__content programme">
+          <div class="programme-frame" id="programme-frame">
+            <img class="programme-toran" src="assets/scenery/toran.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <article class="programme-card" id="programme-card">
+              <img class="card__corner card__corner--tl" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+              <img class="card__corner card__corner--br" src="assets/florals/corner-floral.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+              <div class="programme-card__inner">
+                <div class="programme-card__head">
+                  <p class="programme-card__kicker" data-bind="text.programmeKicker">Before the reception</p>
+                  <h2 class="programme-card__title" id="programme-title" data-bind="programme.title">Programme</h2>
+                  <p class="programme-card__date"><time datetime="2026-11-26" data-bind-datetime="programme.date"><span class="programme-card__wd" data-bind="derived.programmeWeekdayComma">Thursday,</span> <span class="programme-card__dm" data-bind="derived.programmeDayMonthYear">26 November 2026</span></time></p>
+                </div>
+                <span class="programme-card__rule" aria-hidden="true"></span>
+                <div class="programme-card__body">
+                  <dl class="programme-card__list">
+                    <div class="programme-card__item">
+                      <dt><span class="programme-card__icon programme-card__icon--bell" aria-hidden="true"><svg viewBox="0 0 40 84" focusable="false"><use href="#bell"/></svg></span><span class="programme-card__name" data-bind="programme.items.0.name">Sundarkand</span></dt>
+                      <dd><time datetime="2026-11-26T14:00+05:30" data-bind="derived.programmeItems.0.label" data-bind-datetime="derived.programmeItems.0.iso">2:00 PM</time></dd>
+                    </div>
+                    <div class="programme-card__item">
+                      <dt><span class="programme-card__icon programme-card__icon--thali" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><use href="#thali"/></svg></span><span class="programme-card__name" data-bind="programme.items.1.name">Dinner</span></dt>
+                      <dd><time datetime="2026-11-26T20:00+05:30" data-bind="derived.programmeItems.1.label" data-bind-datetime="derived.programmeItems.1.iso">8:00 PM</time></dd>
+                    </div>
+                  </dl>
+                  <div class="programme-card__where">
+                    <p class="programme-card__label" data-bind="text.programmeVenueLabel">Venue</p>
+                    <address class="programme-card__address" id="programme-address" data-bind-lines="programme.venue.addressLines">Ankit Vihar Colony, Lane No. 3,<br>Nawada Road, Saharanpur – 247001</address>
+                  </div>
+                  <div class="actions actions--center programme-card__actions">
+                    <a class="btn btn--primary" id="programme-directions" target="_blank" rel="noopener noreferrer"
+                       href="https://www.google.com/maps/dir/?api=1&amp;destination=Ankit%20Vihar%20Colony%2C%20Lane%20No.%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India">
+                      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.800 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></svg>
+                      Get directions<span class="sr-only"> to the programme venue in Google Maps (opens in a new tab)</span>
+                    </a>
+                    <button type="button" class="btn" id="programme-copy">
+                      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.500 5.500v-0.500a1.500 1.500 0 0 0-1.500-1.500H6A1.500 1.500 0 0 0 4.500 5v8A1.500 1.500 0 0 0 6 14.500h0.500" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                      <span class="btn__text">Copy address</span>
+                    </button>
+                    <a class="btn" id="programme-calendar" href="assets/calendar/programme.ics" download="Kenvi-Puru-Programme-26-November.ics" type="text/calendar">
+                      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5.500" width="16" height="14.500" rx="2.500" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 15l2.200 2.200L15.200 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      Add to calendar<span class="sr-only"> (downloads the programme as a calendar file)</span>
+                    </a>
+                  </div>
+                  <p class="programme-card__status" id="programme-status" role="status" aria-live="polite"></p>
+                </div>
               </div>
-              <div class="programme-card__item">
-                <dt data-bind="programme.items.1.name">Dinner</dt>
-                <dd><time datetime="2026-11-26T20:00+05:30" data-bind="derived.programmeItems.1.label" data-bind-datetime="derived.programmeItems.1.iso">8:00 PM</time></dd>
-              </div>
-            </dl>
-            <span class="ornament" aria-hidden="true"></span>
-            <p class="programme-card__label" data-bind="text.programmeVenueLabel">Venue</p>
-            <address class="programme-card__address" id="programme-address" data-bind-lines="programme.venue.addressLines">Ankit Vihar Colony, Lane No. 3,<br>Nawada Road, Saharanpur – 247001</address>
-            <div class="actions actions--center programme-card__actions">
-              <a class="btn btn--primary" id="programme-directions" target="_blank" rel="noopener noreferrer"
-                 href="https://www.google.com/maps/dir/?api=1&amp;destination=Ankit%20Vihar%20Colony%2C%20Lane%20No.%203%2C%20Nawada%20Road%2C%20Saharanpur%2C%20Uttar%20Pradesh%20247001%2C%20India">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.800 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.4" fill="currentColor"/></svg>
-                Get directions<span class="sr-only"> to the programme venue in Google Maps (opens in a new tab)</span>
-              </a>
-              <button type="button" class="btn" id="programme-copy">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.500 5.500v-0.500a1.500 1.500 0 0 0-1.500-1.500H6A1.500 1.500 0 0 0 4.500 5v8A1.500 1.500 0 0 0 6 14.500h0.500" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                <span class="btn__text">Copy address</span>
-              </button>
-              <a class="btn" id="programme-calendar" href="assets/calendar/programme.ics" download="Kenvi-Puru-Programme-26-November.ics" type="text/calendar">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5.500" width="16" height="14.500" rx="2.500" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 15l2.200 2.200L15.200 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Add to calendar<span class="sr-only"> (downloads the programme as a calendar file)</span>
-              </a>
-            </div>
-            <p class="programme-card__status" id="programme-status" role="status" aria-live="polite"></p>
+            </article>
           </div>
-        </article>
-      </div>
-      <div class="troupe" data-troupe="programme" aria-hidden="true">
-        <div class="programme-lamps">
-          <span class="diya" style="--dx:12%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
-          <span class="diya" style="--dx:27%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
-          <span class="diya" style="--dx:42%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
-          <span class="diya" style="--dx:58%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
-          <span class="diya" style="--dx:73%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
-          <span class="diya" style="--dx:88%"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+        </div>
+
+        <div class="troupe" data-troupe="programme" aria-hidden="true">
+          <div class="programme-lamps">
+          <span class="diya" style="--dx:10%;--i:0"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:25%;--i:1"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:40%;--i:2"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:60%;--i:3"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:75%;--i:4"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          <span class="diya" style="--dx:90%;--i:5"><svg viewBox="0 0 60 30" focusable="false"><use href="#diya"/></svg><i class="diya__flame"></i></span>
+          </div>
         </div>
       </div>
       <span class="scene__mist" aria-hidden="true"></span>
@@ -654,6 +690,15 @@
         <p class="finale__more" data-reveal>
           <a class="textlink" id="gcal-link" target="_blank" rel="noopener noreferrer" href="https://calendar.google.com/calendar/render?action=TEMPLATE">Add to Google Calendar<span class="sr-only"> (opens in a new tab)</span></a>
         </p>
+        <a class="finale__also" id="finale-also" href="#programme" data-reveal>
+          <span class="finale__leaf" aria-hidden="true"><span class="finale__leaf-day" data-bind="derived.programmeWeekdayShort">Thu</span><span class="finale__leaf-num" data-bind="derived.programmeDayNum">26</span><span class="finale__leaf-mon" data-bind="derived.programmeMonthShort">Nov</span></span>
+          <span class="finale__also-text">
+            <span class="finale__also-kicker" data-bind="text.programmeKicker">Before the reception</span>
+            <time class="finale__also-when" datetime="2026-11-26" data-bind="derived.programmeDateLong" data-bind-datetime="programme.date">Thursday, 26 November 2026</time>
+            <span class="finale__also-times" data-bind="derived.programmeSummary">Sundarkand&nbsp;2:00&nbsp;PM · Dinner&nbsp;8:00&nbsp;PM</span>
+          </span>
+          <span class="finale__also-go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only">See the programme</span></span>
+        </a>
         <p class="finale__closing" data-reveal data-bind="text.finaleClosing">We look forward to celebrating with you.</p>
         <p class="finale__sign" data-reveal="write" data-bind="derived.coupleShort">Kenvi &amp; Puru</p>
         <p class="finale__again" data-reveal>
